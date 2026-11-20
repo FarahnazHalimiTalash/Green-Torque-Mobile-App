@@ -29,9 +29,6 @@ export default function WelcomeScreen() {
     <Screen>
       <View style={styles.hero}>
         <Logo height={96} width={360} clear />
-        <Text style={styles.subtitle}>
-          Book service, follow repair progress, and stay connected with the shop — from drop-off to pickup.
-        </Text>
       </View>
 
       <View style={styles.actions}>
@@ -54,14 +51,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingTop: 48,
     paddingBottom: 48,
-    gap: 16,
-  },
-  subtitle: {
-    color: colors.textMuted,
-    fontSize: 16,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 340,
   },
   actions: {
     gap: 12,
