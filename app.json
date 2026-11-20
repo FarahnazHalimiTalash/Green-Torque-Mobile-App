@@ -1,0 +1,54 @@
+{
+  "expo": {
+    "name": "Green Torque",
+    "slug": "green-torque",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "greentorque",
+    "userInterfaceStyle": "dark",
+    "ios": {
+      "supportsTablet": true,
+      "infoPlist": {
+        "NSPhotoLibraryUsageDescription": "Allow Green Torque to access photos so you can upload pictures of your vehicle.",
+        "NSCameraUsageDescription": "Allow Green Torque to take photos of your vehicle."
+      }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#07140F",
+        "foregroundImage": "./assets/images/android-icon-foreground.png",
+        "backgroundImage": "./assets/images/android-icon-background.png",
+        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/splash-icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#07140F"
+        }
+      ],
+      "expo-secure-store",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Allow Green Torque to access photos so you can upload pictures of your vehicle.",
+          "cameraPermission": "Allow Green Torque to take photos of your vehicle."
+        }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
+    }
+  }
+}
