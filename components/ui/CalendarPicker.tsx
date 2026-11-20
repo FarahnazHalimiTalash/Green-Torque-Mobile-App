@@ -32,10 +32,19 @@ function formatHour(hour: number) {
   return date.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
 }
 
+function formatDate(date: Date) {
+  return date.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+  });
+}
+
 export function CalendarPicker({ value, onChange }: Props) {
   const selected = value ? new Date(value) : null;
   const [visibleMonth, setVisibleMonth] = useState(() => selected ?? new Date());
   const [draftDate, setDraftDate] = useState<Date | null>(null);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   const [timeOpen, setTimeOpen] = useState(false);
   const today = startOfDay(new Date());
   const highlight = draftDate ?? selected;
@@ -56,7 +65,14 @@ export function CalendarPicker({ value, onChange }: Props) {
 
   function pickDate(date: Date) {
     setDraftDate(date);
+    setCalendarOpen(false);
     setTimeOpen(true);
+  }
+
+  function toggleCalendar() {
+    const next = !calendarOpen;
+    setCalendarOpen(next);
+    if (next) setTimeOpen(false);
   }
 
   function pickHour(hourValue: string) {
@@ -77,59 +93,72 @@ export function CalendarPicker({ value, onChange }: Props) {
   return (
     <View style={styles.wrap}>
       <Text style={styles.label}>Drop-off</Text>
-      <View style={styles.card}>
-        <View style={styles.header}>
-          <Pressable
-            accessibilityLabel="Previous month"
-            onPress={() =>
-              setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))
-            }
-            style={styles.nav}>
-            <Ionicons name="chevron-back" size={18} color={colors.primary} />
-          </Pressable>
-          <Text style={styles.month}>{monthLabel}</Text>
-          <Pressable
-            accessibilityLabel="Next month"
-            onPress={() =>
-              setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))
-            }
-            style={styles.nav}>
-            <Ionicons name="chevron-forward" size={18} color={colors.primary} />
-          </Pressable>
-        </View>
+      <Pressable
+        accessibilityRole="button"
+        accessibilityLabel="Drop-off"
+        onPress={toggleCalendar}
+        style={styles.field}>
+        <Text style={[styles.fieldValue, !highlight && styles.placeholder]} numberOfLines={1}>
+          {highlight ? formatDate(highlight) : 'Select drop-off date'}
+        </Text>
+        <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
+      </Pressable>
 
-        <View style={styles.week}>
-          {WEEKDAYS.map((day) => (
-            <Text key={day} style={styles.weekday}>
-              {day}
-            </Text>
-          ))}
-        </View>
+      {calendarOpen ? (
+        <View style={styles.card}>
+          <View style={styles.header}>
+            <Pressable
+              accessibilityLabel="Previous month"
+              onPress={() =>
+                setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))
+              }
+              style={styles.nav}>
+              <Ionicons name="chevron-back" size={18} color={colors.primary} />
+            </Pressable>
+            <Text style={styles.month}>{monthLabel}</Text>
+            <Pressable
+              accessibilityLabel="Next month"
+              onPress={() =>
+                setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))
+              }
+              style={styles.nav}>
+              <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+            </Pressable>
+          </View>
 
-        <View style={styles.grid}>
-          {cells.map((date, index) => {
-            if (!date) {
-              return <View key={`empty-${index}`} style={styles.day} />;
-            }
-            const closed = date.getDay() === 0;
-            const past = startOfDay(date) < today;
-            const disabled = closed || past;
-            const on = highlight ? isSameDay(date, highlight) : false;
-            return (
-              <Pressable
-                key={date.toISOString()}
-                accessibilityLabel={`Drop-off ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`}
-                disabled={disabled}
-                onPress={() => pickDate(date)}
-                style={[styles.day, on && styles.dayOn, disabled && styles.dayDisabled]}>
-                <Text style={[styles.dayText, on && styles.dayTextOn, disabled && styles.dayTextDisabled]}>
-                  {date.getDate()}
-                </Text>
-              </Pressable>
-            );
-          })}
+          <View style={styles.week}>
+            {WEEKDAYS.map((day) => (
+              <Text key={day} style={styles.weekday}>
+                {day}
+              </Text>
+            ))}
+          </View>
+
+          <View style={styles.grid}>
+            {cells.map((date, index) => {
+              if (!date) {
+                return <View key={`empty-${index}`} style={styles.day} />;
+              }
+              const closed = date.getDay() === 0;
+              const past = startOfDay(date) < today;
+              const disabled = closed || past;
+              const on = highlight ? isSameDay(date, highlight) : false;
+              return (
+                <Pressable
+                  key={date.toISOString()}
+                  accessibilityLabel={`Drop-off ${date.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })}`}
+                  disabled={disabled}
+                  onPress={() => pickDate(date)}
+                  style={[styles.day, on && styles.dayOn, disabled && styles.dayDisabled]}>
+                  <Text style={[styles.dayText, on && styles.dayTextOn, disabled && styles.dayTextDisabled]}>
+                    {date.getDate()}
+                  </Text>
+                </Pressable>
+              );
+            })}
+          </View>
         </View>
-      </View>
+      ) : null}
 
       <Select
         label="Drop-off time"
@@ -153,6 +182,26 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
+  },
+  field: {
+    minHeight: 52,
+    borderRadius: radius.md,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  fieldValue: {
+    color: colors.text,
+    fontSize: 16,
+    flex: 1,
+  },
+  placeholder: {
+    color: colors.textDim,
   },
   card: {
     borderRadius: radius.md,
