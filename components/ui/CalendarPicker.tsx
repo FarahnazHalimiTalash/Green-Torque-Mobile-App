@@ -1,3 +1,4 @@
+import { Select } from '@/components/ui/Select';
 import { colors, radius } from '@/constants/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMemo, useState } from 'react';
@@ -34,8 +35,12 @@ function formatHour(hour: number) {
 export function CalendarPicker({ value, onChange }: Props) {
   const selected = value ? new Date(value) : null;
   const [visibleMonth, setVisibleMonth] = useState(() => selected ?? new Date());
+  const [draftDate, setDraftDate] = useState<Date | null>(null);
+  const [timeOpen, setTimeOpen] = useState(false);
   const today = startOfDay(new Date());
-  const selectedHour = selected ? selected.getHours() : 9;
+  const highlight = draftDate ?? selected;
+  const timeValue =
+    selected && highlight && isSameDay(selected, highlight) ? String(selected.getHours()) : '';
 
   const cells = useMemo(() => {
     const first = new Date(visibleMonth.getFullYear(), visibleMonth.getMonth(), 1);
@@ -50,19 +55,24 @@ export function CalendarPicker({ value, onChange }: Props) {
   }, [visibleMonth]);
 
   function pickDate(date: Date) {
-    const next = new Date(date);
-    next.setHours(selectedHour, 0, 0, 0);
-    onChange(next.toISOString());
+    setDraftDate(date);
+    setTimeOpen(true);
   }
 
-  function pickHour(hour: number) {
-    if (!selected) return;
-    const next = new Date(selected);
-    next.setHours(hour, 0, 0, 0);
+  function pickHour(hourValue: string) {
+    const day = draftDate ?? selected;
+    if (!day || !hourValue) return;
+    const next = new Date(day);
+    next.setHours(Number(hourValue), 0, 0, 0);
     onChange(next.toISOString());
+    setTimeOpen(false);
   }
 
   const monthLabel = visibleMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+  const timeOptions = DROP_OFF_HOURS.map((hour) => ({
+    label: formatHour(hour),
+    value: String(hour),
+  }));
 
   return (
     <View style={styles.wrap}>
@@ -104,7 +114,7 @@ export function CalendarPicker({ value, onChange }: Props) {
             const closed = date.getDay() === 0;
             const past = startOfDay(date) < today;
             const disabled = closed || past;
-            const on = selected ? isSameDay(date, selected) : false;
+            const on = highlight ? isSameDay(date, highlight) : false;
             return (
               <Pressable
                 key={date.toISOString()}
@@ -121,22 +131,16 @@ export function CalendarPicker({ value, onChange }: Props) {
         </View>
       </View>
 
-      <Text style={[styles.label, styles.timeLabel]}>Drop-off time</Text>
-      <View style={styles.times}>
-        {DROP_OFF_HOURS.map((hour) => {
-          const on = Boolean(selected) && selectedHour === hour;
-          return (
-            <Pressable
-              key={hour}
-              accessibilityLabel={`Drop-off ${formatHour(hour)}`}
-              disabled={!selected}
-              onPress={() => pickHour(hour)}
-              style={[styles.time, on && styles.timeOn, !selected && styles.dayDisabled]}>
-              <Text style={[styles.timeText, on && styles.timeTextOn]}>{formatHour(hour)}</Text>
-            </Pressable>
-          );
-        })}
-      </View>
+      <Select
+        label="Drop-off time"
+        value={timeValue}
+        options={timeOptions}
+        onChange={pickHour}
+        placeholder={highlight ? 'Select drop-off time' : 'Select a date first'}
+        disabled={!highlight}
+        open={timeOpen}
+        onOpenChange={setTimeOpen}
+      />
     </View>
   );
 }
@@ -213,32 +217,5 @@ const styles = StyleSheet.create({
   },
   dayTextDisabled: {
     color: colors.textDim,
-  },
-  timeLabel: {
-    marginTop: 6,
-  },
-  times: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  time: {
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-  },
-  timeOn: {
-    backgroundColor: colors.primaryMuted,
-    borderColor: colors.primary,
-  },
-  timeText: {
-    color: colors.textMuted,
-    fontWeight: '700',
-  },
-  timeTextOn: {
-    color: colors.primary,
   },
 });

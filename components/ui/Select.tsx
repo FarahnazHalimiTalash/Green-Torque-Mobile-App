@@ -15,6 +15,8 @@ type Props = {
   onChange: (value: string) => void;
   placeholder?: string;
   disabled?: boolean;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 };
 
 const webSelectStyle: CSSProperties = {
@@ -37,12 +39,40 @@ export function Select({
   onChange,
   placeholder = 'Select',
   disabled,
+  open,
+  onOpenChange,
 }: Props) {
-  const [open, setOpen] = useState(false);
+  const [internalOpen, setInternalOpen] = useState(false);
   const selected = options.find((option) => option.value === value);
   const unavailable = disabled || options.length === 0;
+  const controlled = onOpenChange != null;
+  const visible = controlled ? Boolean(open) : internalOpen;
 
-  if (Platform.OS === 'web') {
+  function setVisible(next: boolean) {
+    if (controlled) onOpenChange(next);
+    else setInternalOpen(next);
+  }
+
+  function pick(next: string) {
+    onChange(next);
+    setVisible(false);
+  }
+
+  const menu = options.map((option) => {
+    const on = option.value === value;
+    return (
+      <Pressable
+        key={option.value}
+        accessibilityRole="button"
+        accessibilityLabel={option.label}
+        onPress={() => pick(option.value)}
+        style={[styles.option, on && styles.optionOn]}>
+        <Text style={[styles.optionText, on && styles.optionTextOn]}>{option.label}</Text>
+      </Pressable>
+    );
+  });
+
+  if (Platform.OS === 'web' && !controlled) {
     return (
       <View style={styles.wrap}>
         <Text style={styles.label}>{label}</Text>
@@ -78,7 +108,7 @@ export function Select({
         accessibilityRole="button"
         accessibilityLabel={label}
         disabled={unavailable}
-        onPress={() => setOpen(true)}
+        onPress={() => setVisible(!visible)}
         style={[styles.box, styles.nativeBox, unavailable && styles.boxDisabled]}>
         <Text style={[styles.value, !selected && styles.placeholder]} numberOfLines={1}>
           {selected?.label ?? placeholder}
@@ -86,30 +116,19 @@ export function Select({
         <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
       </Pressable>
 
-      <Modal visible={open} transparent animationType="fade" onRequestClose={() => setOpen(false)}>
-        <View style={styles.backdrop}>
-          <Pressable style={StyleSheet.absoluteFill} onPress={() => setOpen(false)} />
-          <View style={styles.sheet}>
-            <Text style={styles.sheetTitle}>{label}</Text>
-            <ScrollView>
-              {options.map((option) => {
-                const on = option.value === value;
-                return (
-                  <Pressable
-                    key={option.value}
-                    onPress={() => {
-                      onChange(option.value);
-                      setOpen(false);
-                    }}
-                    style={[styles.option, on && styles.optionOn]}>
-                    <Text style={[styles.optionText, on && styles.optionTextOn]}>{option.label}</Text>
-                  </Pressable>
-                );
-              })}
-            </ScrollView>
+      {Platform.OS === 'web' ? (
+        visible && !unavailable ? <View style={styles.menu}>{menu}</View> : null
+      ) : (
+        <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
+          <View style={styles.backdrop}>
+            <Pressable style={StyleSheet.absoluteFill} onPress={() => setVisible(false)} />
+            <View style={styles.sheet}>
+              <Text style={styles.sheetTitle}>{label}</Text>
+              <ScrollView>{menu}</ScrollView>
+            </View>
           </View>
-        </View>
-      </Modal>
+        </Modal>
+      )}
     </View>
   );
 }
@@ -153,6 +172,14 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 14,
     pointerEvents: 'none',
+  },
+  menu: {
+    borderRadius: radius.md,
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    overflow: 'hidden',
+    marginTop: -2,
   },
   backdrop: {
     flex: 1,
