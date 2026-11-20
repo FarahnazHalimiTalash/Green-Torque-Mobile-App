@@ -28,7 +28,7 @@ export default function WelcomeScreen() {
   return (
     <Screen>
       <View style={styles.hero}>
-        <Logo height={96} width={360} />
+        <Logo height={96} width={360} clear />
         <Text style={styles.subtitle}>
           Book service, follow repair progress, and stay connected with the shop — from drop-off to pickup.
         </Text>
