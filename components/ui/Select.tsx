@@ -6,6 +6,7 @@ import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from '
 export type SelectOption = {
   label: string;
   value: string;
+  disabled?: boolean;
 };
 
 type Props = {
@@ -54,20 +55,26 @@ export function Select({
   }
 
   function pick(next: string) {
+    const option = options.find((item) => item.value === next);
+    if (!option || option.disabled) return;
     onChange(next);
     setVisible(false);
   }
 
   const menu = options.map((option) => {
     const on = option.value === value;
+    const taken = Boolean(option.disabled);
     return (
       <Pressable
         key={option.value}
         accessibilityRole="button"
-        accessibilityLabel={option.label}
+        accessibilityLabel={taken ? `${option.label}, taken` : option.label}
+        disabled={taken}
         onPress={() => pick(option.value)}
-        style={[styles.option, on && styles.optionOn]}>
-        <Text style={[styles.optionText, on && styles.optionTextOn]}>{option.label}</Text>
+        style={[styles.option, on && styles.optionOn, taken && styles.optionTaken]}>
+        <Text style={[styles.optionText, on && styles.optionTextOn, taken && styles.optionTextTaken]}>
+          {option.label}
+        </Text>
       </Pressable>
     );
   });
@@ -92,7 +99,11 @@ export function Select({
             },
             createElement('option', { key: '__empty', value: '' }, placeholder),
             ...options.map((option) =>
-              createElement('option', { key: option.value, value: option.value }, option.label),
+              createElement(
+                'option',
+                { key: option.value, value: option.value, disabled: option.disabled },
+                option.label,
+              ),
             ),
           )}
           <Ionicons name="chevron-down" size={18} color={colors.textMuted} style={styles.webChevron} />
@@ -117,7 +128,11 @@ export function Select({
       </Pressable>
 
       {Platform.OS === 'web' ? (
-        visible && !unavailable ? <View style={styles.menu}>{menu}</View> : null
+        visible && !unavailable ? (
+          <ScrollView style={styles.menu} nestedScrollEnabled>
+            {menu}
+          </ScrollView>
+        ) : null
       ) : (
         <Modal visible={visible} transparent animationType="fade" onRequestClose={() => setVisible(false)}>
           <View style={styles.backdrop}>
@@ -174,12 +189,20 @@ const styles = StyleSheet.create({
     pointerEvents: 'none',
   },
   menu: {
+    maxHeight: 280,
     borderRadius: radius.md,
     backgroundColor: colors.card,
     borderWidth: 1,
     borderColor: colors.border,
     overflow: 'hidden',
     marginTop: -2,
+  },
+  optionTaken: {
+    backgroundColor: '#050C09',
+  },
+  optionTextTaken: {
+    color: '#4A6358',
+    fontWeight: '700',
   },
   backdrop: {
     flex: 1,

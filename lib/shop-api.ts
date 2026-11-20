@@ -91,6 +91,11 @@ export async function shopSignup(input: {
   };
 }
 
+export async function shopAvailability() {
+  const data = await request<{ booked: string[] }>('/api/availability');
+  return data.booked ?? [];
+}
+
 export async function shopPortal(customerId: string) {
   const snapshot = await request<CustomerSnapshot>(`/api/portal?customerId=${encodeURIComponent(customerId)}`);
   return snapshotToAccount(snapshot);

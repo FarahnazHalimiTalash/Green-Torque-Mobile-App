@@ -6,7 +6,14 @@ export const DEMO_STAFF_PASSWORD = "shop123";
 
 const hoursAgo = (hours: number) => new Date(Date.now() - 1000 * 60 * 60 * hours).toISOString();
 const daysAgo = (days: number) => new Date(Date.now() - 1000 * 60 * 60 * 24 * days).toISOString();
-const hoursFromNow = (hours: number) => new Date(Date.now() + 1000 * 60 * 60 * hours).toISOString();
+
+function nextOpenDay(hour: number, extraDays = 1) {
+  const date = new Date();
+  date.setDate(date.getDate() + extraDays);
+  if (date.getDay() === 0) date.setDate(date.getDate() + 1);
+  date.setHours(hour, 0, 0, 0);
+  return date.toISOString();
+}
 
 export function createShopState(): ShopState {
   return {
@@ -99,12 +106,24 @@ export function createShopState(): ShopState {
         customerId: "cust_omar",
         vehicleId: "veh_prius",
         serviceTypeId: "svc_hybrid_repair",
-        scheduledAt: hoursFromNow(2),
+        scheduledAt: nextOpenDay(10),
         status: "confirmed",
         notes: "Check engine light after highway driving. Hybrid battery fan sounds loud.",
         photoUris: [],
         videoUris: [],
         createdAt: hoursAgo(10),
+      },
+      {
+        id: "apt_today_omar_pm",
+        customerId: "cust_omar",
+        vehicleId: "veh_prius",
+        serviceTypeId: "svc_hybrid_repair",
+        scheduledAt: nextOpenDay(14),
+        status: "confirmed",
+        notes: "Follow-up hybrid inspection in the afternoon.",
+        photoUris: [],
+        videoUris: [],
+        createdAt: hoursAgo(9),
       },
     ],
     cameras: [

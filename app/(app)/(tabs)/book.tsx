@@ -11,6 +11,7 @@ import {
   serviceGroupForPowertrain,
   servicesForGroup,
 } from '@/data/services';
+import { shopAvailability } from '@/lib/shop-api';
 import {
   evTypeForModel,
   MAKE_OPTIONS,
@@ -55,7 +56,7 @@ function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void 
 }
 
 export default function BookScreen() {
-  const { vehicles, selectedVehicle, bookAppointment, addVehicle } = useApp();
+  const { vehicles, selectedVehicle, appointments, liveWithShop, bookAppointment, addVehicle } = useApp();
   const [make, setMake] = useState(selectedVehicle?.make ?? '');
   const [model, setModel] = useState(selectedVehicle?.model ?? '');
   const [year, setYear] = useState(selectedVehicle ? String(selectedVehicle.year) : '');
@@ -64,6 +65,7 @@ export default function BookScreen() {
   );
   const [serviceTypeId, setServiceTypeId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
+  const [bookedAt, setBookedAt] = useState<string[]>([]);
   const [notes, setNotes] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [error, setError] = useState('');
@@ -77,6 +79,30 @@ export default function BookScreen() {
       setServiceGroup(serviceGroupForPowertrain(selectedVehicle.evType));
     }
   }, [make, selectedVehicle]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadBooked() {
+      if (liveWithShop) {
+        try {
+          const booked = await shopAvailability();
+          if (!cancelled) setBookedAt(booked);
+          return;
+        } catch {
+          // Fall back to this customer's appointments if the shop API is offline.
+        }
+      }
+      if (!cancelled) {
+        setBookedAt(
+          appointments.filter((item) => item.status !== 'cancelled').map((item) => item.scheduledAt),
+        );
+      }
+    }
+    void loadBooked();
+    return () => {
+      cancelled = true;
+    };
+  }, [appointments, liveWithShop]);
 
   const modelOptions = modelsForMake(make).map((item) => ({ label: item.name, value: item.name }));
   const yearOptions = yearsForModel(make, model).map((item) => ({
@@ -215,7 +241,7 @@ export default function BookScreen() {
           placeholder={serviceGroup ? 'Select service' : 'Select service type first'}
           disabled={!serviceGroup}
         />
-        <CalendarPicker value={scheduledAt} onChange={setScheduledAt} />
+        <CalendarPicker value={scheduledAt} onChange={setScheduledAt} bookedAt={bookedAt} />
 
         <Input
           label="What’s going on?"

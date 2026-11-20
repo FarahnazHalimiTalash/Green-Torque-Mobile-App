@@ -1,3 +1,4 @@
+import { dropOffSlotTaken } from "./drop-off";
 import { createId } from "./ids";
 import { customerSnapshot } from "./portal";
 import { serviceTypes, type ShopState } from "./types";
@@ -124,6 +125,9 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       break;
     }
     case "book_appointment": {
+      if (dropOffSlotTaken(next.appointments, action.payload.scheduledAt)) {
+        throw new Error("That drop-off time is already booked.");
+      }
       const appointment = {
         id: createId("apt"),
         customerId: action.payload.customerId,

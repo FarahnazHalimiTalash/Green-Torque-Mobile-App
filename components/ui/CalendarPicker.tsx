@@ -1,15 +1,16 @@
 import { Select } from '@/components/ui/Select';
 import { colors, radius } from '@/constants/theme';
+import { DROP_OFF_HOURS, isDropOffTaken } from '@/lib/drop-off';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 const WEEKDAYS = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-const DROP_OFF_HOURS = [9, 11, 13, 15];
 
 type Props = {
   value: string;
   onChange: (iso: string) => void;
+  bookedAt?: string[];
 };
 
 function startOfDay(date: Date) {
@@ -40,7 +41,7 @@ function formatDate(date: Date) {
   });
 }
 
-export function CalendarPicker({ value, onChange }: Props) {
+export function CalendarPicker({ value, onChange, bookedAt = [] }: Props) {
   const selected = value ? new Date(value) : null;
   const [visibleMonth, setVisibleMonth] = useState(() => selected ?? new Date());
   const [draftDate, setDraftDate] = useState<Date | null>(null);
@@ -78,17 +79,23 @@ export function CalendarPicker({ value, onChange }: Props) {
   function pickHour(hourValue: string) {
     const day = draftDate ?? selected;
     if (!day || !hourValue) return;
+    const hour = Number(hourValue);
+    if (isDropOffTaken(bookedAt, day, hour)) return;
     const next = new Date(day);
-    next.setHours(Number(hourValue), 0, 0, 0);
+    next.setHours(hour, 0, 0, 0);
     onChange(next.toISOString());
     setTimeOpen(false);
   }
 
   const monthLabel = visibleMonth.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-  const timeOptions = DROP_OFF_HOURS.map((hour) => ({
-    label: formatHour(hour),
-    value: String(hour),
-  }));
+  const timeOptions = DROP_OFF_HOURS.map((hour) => {
+    const taken = highlight ? isDropOffTaken(bookedAt, highlight, hour) : false;
+    return {
+      label: formatHour(hour),
+      value: String(hour),
+      disabled: taken,
+    };
+  });
 
   return (
     <View style={styles.wrap}>
