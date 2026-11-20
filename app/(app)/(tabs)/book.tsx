@@ -5,8 +5,17 @@ import { Screen } from '@/components/ui/Screen';
 import { Select } from '@/components/ui/Select';
 import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
-import { serviceTypes } from '@/data/services';
-import { vehicleLabel } from '@/lib/format';
+import {
+  SERVICE_GROUP_OPTIONS,
+  serviceGroupForPowertrain,
+  servicesForGroup,
+} from '@/data/services';
+import {
+  evTypeForModel,
+  MAKE_OPTIONS,
+  modelsForMake,
+  yearsForModel,
+} from '@/lib/vehicle-catalog';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
@@ -70,9 +79,14 @@ function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void 
 }
 
 export default function BookScreen() {
-  const { vehicles, selectedVehicle, bookAppointment } = useApp();
+  const { vehicles, selectedVehicle, bookAppointment, addVehicle } = useApp();
   const slots = useMemo(upcomingSlots, []);
-  const [vehicleId, setVehicleId] = useState(selectedVehicle?.id ?? '');
+  const [make, setMake] = useState(selectedVehicle?.make ?? '');
+  const [model, setModel] = useState(selectedVehicle?.model ?? '');
+  const [year, setYear] = useState(selectedVehicle ? String(selectedVehicle.year) : '');
+  const [serviceGroup, setServiceGroup] = useState(
+    selectedVehicle ? serviceGroupForPowertrain(selectedVehicle.evType) : '',
+  );
   const [serviceTypeId, setServiceTypeId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
   const [notes, setNotes] = useState('');
@@ -81,16 +95,20 @@ export default function BookScreen() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (!vehicleId && selectedVehicle?.id) {
-      setVehicleId(selectedVehicle.id);
+    if (!make && selectedVehicle) {
+      setMake(selectedVehicle.make);
+      setModel(selectedVehicle.model);
+      setYear(String(selectedVehicle.year));
+      setServiceGroup(serviceGroupForPowertrain(selectedVehicle.evType));
     }
-  }, [selectedVehicle, vehicleId]);
+  }, [make, selectedVehicle]);
 
-  const vehicleOptions = vehicles.map((vehicle) => ({
-    label: vehicleLabel(vehicle),
-    value: vehicle.id,
+  const modelOptions = modelsForMake(make).map((item) => ({ label: item.name, value: item.name }));
+  const yearOptions = yearsForModel(make, model).map((item) => ({
+    label: String(item),
+    value: String(item),
   }));
-  const serviceOptions = serviceTypes.map((service) => ({
+  const serviceOptions = servicesForGroup(serviceGroup).map((service) => ({
     label: service.name,
     value: service.id,
   }));
@@ -98,6 +116,20 @@ export default function BookScreen() {
     label: slot.label,
     value: slot.iso,
   }));
+
+  function onMakeChange(next: string) {
+    setMake(next);
+    setModel('');
+    setYear('');
+    setServiceTypeId('');
+  }
+
+  function onModelChange(next: string) {
+    setModel(next);
+    setYear('');
+    setServiceTypeId('');
+    setServiceGroup(serviceGroupForPowertrain(evTypeForModel(make, next)));
+  }
 
   async function addMedia(kind: MediaKind) {
     setError('');
@@ -121,8 +153,9 @@ export default function BookScreen() {
 
   async function onSubmit() {
     setError('');
-    if (!vehicleId) {
-      setError('Choose a vehicle.');
+    const parsedYear = Number(year);
+    if (!make || !model || !parsedYear) {
+      setError('Choose make, model, and year.');
       return;
     }
     if (!serviceTypeId) {
@@ -135,8 +168,21 @@ export default function BookScreen() {
     }
     setLoading(true);
     try {
+      let vehicle = vehicles.find(
+        (item) => item.make === make && item.model === model && item.year === parsedYear,
+      );
+      if (!vehicle) {
+        vehicle = await addVehicle({
+          vin: '',
+          year: parsedYear,
+          make,
+          model,
+          mileage: 0,
+          evType: evTypeForModel(make, model) ?? 'ice',
+        });
+      }
       const appointment = await bookAppointment({
-        vehicleId,
+        vehicleId: vehicle.id,
         serviceTypeId,
         scheduledAt,
         notes,
@@ -157,23 +203,46 @@ export default function BookScreen() {
       <Text style={styles.subtitle}>Choose a vehicle, service, and drop-off window.</Text>
 
       <View style={styles.form}>
-        {vehicles.length === 0 ? (
-          <Button label="Add a vehicle first" onPress={() => router.push('/(app)/vehicle/add')} />
-        ) : (
-          <Select
-            label="Vehicle"
-            value={vehicleId}
-            options={vehicleOptions}
-            onChange={setVehicleId}
-            placeholder="Select vehicle"
-          />
-        )}
+        <Select
+          label="Make"
+          value={make}
+          options={MAKE_OPTIONS}
+          onChange={onMakeChange}
+          placeholder="Select make"
+        />
+        <Select
+          label="Model"
+          value={model}
+          options={modelOptions}
+          onChange={onModelChange}
+          placeholder={make ? 'Select model' : 'Select make first'}
+          disabled={!make}
+        />
+        <Select
+          label="Year"
+          value={year}
+          options={yearOptions}
+          onChange={setYear}
+          placeholder={model ? 'Select year' : 'Select model first'}
+          disabled={!model}
+        />
+        <Select
+          label="Service type"
+          value={serviceGroup}
+          options={SERVICE_GROUP_OPTIONS}
+          onChange={(next) => {
+            setServiceGroup(next);
+            setServiceTypeId('');
+          }}
+          placeholder="Select service type"
+        />
         <Select
           label="Service"
           value={serviceTypeId}
           options={serviceOptions}
           onChange={setServiceTypeId}
-          placeholder="Select service"
+          placeholder={serviceGroup ? 'Select service' : 'Select service type first'}
+          disabled={!serviceGroup}
         />
         <Select
           label="Drop-off"
@@ -220,7 +289,7 @@ export default function BookScreen() {
         </View>
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
-        <Button label="Request appointment" onPress={onSubmit} loading={loading} disabled={!vehicles.length} />
+        <Button label="Request appointment" onPress={onSubmit} loading={loading} />
       </View>
       <Card style={{ marginTop: 12 }}>
         <Text style={styles.note}>

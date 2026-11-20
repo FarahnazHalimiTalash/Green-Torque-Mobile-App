@@ -199,14 +199,4 @@ export type CustomerSnapshot = {
   selectedVehicleId: string | null;
 };
 
-export const serviceTypes = [
-  { id: "svc_ev_diagnosis", name: "EV diagnosis" },
-  { id: "svc_hybrid_repair", name: "Hybrid repair" },
-  { id: "svc_hv_battery", name: "HV battery service" },
-  { id: "svc_12v", name: "12V battery" },
-  { id: "svc_thermal", name: "Coolant / thermal system" },
-  { id: "svc_charging", name: "Charging system" },
-  { id: "svc_brakes", name: "Brakes" },
-  { id: "svc_tires", name: "Tires" },
-  { id: "svc_pm", name: "Preventive maintenance" },
-];
+export { SERVICE_GROUPS, serviceTypes } from "./services";

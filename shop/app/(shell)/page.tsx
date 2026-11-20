@@ -6,7 +6,7 @@ import { useMemo, useState } from "react";
 import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
-import { serviceTypes } from "@/lib/types";
+import { SERVICE_GROUPS, serviceTypes } from "@/lib/types";
 
 export default function TodayPage() {
   const { state, act } = useShop();
@@ -132,7 +132,7 @@ function WalkInForm() {
   const [customerId, setCustomerId] = useState(state?.customers[0]?.id ?? "");
   const vehicles = state?.vehicles.filter((item) => item.customerId === customerId) ?? [];
   const [vehicleId, setVehicleId] = useState(vehicles[0]?.id ?? "");
-  const [serviceSummary, setServiceSummary] = useState("EV diagnosis");
+  const [serviceSummary, setServiceSummary] = useState("EV system diagnostics");
   const [bayId, setBayId] = useState("bay_1");
   const [technicianId, setTechnicianId] = useState("staff_luis");
 
@@ -167,8 +167,14 @@ function WalkInForm() {
         </Field>
         <Field label="Service">
           <select className={inputClass} value={serviceSummary} onChange={(event) => setServiceSummary(event.target.value)}>
-            {serviceTypes.map((service) => (
-              <option key={service.id} value={service.name}>{service.name}</option>
+            {SERVICE_GROUPS.map((group) => (
+              <optgroup key={group.id} label={group.label}>
+                {serviceTypes
+                  .filter((service) => service.category === group.id)
+                  .map((service) => (
+                    <option key={service.id} value={service.name}>{service.name}</option>
+                  ))}
+              </optgroup>
             ))}
           </select>
         </Field>
