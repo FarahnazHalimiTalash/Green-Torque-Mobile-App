@@ -1,5 +1,32 @@
+"use client";
+
+import { useRouter } from "next/navigation";
+
 import type { RepairStatus } from "@/lib/types";
 import { repairStatusCopy } from "@/lib/format";
+
+export function BackArrow({ fallback = "/" }: { fallback?: string }) {
+  const router = useRouter();
+
+  return (
+    <button
+      type="button"
+      aria-label="Go back"
+      onClick={() => {
+        if (typeof window !== "undefined" && window.history.length > 1) {
+          router.back();
+          return;
+        }
+        router.push(fallback);
+      }}
+      className="mb-3 inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#1E3D2E] bg-black text-[#3DDC84] hover:border-[#00b000]"
+    >
+      <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="2.4" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </button>
+  );
+}
 
 export function StatusBadge({ status }: { status: string }) {
   const tones: Record<string, string> = {

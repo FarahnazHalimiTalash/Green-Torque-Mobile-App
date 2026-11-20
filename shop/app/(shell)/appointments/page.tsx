@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Card, StatusBadge } from "@/components/ui";
+import { BackArrow, Button, Card, StatusBadge } from "@/components/ui";
 import { formatDateTime, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 import { serviceTypes } from "@/lib/types";
@@ -11,6 +11,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="grid gap-5">
+      <BackArrow />
       <h1 className="text-3xl font-extrabold">Appointments</h1>
       {state.appointments.map((appointment) => {
         const customer = state.customers.find((item) => item.id === appointment.customerId);

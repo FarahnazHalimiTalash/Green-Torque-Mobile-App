@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
+import { HeaderBack } from '@/components/ui/HeaderBack';
 import { Input } from '@/components/ui/Input';
 import { Screen } from '@/components/ui/Screen';
 import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function LoginScreen() {
   const { signIn } = useApp();
@@ -29,9 +30,7 @@ export default function LoginScreen() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()}>
-        <Text style={styles.back}>Back</Text>
-      </Pressable>
+      <HeaderBack fallback="/(auth)/welcome" style={styles.back} />
       <Text style={styles.title}>Sign in</Text>
       <Text style={styles.subtitle}>Use your Green Torque customer account.</Text>
       <View style={styles.form}>
@@ -58,10 +57,9 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   back: {
-    color: colors.primary,
-    marginTop: 12,
-    marginBottom: 24,
-    fontWeight: '600',
+    marginTop: 4,
+    marginBottom: 12,
+    marginLeft: -8,
   },
   title: {
     color: colors.text,

@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button';
+import { HeaderBack } from '@/components/ui/HeaderBack';
 import { Screen } from '@/components/ui/Screen';
 import { colors } from '@/constants/theme';
 import { router, Stack } from 'expo-router';
@@ -7,7 +8,13 @@ import { StyleSheet, Text } from 'react-native';
 export default function NotFoundScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: 'Not found', headerShown: true }} />
+      <Stack.Screen
+        options={{
+          title: 'Not found',
+          headerShown: true,
+          headerLeft: () => <HeaderBack fallback="/" />,
+        }}
+      />
       <Screen>
         <Text style={styles.title}>This screen doesn’t exist.</Text>
         <Button label="Go home" onPress={() => router.replace('/')} />

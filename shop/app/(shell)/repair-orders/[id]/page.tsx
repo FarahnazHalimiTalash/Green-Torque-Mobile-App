@@ -3,7 +3,7 @@
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
+import { BackArrow, Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 import type { RepairStatus } from "@/lib/types";
@@ -52,6 +52,7 @@ export default function RepairOrderPage() {
 
   return (
     <div className="grid gap-6">
+      <BackArrow fallback="/repair-orders" />
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
           <p className="text-xs font-extrabold tracking-[0.16em] text-[#8AA99A]">REPAIR ORDER</p>

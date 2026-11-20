@@ -1,3 +1,4 @@
+import { HeaderBack } from '@/components/ui/HeaderBack';
 import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { Redirect, Stack } from 'expo-router';
@@ -27,6 +28,8 @@ export default function AppLayout() {
         headerStyle: { backgroundColor: colors.bg },
         headerTitleStyle: { color: colors.text, fontWeight: '700' },
         headerShadowVisible: false,
+        headerBackButtonDisplayMode: 'minimal',
+        headerLeft: () => <HeaderBack />,
       }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="vehicle/add" options={{ headerShown: true, title: 'Add vehicle' }} />
