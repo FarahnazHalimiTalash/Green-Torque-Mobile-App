@@ -92,7 +92,7 @@ export default function BookScreen() {
   }
 
   return (
-    <Screen>
+    <Screen includeTopInset={false}>
       <Text style={styles.title}>Book appointment</Text>
       <Text style={styles.subtitle}>Choose a vehicle, service, and drop-off window.</Text>
 

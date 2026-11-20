@@ -11,7 +11,7 @@ export default function VehiclesScreen() {
   const { vehicles, selectedVehicle, selectVehicle } = useApp();
 
   return (
-    <Screen>
+    <Screen includeTopInset={false}>
       <Text style={styles.title}>Vehicles</Text>
       <Text style={styles.subtitle}>Add every EV or hybrid you service with Green Torque.</Text>
       <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} style={{ marginBottom: 18 }} />

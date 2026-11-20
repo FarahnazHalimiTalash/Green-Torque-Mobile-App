@@ -11,28 +11,13 @@ import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const { profile, selectedVehicle, activeRepair, unreadCount, signOut, liveWithShop } = useApp();
+  const { profile, selectedVehicle, activeRepair, signOut, liveWithShop } = useApp();
   const firstName = profile?.fullName.split(' ')[0] ?? 'there';
 
   return (
-    <Screen>
-      <View style={styles.top}>
-        <View>
-          <Text style={styles.brand}>GREEN TORQUE</Text>
-          <Text style={styles.shop}>Hybrid & EV Repair</Text>
-          {liveWithShop ? <Text style={styles.live}>Live with shop</Text> : null}
-        </View>
-        <Pressable style={styles.bell} onPress={() => router.push('/(app)/notifications')}>
-          <Ionicons name="notifications" size={20} color={colors.text} />
-          {unreadCount > 0 ? (
-            <View style={styles.dot}>
-              <Text style={styles.dotText}>{unreadCount}</Text>
-            </View>
-          ) : null}
-        </Pressable>
-      </View>
-
+    <Screen includeTopInset={false}>
       <Text style={styles.hello}>Hello, {firstName}</Text>
+      {liveWithShop ? <Text style={styles.live}>Live with shop</Text> : null}
 
       {selectedVehicle ? (
         <Card onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)}>
@@ -104,61 +89,19 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  top: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginTop: spacing.sm,
-    marginBottom: spacing.md,
-  },
-  brand: {
-    color: colors.primary,
-    letterSpacing: 2.4,
-    fontWeight: '800',
-    fontSize: 12,
-  },
-  shop: {
-    color: colors.textMuted,
-    marginTop: 2,
-  },
   live: {
     color: colors.primary,
-    marginTop: 4,
+    marginTop: 2,
+    marginBottom: spacing.md,
     fontSize: 12,
     fontWeight: '700',
-  },
-  bell: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    backgroundColor: colors.card,
-    borderWidth: 1,
-    borderColor: colors.border,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  dot: {
-    position: 'absolute',
-    top: 6,
-    right: 6,
-    minWidth: 16,
-    height: 16,
-    borderRadius: 8,
-    backgroundColor: colors.danger,
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 3,
-  },
-  dotText: {
-    color: colors.white,
-    fontSize: 10,
-    fontWeight: '800',
   },
   hello: {
     color: colors.text,
     fontSize: 28,
     fontWeight: '800',
-    marginBottom: spacing.lg,
+    marginTop: spacing.sm,
+    marginBottom: 4,
   },
   vehicleRow: {
     flexDirection: 'row',

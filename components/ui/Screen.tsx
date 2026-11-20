@@ -8,9 +8,10 @@ type Props = {
   children: ReactNode;
   scroll?: boolean;
   style?: ViewStyle;
+  includeTopInset?: boolean;
 };
 
-export function Screen({ children, scroll = true, style }: Props) {
+export function Screen({ children, scroll = true, style, includeTopInset = true }: Props) {
   const body = scroll ? (
     <ScrollView
       contentContainerStyle={[styles.content, style]}
@@ -23,7 +24,7 @@ export function Screen({ children, scroll = true, style }: Props) {
   );
 
   return (
-    <SafeAreaView style={styles.safe} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={styles.safe} edges={includeTopInset ? ['top', 'left', 'right'] : ['left', 'right']}>
       <View style={styles.shell}>{body}</View>
     </SafeAreaView>
   );

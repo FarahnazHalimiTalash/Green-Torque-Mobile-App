@@ -1,7 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Logo } from '@/components/ui/Logo';
 import { Screen } from '@/components/ui/Screen';
-import { colors, spacing } from '@/constants/theme';
+import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -28,9 +28,7 @@ export default function WelcomeScreen() {
   return (
     <Screen>
       <View style={styles.hero}>
-        <Logo />
-        <Text style={styles.kicker}>GREEN TORQUE</Text>
-        <Text style={styles.title}>Hybrid & EV Repair</Text>
+        <Logo height={96} width={360} />
         <Text style={styles.subtitle}>
           Book service, follow repair progress, and stay connected with the shop — from drop-off to pickup.
         </Text>
@@ -54,22 +52,9 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   hero: {
     alignItems: 'center',
-    paddingTop: 72,
+    paddingTop: 48,
     paddingBottom: 48,
-    gap: 10,
-  },
-  kicker: {
-    marginTop: spacing.md,
-    color: colors.primary,
-    letterSpacing: 3,
-    fontWeight: '800',
-    fontSize: 12,
-  },
-  title: {
-    color: colors.text,
-    fontSize: 32,
-    fontWeight: '800',
-    textAlign: 'center',
+    gap: 16,
   },
   subtitle: {
     color: colors.textMuted,

@@ -35,8 +35,14 @@ function LoginForm() {
   return (
     <main className="flex min-h-screen items-center justify-center p-6">
       <form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-[#1E3D2E] bg-[#12261C] p-8">
-        <p className="text-xs font-extrabold tracking-[0.2em] text-[#3DDC84]">GREEN TORQUE</p>
-        <h1 className="mt-2 text-3xl font-extrabold">Shop dashboard</h1>
+        <img
+          src="/logo.png"
+          alt="Green Torque Hybrid/EV Repair"
+          width={220}
+          height={58}
+          className="mb-5 h-14 w-auto"
+        />
+        <h1 className="text-3xl font-extrabold">Shop dashboard</h1>
         <p className="mt-2 mb-6 text-[#8AA99A]">For advisors and technicians. Customers use the mobile app.</p>
         <div className="grid gap-4">
           <Field label="Email">

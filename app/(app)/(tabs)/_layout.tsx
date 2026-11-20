@@ -1,16 +1,43 @@
+import { Logo } from '@/components/ui/Logo';
 import { colors } from '@/constants/theme';
+import { useApp } from '@/context/AppContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Tabs } from 'expo-router';
+import { router, Tabs } from 'expo-router';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 function tabColor(focused: boolean) {
   return focused ? colors.primary : colors.textDim;
+}
+
+function HeaderBell() {
+  const { unreadCount } = useApp();
+
+  return (
+    <Pressable style={styles.bell} onPress={() => router.push('/(app)/notifications')}>
+      <Ionicons name="notifications" size={20} color={colors.text} />
+      {unreadCount > 0 ? (
+        <View style={styles.dot}>
+          <Text style={styles.dotText}>{unreadCount}</Text>
+        </View>
+      ) : null}
+    </Pressable>
+  );
 }
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        headerShown: false,
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: '#000000',
+          borderBottomWidth: 3,
+          borderBottomColor: '#00b000',
+        },
+        headerShadowVisible: false,
+        headerTitleAlign: 'left',
+        headerTitle: () => <Logo height={44} width={168} />,
+        headerRight: () => <HeaderBell />,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
@@ -64,3 +91,32 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  bell: {
+    width: 42,
+    height: 42,
+    marginRight: 12,
+    borderRadius: 21,
+    backgroundColor: '#12261C',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  dot: {
+    position: 'absolute',
+    top: 6,
+    right: 6,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: colors.danger,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 3,
+  },
+  dotText: {
+    color: colors.white,
+    fontSize: 10,
+    fontWeight: '800',
+  },
+});

@@ -12,7 +12,7 @@ export default function HistoryScreen() {
   const history = [...repairOrders].sort((a, b) => +new Date(b.openedAt) - +new Date(a.openedAt));
 
   return (
-    <Screen>
+    <Screen includeTopInset={false}>
       <Text style={styles.title}>Service history</Text>
       <Text style={styles.subtitle}>Previous work, estimates, and completed visits.</Text>
       {history.length === 0 && appointments.length === 0 ? (
