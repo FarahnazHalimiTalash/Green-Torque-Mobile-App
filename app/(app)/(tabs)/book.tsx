@@ -2,14 +2,19 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Screen } from '@/components/ui/Screen';
+import { Select } from '@/components/ui/Select';
 import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { serviceTypes } from '@/data/services';
 import { vehicleLabel } from '@/lib/format';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { useEffect, useMemo, useState } from 'react';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { createElement, useEffect, useMemo, useState } from 'react';
+import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+
+type MediaKind = 'photo' | 'video';
+type MediaItem = { uri: string; kind: MediaKind };
 
 function upcomingSlots() {
   const slots: { label: string; iso: string }[] = [];
@@ -36,42 +41,96 @@ function upcomingSlots() {
   return slots.slice(0, 12);
 }
 
+function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void }) {
+  return (
+    <View>
+      {item.kind === 'photo' ? (
+        <Image source={{ uri: item.uri }} style={styles.photo} />
+      ) : Platform.OS === 'web' ? (
+        createElement('video', {
+          src: item.uri,
+          style: {
+            width: 72,
+            height: 72,
+            borderRadius: 10,
+            objectFit: 'cover',
+            backgroundColor: '#000',
+          },
+        })
+      ) : (
+        <View style={[styles.photo, styles.videoTile]}>
+          <Ionicons name="videocam" size={22} color={colors.primary} />
+        </View>
+      )}
+      <Pressable accessibilityLabel="Remove attachment" onPress={onRemove} style={styles.remove}>
+        <Ionicons name="close" size={12} color={colors.white} />
+      </Pressable>
+    </View>
+  );
+}
+
 export default function BookScreen() {
   const { vehicles, selectedVehicle, bookAppointment } = useApp();
   const slots = useMemo(upcomingSlots, []);
-  const [vehicleId, setVehicleId] = useState(selectedVehicle?.id ?? vehicles[0]?.id ?? '');
-  const [serviceTypeId, setServiceTypeId] = useState(serviceTypes[0].id);
-
-  useEffect(() => {
-    if (!vehicleId && (selectedVehicle?.id || vehicles[0]?.id)) {
-      setVehicleId(selectedVehicle?.id ?? vehicles[0]?.id ?? '');
-    }
-  }, [selectedVehicle, vehicleId, vehicles]);
-  const [scheduledAt, setScheduledAt] = useState(slots[0]?.iso ?? '');
+  const [vehicleId, setVehicleId] = useState(selectedVehicle?.id ?? '');
+  const [serviceTypeId, setServiceTypeId] = useState('');
+  const [scheduledAt, setScheduledAt] = useState('');
   const [notes, setNotes] = useState('');
-  const [photoUris, setPhotoUris] = useState<string[]>([]);
+  const [media, setMedia] = useState<MediaItem[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  async function addPhoto() {
+  useEffect(() => {
+    if (!vehicleId && selectedVehicle?.id) {
+      setVehicleId(selectedVehicle.id);
+    }
+  }, [selectedVehicle, vehicleId]);
+
+  const vehicleOptions = vehicles.map((vehicle) => ({
+    label: vehicleLabel(vehicle),
+    value: vehicle.id,
+  }));
+  const serviceOptions = serviceTypes.map((service) => ({
+    label: service.name,
+    value: service.id,
+  }));
+  const dropOffOptions = slots.map((slot) => ({
+    label: slot.label,
+    value: slot.iso,
+  }));
+
+  async function addMedia(kind: MediaKind) {
+    setError('');
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) {
-      setError('Photo access is needed to upload vehicle pictures.');
+      setError('Photo and video access is needed to attach files.');
       return;
     }
     const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ['images'],
+      mediaTypes: kind === 'photo' ? ['images'] : ['videos'],
       quality: 0.8,
+      videoMaxDuration: 60,
+      allowsEditing: false,
     });
     if (!result.canceled && result.assets[0]) {
-      setPhotoUris((current) => [...current, result.assets[0].uri]);
+      const asset = result.assets[0];
+      const pickedKind: MediaKind = asset.type === 'video' ? 'video' : kind;
+      setMedia((current) => [...current, { uri: asset.uri, kind: pickedKind }]);
     }
   }
 
   async function onSubmit() {
     setError('');
     if (!vehicleId) {
-      setError('Add a vehicle before booking.');
+      setError('Choose a vehicle.');
+      return;
+    }
+    if (!serviceTypeId) {
+      setError('Choose a service.');
+      return;
+    }
+    if (!scheduledAt) {
+      setError('Choose a drop-off time.');
       return;
     }
     setLoading(true);
@@ -81,7 +140,8 @@ export default function BookScreen() {
         serviceTypeId,
         scheduledAt,
         notes,
-        photoUris,
+        photoUris: media.filter((item) => item.kind === 'photo').map((item) => item.uri),
+        videoUris: media.filter((item) => item.kind === 'video').map((item) => item.uri),
       });
       router.push(`/(app)/appointment/${appointment.id}`);
     } catch (err) {
@@ -96,71 +156,72 @@ export default function BookScreen() {
       <Text style={styles.title}>Book appointment</Text>
       <Text style={styles.subtitle}>Choose a vehicle, service, and drop-off window.</Text>
 
-      <Text style={styles.label}>Vehicle</Text>
-      {vehicles.length === 0 ? (
-        <Button label="Add a vehicle first" onPress={() => router.push('/(app)/vehicle/add')} />
-      ) : (
-        <View style={styles.wrap}>
-          {vehicles.map((vehicle) => (
-            <Pressable
-              key={vehicle.id}
-              onPress={() => setVehicleId(vehicle.id)}
-              style={[styles.chip, vehicleId === vehicle.id && styles.chipOn]}>
-              <Text style={[styles.chipText, vehicleId === vehicle.id && styles.chipTextOn]}>
-                {vehicleLabel(vehicle)}
-              </Text>
-            </Pressable>
+      <View style={styles.form}>
+        {vehicles.length === 0 ? (
+          <Button label="Add a vehicle first" onPress={() => router.push('/(app)/vehicle/add')} />
+        ) : (
+          <Select
+            label="Vehicle"
+            value={vehicleId}
+            options={vehicleOptions}
+            onChange={setVehicleId}
+            placeholder="Select vehicle"
+          />
+        )}
+        <Select
+          label="Service"
+          value={serviceTypeId}
+          options={serviceOptions}
+          onChange={setServiceTypeId}
+          placeholder="Select service"
+        />
+        <Select
+          label="Drop-off"
+          value={scheduledAt}
+          options={dropOffOptions}
+          onChange={setScheduledAt}
+          placeholder="Select drop-off time"
+        />
+
+        <Input
+          label="What’s going on?"
+          value={notes}
+          onChangeText={setNotes}
+          placeholder="Noisy while charging, warning light, leak..."
+          autoCapitalize="sentences"
+          multiline
+        />
+
+        <Text style={styles.label}>Photos & videos</Text>
+        <View style={styles.photos}>
+          {media.map((item) => (
+            <MediaThumb
+              key={item.uri}
+              item={item}
+              onRemove={() => setMedia((current) => current.filter((entry) => entry.uri !== item.uri))}
+            />
           ))}
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add photo"
+            style={styles.addPhoto}
+            onPress={() => addMedia('photo')}>
+            <Ionicons name="image" size={18} color={colors.primary} />
+            <Text style={styles.addPhotoText}>Photo</Text>
+          </Pressable>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Add video"
+            style={styles.addPhoto}
+            onPress={() => addMedia('video')}>
+            <Ionicons name="videocam" size={18} color={colors.primary} />
+            <Text style={styles.addPhotoText}>Video</Text>
+          </Pressable>
         </View>
-      )}
 
-      <Text style={styles.label}>Service</Text>
-      <View style={styles.wrap}>
-        {serviceTypes.map((service) => (
-          <Pressable
-            key={service.id}
-            onPress={() => setServiceTypeId(service.id)}
-            style={[styles.chip, serviceTypeId === service.id && styles.chipOn]}>
-            <Text style={[styles.chipText, serviceTypeId === service.id && styles.chipTextOn]}>
-              {service.name}
-            </Text>
-          </Pressable>
-        ))}
+        {error ? <Text style={styles.error}>{error}</Text> : null}
+        <Button label="Request appointment" onPress={onSubmit} loading={loading} disabled={!vehicles.length} />
       </View>
-
-      <Text style={styles.label}>Drop-off time</Text>
-      <View style={styles.wrap}>
-        {slots.map((slot) => (
-          <Pressable
-            key={slot.iso}
-            onPress={() => setScheduledAt(slot.iso)}
-            style={[styles.chip, scheduledAt === slot.iso && styles.chipOn]}>
-            <Text style={[styles.chipText, scheduledAt === slot.iso && styles.chipTextOn]}>{slot.label}</Text>
-          </Pressable>
-        ))}
-      </View>
-
-      <Input
-        label="What’s going on?"
-        value={notes}
-        onChangeText={setNotes}
-        placeholder="Noisy while charging, warning light, leak..."
-        autoCapitalize="sentences"
-        multiline
-      />
-
-      <Text style={styles.label}>Pictures of the problem</Text>
-      <View style={styles.photos}>
-        {photoUris.map((uri) => (
-          <Image key={uri} source={{ uri }} style={styles.photo} />
-        ))}
-        <Pressable style={styles.addPhoto} onPress={addPhoto}>
-          <Text style={styles.addPhotoText}>+ Photo</Text>
-        </Pressable>
-      </View>
-
-      {error ? <Text style={styles.error}>{error}</Text> : null}
-      <Button label="Request appointment" onPress={onSubmit} loading={loading} disabled={!vehicleId} />
       <Card style={{ marginTop: 12 }}>
         <Text style={styles.note}>
           The shop will confirm the time. You’ll see status updates here after drop-off.
@@ -182,46 +243,41 @@ const styles = StyleSheet.create({
     marginBottom: 22,
     marginTop: 6,
   },
+  form: {
+    gap: 14,
+  },
   label: {
     color: colors.textMuted,
-    fontWeight: '700',
-    marginBottom: 10,
-    marginTop: 16,
-  },
-  wrap: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  chip: {
-    borderRadius: radius.pill,
-    borderWidth: 1,
-    borderColor: colors.border,
-    backgroundColor: colors.card,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-  },
-  chipOn: {
-    backgroundColor: colors.primaryMuted,
-    borderColor: colors.primary,
-  },
-  chipText: {
-    color: colors.textMuted,
+    fontSize: 13,
     fontWeight: '600',
-  },
-  chipTextOn: {
-    color: colors.primary,
   },
   photos: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: 8,
-    marginBottom: 16,
   },
   photo: {
     width: 72,
     height: 72,
     borderRadius: radius.sm,
+  },
+  videoTile: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  remove: {
+    position: 'absolute',
+    top: -6,
+    right: -6,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: colors.danger,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   addPhoto: {
     width: 72,
@@ -232,6 +288,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: colors.card,
+    gap: 4,
   },
   addPhotoText: {
     color: colors.primary,
@@ -240,7 +297,6 @@ const styles = StyleSheet.create({
   },
   error: {
     color: colors.danger,
-    marginBottom: 12,
   },
   note: {
     color: colors.textMuted,

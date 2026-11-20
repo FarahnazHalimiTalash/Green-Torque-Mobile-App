@@ -54,6 +54,7 @@ type BookInput = {
   scheduledAt: string;
   notes: string;
   photoUris: string[];
+  videoUris: string[];
 };
 
 type AppContextValue = {
@@ -338,6 +339,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         status: 'requested',
         notes: input.notes.trim(),
         photoUris: input.photoUris,
+        videoUris: input.videoUris,
         createdAt: new Date().toISOString(),
       };
       await updateAccount((current) => ({

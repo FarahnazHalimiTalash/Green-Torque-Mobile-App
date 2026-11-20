@@ -44,6 +44,7 @@ export function createDemoAccount(): AccountState {
         status: 'checked_in',
         notes: 'Cabin heat takes a long time and I noticed a sweet smell near the frunk.',
         photoUris: [],
+        videoUris: [],
         createdAt: new Date(Date.now() - 1000 * 60 * 60 * 48).toISOString(),
       },
     ],

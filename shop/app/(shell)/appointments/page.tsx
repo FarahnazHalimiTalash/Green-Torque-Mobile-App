@@ -23,6 +23,16 @@ export default function AppointmentsPage() {
                 <p className="font-bold">{customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"}</p>
                 <p className="text-sm text-[#8AA99A]">{service?.name} · {formatDateTime(appointment.scheduledAt)}</p>
                 {appointment.notes ? <p className="mt-2 text-sm text-[#8AA99A]">{appointment.notes}</p> : null}
+                {(appointment.photoUris?.length || appointment.videoUris?.length) ? (
+                  <div className="mt-3 flex flex-wrap gap-2">
+                    {(appointment.photoUris ?? []).map((uri) => (
+                      <img key={uri} src={uri} alt="Customer photo" className="h-16 w-16 rounded-lg object-cover" />
+                    ))}
+                    {(appointment.videoUris ?? []).map((uri) => (
+                      <video key={uri} src={uri} controls className="h-16 w-28 rounded-lg bg-black" />
+                    ))}
+                  </div>
+                ) : null}
               </div>
               <StatusBadge status={appointment.status} />
             </div>

@@ -51,6 +51,7 @@ export type Appointment = {
   status: AppointmentStatus;
   notes: string;
   photoUris: string[];
+  videoUris: string[];
   createdAt: string;
 };
 

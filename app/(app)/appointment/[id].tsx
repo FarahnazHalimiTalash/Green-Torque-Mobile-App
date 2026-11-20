@@ -6,8 +6,10 @@ import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { getServiceType } from '@/data/services';
 import { formatDateTime, vehicleLabel } from '@/lib/format';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useLocalSearchParams } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { createElement } from 'react';
+import { Image, Platform, StyleSheet, Text, View } from 'react-native';
 
 const steps = ['requested', 'confirmed', 'checked_in', 'completed'] as const;
 
@@ -27,6 +29,8 @@ export default function AppointmentDetailScreen() {
   }
 
   const currentIndex = steps.indexOf(appointment.status as (typeof steps)[number]);
+  const photos = appointment.photoUris ?? [];
+  const videos = appointment.videoUris ?? [];
 
   return (
     <Screen>
@@ -49,11 +53,31 @@ export default function AppointmentDetailScreen() {
           <Text style={styles.body}>{appointment.notes}</Text>
         </Card>
       ) : null}
-      {appointment.photoUris.length ? (
+      {photos.length || videos.length ? (
         <View style={styles.photos}>
-          {appointment.photoUris.map((uri) => (
+          {photos.map((uri) => (
             <Image key={uri} source={{ uri }} style={styles.photo} />
           ))}
+          {videos.map((uri) =>
+            Platform.OS === 'web' ? (
+              createElement('video', {
+                key: uri,
+                src: uri,
+                controls: true,
+                style: {
+                  width: 160,
+                  height: 88,
+                  borderRadius: 12,
+                  backgroundColor: '#000',
+                },
+              })
+            ) : (
+              <View key={uri} style={[styles.photo, styles.videoTile]}>
+                <Ionicons name="videocam" size={22} color={colors.primary} />
+                <Text style={styles.videoLabel}>Video</Text>
+              </View>
+            ),
+          )}
         </View>
       ) : null}
       {appointment.status === 'requested' || appointment.status === 'confirmed' ? (
@@ -115,5 +139,18 @@ const styles = StyleSheet.create({
     width: 88,
     height: 88,
     borderRadius: 12,
+  },
+  videoTile: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.card,
+    borderWidth: 1,
+    borderColor: colors.border,
+    gap: 4,
+  },
+  videoLabel: {
+    color: colors.primary,
+    fontSize: 11,
+    fontWeight: '700',
   },
 });

@@ -119,6 +119,7 @@ export async function shopBookAppointment(
     scheduledAt: string;
     notes: string;
     photoUris: string[];
+    videoUris: string[];
   },
 ) {
   return shopAction({

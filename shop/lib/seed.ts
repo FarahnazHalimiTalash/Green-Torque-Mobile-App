@@ -91,6 +91,7 @@ export function createShopState(): ShopState {
         status: "checked_in",
         notes: "Cabin heat takes a long time and I noticed a sweet smell near the frunk.",
         photoUris: [],
+        videoUris: [],
         createdAt: hoursAgo(48),
       },
       {
@@ -102,6 +103,7 @@ export function createShopState(): ShopState {
         status: "confirmed",
         notes: "Check engine light after highway driving. Hybrid battery fan sounds loud.",
         photoUris: [],
+        videoUris: [],
         createdAt: hoursAgo(10),
       },
     ],

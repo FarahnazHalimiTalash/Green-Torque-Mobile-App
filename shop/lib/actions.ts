@@ -73,7 +73,7 @@ function rebuildEstimate(state: ShopState, orderId: string) {
 export type Action =
   | { type: "signup_customer"; payload: { fullName: string; email: string; phone: string; password: string } }
   | { type: "add_vehicle"; payload: { customerId: string; vin: string; year: number; make: string; model: string; mileage: number; nickname?: string; evType: "ev" | "hybrid" | "ice" } }
-  | { type: "book_appointment"; payload: { customerId: string; vehicleId: string; serviceTypeId: string; scheduledAt: string; notes: string; photoUris: string[] } }
+  | { type: "book_appointment"; payload: { customerId: string; vehicleId: string; serviceTypeId: string; scheduledAt: string; notes: string; photoUris: string[]; videoUris: string[] } }
   | { type: "update_appointment"; payload: { id: string; status: ShopState["appointments"][number]["status"] } }
   | { type: "check_in"; payload: { appointmentId: string; technicianId?: string; bayId?: string } }
   | { type: "create_repair_order"; payload: { customerId: string; vehicleId: string; serviceSummary: string; technicianId?: string; bayId?: string; appointmentId?: string } }
@@ -133,6 +133,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
         status: "requested" as const,
         notes: action.payload.notes.trim(),
         photoUris: action.payload.photoUris,
+        videoUris: action.payload.videoUris,
         createdAt: new Date().toISOString(),
       };
       next.appointments.unshift(appointment);
