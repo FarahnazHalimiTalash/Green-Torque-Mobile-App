@@ -30,13 +30,13 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: '#000000',
+          backgroundColor: colors.bg,
           borderBottomWidth: 3,
           borderBottomColor: '#00b000',
         },
         headerShadowVisible: false,
         headerTitleAlign: 'left',
-        headerTitle: () => <Logo height={44} width={168} />,
+        headerTitle: () => <Logo height={44} width={168} clear />,
         headerRight: () => <HeaderBell />,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textDim,
