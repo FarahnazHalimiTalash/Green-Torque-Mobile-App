@@ -1,6 +1,6 @@
 "use client";
 
-import { BackArrow, Card } from "@/components/ui";
+import { Card } from "@/components/ui";
 import { vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 
@@ -10,7 +10,6 @@ export default function VehiclesPage() {
 
   return (
     <div className="grid gap-5">
-      <BackArrow />
       <h1 className="text-3xl font-extrabold">Vehicles</h1>
       {state.vehicles.map((vehicle) => {
         const customer = state.customers.find((item) => item.id === vehicle.customerId);

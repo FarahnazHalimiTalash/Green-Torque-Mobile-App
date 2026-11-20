@@ -1,19 +1,9 @@
-import { HeaderBack } from '@/components/ui/HeaderBack';
 import { Logo } from '@/components/ui/Logo';
 import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Tabs } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-
-function HeaderBrand() {
-  return (
-    <View style={styles.brand}>
-      <HeaderBack color={colors.primary} />
-      <Logo height={40} width={156} />
-    </View>
-  );
-}
 
 function tabColor(focused: boolean) {
   return focused ? colors.primary : colors.textDim;
@@ -46,10 +36,8 @@ export default function TabLayout() {
         },
         headerShadowVisible: false,
         headerTitleAlign: 'left',
-        headerTitle: '',
-        headerLeft: () => <HeaderBrand />,
+        headerTitle: () => <Logo height={44} width={168} />,
         headerRight: () => <HeaderBell />,
-        headerLeftContainerStyle: { paddingLeft: 4, minWidth: 220, overflow: 'visible' },
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
@@ -105,11 +93,6 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
-  brand: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: 4,
-  },
   bell: {
     width: 42,
     height: 42,

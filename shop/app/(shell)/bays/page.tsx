@@ -1,6 +1,6 @@
 "use client";
 
-import { BackArrow, Card } from "@/components/ui";
+import { Card } from "@/components/ui";
 import { useShop } from "@/lib/shop-context";
 
 export default function BaysPage() {
@@ -9,7 +9,6 @@ export default function BaysPage() {
 
   return (
     <div className="grid gap-5">
-      <BackArrow />
       <h1 className="text-3xl font-extrabold">Bays & cameras</h1>
       <p className="text-[#8AA99A]">
         Assign a camera to a bay, then assign the bay to a repair order. Customers never get a raw camera URL — only an authorized session for that order.

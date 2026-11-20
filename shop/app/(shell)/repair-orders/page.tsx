@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { BackArrow, Card, StatusBadge } from "@/components/ui";
+import { Card, StatusBadge } from "@/components/ui";
 import { formatDate, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 
@@ -12,7 +12,6 @@ export default function RepairOrdersPage() {
 
   return (
     <div className="grid gap-5">
-      <BackArrow />
       <h1 className="text-3xl font-extrabold">Repair orders</h1>
       {state.repairOrders.map((order) => {
         const customer = state.customers.find((item) => item.id === order.customerId);
