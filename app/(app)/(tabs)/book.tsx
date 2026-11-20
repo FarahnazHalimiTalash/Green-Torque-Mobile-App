@@ -1,4 +1,5 @@
 import { Button } from '@/components/ui/Button';
+import { CalendarPicker } from '@/components/ui/CalendarPicker';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Screen } from '@/components/ui/Screen';
@@ -19,36 +20,11 @@ import {
 import Ionicons from '@expo/vector-icons/Ionicons';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
-import { createElement, useEffect, useMemo, useState } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { Image, Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 
 type MediaKind = 'photo' | 'video';
 type MediaItem = { uri: string; kind: MediaKind };
-
-function upcomingSlots() {
-  const slots: { label: string; iso: string }[] = [];
-  const times = [9, 11, 13, 15];
-  for (let day = 1; day <= 7; day += 1) {
-    const date = new Date();
-    date.setDate(date.getDate() + day);
-    if (date.getDay() === 0) continue;
-    times.forEach((hour) => {
-      const slot = new Date(date);
-      slot.setHours(hour, 0, 0, 0);
-      slots.push({
-        iso: slot.toISOString(),
-        label: slot.toLocaleString('en-US', {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          hour: 'numeric',
-          minute: '2-digit',
-        }),
-      });
-    });
-  }
-  return slots.slice(0, 12);
-}
 
 function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void }) {
   return (
@@ -80,7 +56,6 @@ function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void 
 
 export default function BookScreen() {
   const { vehicles, selectedVehicle, bookAppointment, addVehicle } = useApp();
-  const slots = useMemo(upcomingSlots, []);
   const [make, setMake] = useState(selectedVehicle?.make ?? '');
   const [model, setModel] = useState(selectedVehicle?.model ?? '');
   const [year, setYear] = useState(selectedVehicle ? String(selectedVehicle.year) : '');
@@ -111,10 +86,6 @@ export default function BookScreen() {
   const serviceOptions = servicesForGroup(serviceGroup).map((service) => ({
     label: service.name,
     value: service.id,
-  }));
-  const dropOffOptions = slots.map((slot) => ({
-    label: slot.label,
-    value: slot.iso,
   }));
 
   function onMakeChange(next: string) {
@@ -244,13 +215,7 @@ export default function BookScreen() {
           placeholder={serviceGroup ? 'Select service' : 'Select service type first'}
           disabled={!serviceGroup}
         />
-        <Select
-          label="Drop-off"
-          value={scheduledAt}
-          options={dropOffOptions}
-          onChange={setScheduledAt}
-          placeholder="Select drop-off time"
-        />
+        <CalendarPicker value={scheduledAt} onChange={setScheduledAt} />
 
         <Input
           label="What’s going on?"
