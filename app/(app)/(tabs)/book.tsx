@@ -252,7 +252,8 @@ export default function BookScreen() {
           multiline
         />
 
-        <Text style={styles.label}>Photos & videos</Text>
+        <Text style={styles.label}>Photos & videos (optional)</Text>
+        <Text style={styles.hint}>You can request an appointment without attaching anything.</Text>
         <View style={styles.photos}>
           {media.map((item) => (
             <MediaThumb
@@ -310,6 +311,12 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     fontSize: 13,
     fontWeight: '600',
+  },
+  hint: {
+    color: colors.textDim,
+    fontSize: 13,
+    marginTop: -6,
+    lineHeight: 18,
   },
   photos: {
     flexDirection: 'row',
