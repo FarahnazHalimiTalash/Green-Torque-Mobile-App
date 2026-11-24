@@ -263,6 +263,11 @@ export function createShopState(): ShopState {
           respondedAt: daysAgo(86),
           lines: [{ id: "line_old", name: "Front brake service", amount: 420 }],
         },
+        pickupAcknowledgment: {
+          note: "I received my vehicle and everything looks alright after the brake service.",
+          signatureFullName: "Farahnaz",
+          signedAt: daysAgo(85),
+        },
       },
     ],
     conversations: [

@@ -36,6 +36,8 @@ export default function RepairOrderPage() {
   const [correctionSummary, setCorrectionSummary] = useState("");
   const [correctionStatus, setCorrectionStatus] = useState<RepairStatus | "">("");
   const [correctionReason, setCorrectionReason] = useState("");
+  const [correctionPickupNote, setCorrectionPickupNote] = useState("");
+  const [correctionPickupSignature, setCorrectionPickupSignature] = useState("");
   const [error, setError] = useState("");
 
   const order = state?.repairOrders.find((item) => item.id === id);
@@ -190,11 +192,15 @@ export default function RepairOrderPage() {
                 reason: correctionReason,
                 serviceSummary: correctionSummary || undefined,
                 status: correctionStatus || undefined,
+                pickupNote: correctionPickupNote || undefined,
+                pickupSignature: correctionPickupSignature || undefined,
               },
             });
             setCorrectionReason("");
             setCorrectionSummary("");
             setCorrectionStatus("");
+            setCorrectionPickupNote("");
+            setCorrectionPickupSignature("");
           }}
         >
           <Field label="Service summary">
@@ -212,12 +218,28 @@ export default function RepairOrderPage() {
               onChange={(event) => setCorrectionStatus(event.target.value as RepairStatus | "")}
             >
               <option value="">Keep current ({repairStatusCopy[order.status]})</option>
-              {([...repairTimeline, "cancelled"] as RepairStatus[]).map((step) => (
+              {([...repairTimeline, "picked_up", "cancelled"] as RepairStatus[]).map((step) => (
                 <option key={step} value={step}>
                   {repairStatusCopy[step]}
                 </option>
               ))}
             </select>
+          </Field>
+          <Field label="Customer pickup note">
+            <textarea
+              className={`${inputClass} min-h-20 py-3`}
+              value={correctionPickupNote}
+              onChange={(event) => setCorrectionPickupNote(event.target.value)}
+              placeholder={order.pickupAcknowledgment?.note ?? "Customer confirmation note"}
+            />
+          </Field>
+          <Field label="Customer signature full name">
+            <input
+              className={inputClass}
+              value={correctionPickupSignature}
+              onChange={(event) => setCorrectionPickupSignature(event.target.value)}
+              placeholder={order.pickupAcknowledgment?.signatureFullName ?? customer?.fullName ?? "Full name"}
+            />
           </Field>
           <Field label="Reason (required for audit)">
             <textarea
@@ -265,6 +287,11 @@ export default function RepairOrderPage() {
           <p className="text-[#8AA99A]">
             {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · opened {formatDateTime(order.openedAt)}
           </p>
+          {vehicle ? (
+            <Link href={`/vehicles/${vehicle.id}`} className="mt-2 inline-block text-sm font-semibold text-[#3DDC84]">
+              Open full vehicle service history
+            </Link>
+          ) : null}
           {closed ? (
             <p className="mt-2 text-sm font-semibold text-[#F5A524]">
               Closed history — customers cannot edit. Admin corrections are audited.
@@ -274,6 +301,25 @@ export default function RepairOrderPage() {
         <StatusBadge status={order.status} />
       </div>
       {error ? <p className="text-[#E85D4C]">{error}</p> : null}
+
+      <Card>
+        <h2 className="mb-2 font-bold">Customer pickup acknowledgment</h2>
+        {order.pickupAcknowledgment ? (
+          <div className="rounded-xl bg-[#0B1C14] p-4">
+            <p className="text-sm text-[#8AA99A]">Customer note (locked for customer; admin edits are audited)</p>
+            <p className="mt-2">{order.pickupAcknowledgment.note}</p>
+            <p className="mt-4 text-sm text-[#8AA99A]">Signature</p>
+            <p className="text-xl font-bold italic">{order.pickupAcknowledgment.signatureFullName}</p>
+            <p className="mt-2 text-xs text-[#8AA99A]">Signed {formatDateTime(order.pickupAcknowledgment.signedAt)}</p>
+          </div>
+        ) : (
+          <p className="text-sm text-[#F5A524]">
+            {order.status === "ready" || order.status === "picked_up"
+              ? "Waiting for the customer to submit a pickup note and full-name signature in the app."
+              : "When the vehicle is ready, the customer must sign a pickup acknowledgment before history is complete."}
+          </p>
+        )}
+      </Card>
 
       {subAdmin ? (
         <>

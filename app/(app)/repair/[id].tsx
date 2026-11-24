@@ -1,6 +1,7 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { EstimateDecisionBox } from '@/components/ui/EstimateDecisionBox';
+import { Input } from '@/components/ui/Input';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { StatusTimeline } from '@/components/ui/StatusTimeline';
@@ -12,11 +13,22 @@ import { formatDateTime, formatMoney } from '@/lib/format';
 import { shopMediaUrl } from '@/lib/shop-api';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, Image, StyleSheet, Text, View } from 'react-native';
 
 export default function RepairDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { repairOrders, respondToEstimate, payments, paymentMethods } = useApp();
+  const {
+    repairOrders,
+    respondToEstimate,
+    payments,
+    paymentMethods,
+    profile,
+    submitPickupAcknowledgment,
+  } = useApp();
+  const [pickupNote, setPickupNote] = useState('');
+  const [pickupSignature, setPickupSignature] = useState('');
+  const [submittingPickup, setSubmittingPickup] = useState(false);
   const order = repairOrders.find((item) => item.id === id);
 
   if (!order) {
@@ -27,13 +39,30 @@ export default function RepairDetailScreen() {
     );
   }
 
+  const repairOrderId = order.id;
   const closed = order.status === 'picked_up' || order.status === 'cancelled';
+  const acknowledgment = order.pickupAcknowledgment;
+  const needsPickupSign =
+    !acknowledgment && (order.status === 'ready' || order.status === 'picked_up');
   const visibleNotes = order.notes.filter((note) => note.visibleToCustomer);
   const visibleMedia = order.media.filter((item) => item.visibleToCustomer);
   const estimate = order.estimate;
   const diagnosis = order.diagnosisCharge;
   const due = dueChargesForOrder(order, payments);
   const paid = payments.filter((item) => item.repairOrderId === order.id);
+
+  async function submitPickup() {
+    setSubmittingPickup(true);
+    try {
+      await submitPickupAcknowledgment(repairOrderId, pickupNote, pickupSignature);
+      setPickupNote('');
+      setPickupSignature('');
+    } catch (error) {
+      Alert.alert('Could not sign', error instanceof Error ? error.message : 'Try again.');
+    } finally {
+      setSubmittingPickup(false);
+    }
+  }
 
   return (
     <Screen>
@@ -153,6 +182,57 @@ export default function RepairDetailScreen() {
         </Card>
       ) : null}
 
+      {needsPickupSign ? (
+        <Card>
+          <View style={styles.row}>
+            <Ionicons name="create-outline" size={20} color={colors.primary} />
+            <Text style={styles.label}>Pickup acknowledgment</Text>
+          </View>
+          <Text style={styles.body}>
+            When work is done, confirm you received your vehicle and that it is alright. Your note
+            and full-name signature are locked after you send them.
+          </Text>
+          <Input
+            label="Note"
+            value={pickupNote}
+            onChangeText={setPickupNote}
+            placeholder="I received my vehicle and everything looks alright."
+            multiline
+            autoCapitalize="sentences"
+          />
+          <Input
+            label="Signature (full name)"
+            value={pickupSignature}
+            onChangeText={setPickupSignature}
+            placeholder={profile?.fullName ?? 'Type your full name'}
+            autoCapitalize="words"
+          />
+          <Text style={styles.meta}>
+            Signature must match your account name{profile?.fullName ? `: ${profile.fullName}` : ''}.
+          </Text>
+          <Button
+            label="Sign and confirm pickup"
+            onPress={submitPickup}
+            loading={submittingPickup}
+            disabled={!pickupNote.trim() || !pickupSignature.trim()}
+          />
+        </Card>
+      ) : null}
+
+      {acknowledgment ? (
+        <Card>
+          <View style={styles.row}>
+            <Ionicons name="shield-checkmark-outline" size={20} color={colors.primary} />
+            <Text style={styles.label}>Signed pickup record</Text>
+          </View>
+          <Text style={styles.body}>{acknowledgment.note}</Text>
+          <Text style={styles.signature}>{acknowledgment.signatureFullName}</Text>
+          <Text style={styles.meta}>
+            Signed {formatDateTime(acknowledgment.signedAt)} · Locked — not editable
+          </Text>
+        </Card>
+      ) : null}
+
       {visibleMedia.length ? (
         <Card>
           <Text style={styles.label}>Work photos & videos</Text>
@@ -236,5 +316,12 @@ const styles = StyleSheet.create({
   mediaKind: {
     color: colors.primary,
     fontWeight: '700',
+  },
+  signature: {
+    color: colors.text,
+    fontSize: 22,
+    fontWeight: '700',
+    fontStyle: 'italic',
+    marginTop: 8,
   },
 });

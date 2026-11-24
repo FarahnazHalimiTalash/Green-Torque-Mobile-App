@@ -112,7 +112,13 @@ export type Action =
         status?: ShopState["repairOrders"][number]["status"] | ShopState["appointments"][number]["status"];
         notes?: string;
         scheduledAt?: string;
+        pickupNote?: string;
+        pickupSignature?: string;
       };
+    }
+  | {
+      type: "submit_pickup_acknowledgment";
+      payload: { repairOrderId: string; customerId: string; note: string; signatureFullName: string };
     }
   | { type: "add_note"; payload: { repairOrderId: string; body: string; visibleToCustomer: boolean } }
   | { type: "add_part"; payload: { repairOrderId: string; name: string; partNumber?: string; qty: number; unitCost: number } }
@@ -317,6 +323,7 @@ export function applyAction(state: ShopState, action: Action, actor: HistoryActo
         const before = JSON.stringify({
           status: order.status,
           serviceSummary: order.serviceSummary,
+          pickupAcknowledgment: order.pickupAcknowledgment ?? null,
         });
         if (action.payload.serviceSummary?.trim()) {
           order.serviceSummary = action.payload.serviceSummary.trim();
@@ -326,9 +333,22 @@ export function applyAction(state: ShopState, action: Action, actor: HistoryActo
           if (order.status === "ready") order.readyAt = order.readyAt ?? new Date().toISOString();
           if (order.status === "picked_up") order.pickedUpAt = order.pickedUpAt ?? new Date().toISOString();
         }
+        if (action.payload.pickupNote !== undefined || action.payload.pickupSignature !== undefined) {
+          const existing = order.pickupAcknowledgment;
+          const note = (action.payload.pickupNote ?? existing?.note ?? "").trim();
+          const signatureFullName = (action.payload.pickupSignature ?? existing?.signatureFullName ?? "").trim();
+          if (note.length < 5) throw new Error("Customer pickup note must be at least 5 characters.");
+          if (signatureFullName.length < 3) throw new Error("Customer signature full name is required.");
+          order.pickupAcknowledgment = {
+            note,
+            signatureFullName,
+            signedAt: existing?.signedAt ?? new Date().toISOString(),
+          };
+        }
         const after = JSON.stringify({
           status: order.status,
           serviceSummary: order.serviceSummary,
+          pickupAcknowledgment: order.pickupAcknowledgment ?? null,
         });
         if (before === after) throw new Error("No history changes to save.");
         recordAudit(next, {
@@ -528,6 +548,46 @@ export function applyAction(state: ShopState, action: Action, actor: HistoryActo
         order.customerId,
         "New problem found",
         `While working on repair #${order.number}, the shop found: ${summary} Estimate $${amount.toLocaleString()}. Approve or decline in the app.`,
+        `/(app)/repair/${order.id}`,
+      );
+      break;
+    }
+    case "submit_pickup_acknowledgment": {
+      if (actor) {
+        throw new Error("Only the customer can sign for vehicle pickup.");
+      }
+      const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
+      if (!order || order.customerId !== action.payload.customerId) {
+        throw new Error("Repair order not found.");
+      }
+      if (order.status !== "ready" && order.status !== "picked_up") {
+        throw new Error("Pickup acknowledgment is only available when the vehicle is ready.");
+      }
+      if (order.pickupAcknowledgment) {
+        throw new Error("Pickup acknowledgment is locked and cannot be edited.");
+      }
+      const note = action.payload.note.trim();
+      const signatureFullName = action.payload.signatureFullName.trim();
+      if (note.length < 10) {
+        throw new Error("Add a short note confirming you received the vehicle and that it is alright.");
+      }
+      if (signatureFullName.length < 3) {
+        throw new Error("Type your full name as your signature.");
+      }
+      const customer = next.customers.find((item) => item.id === order.customerId);
+      const normalize = (value: string) => value.replace(/\s+/g, " ").trim().toLowerCase();
+      if (!customer || normalize(signatureFullName) !== normalize(customer.fullName)) {
+        throw new Error("Signature must match your full name on the account.");
+      }
+      const signedAt = new Date().toISOString();
+      order.pickupAcknowledgment = { note, signatureFullName, signedAt };
+      order.status = "picked_up";
+      order.pickedUpAt = order.pickedUpAt ?? signedAt;
+      notify(
+        next,
+        order.customerId,
+        "Pickup confirmed",
+        `You signed for repair order #${order.number}. This acknowledgment is locked in your service history.`,
         `/(app)/repair/${order.id}`,
       );
       break;

@@ -198,3 +198,15 @@ export async function shopPayDue(customerId: string, repairOrderId: string, paym
     payload: { customerId, repairOrderId, paymentMethodId },
   });
 }
+
+export async function shopSubmitPickupAcknowledgment(
+  customerId: string,
+  repairOrderId: string,
+  note: string,
+  signatureFullName: string,
+) {
+  return shopAction({
+    type: 'submit_pickup_acknowledgment',
+    payload: { customerId, repairOrderId, note, signatureFullName },
+  });
+}

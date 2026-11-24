@@ -110,6 +110,12 @@ export type FoundProblem = {
   estimate: Estimate;
 };
 
+export type PickupAcknowledgment = {
+  note: string;
+  signatureFullName: string;
+  signedAt: string;
+};
+
 export type SavedPaymentMethod = {
   id: string;
   brand: string;
@@ -196,6 +202,7 @@ export type RepairOrder = {
   diagnosisCharge?: DiagnosisCharge;
   estimate?: Estimate;
   foundProblems?: FoundProblem[];
+  pickupAcknowledgment?: PickupAcknowledgment;
 };
 
 export type StaffAccount = Profile & {

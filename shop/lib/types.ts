@@ -124,6 +124,12 @@ export type ShopPayment = {
   methodLast4: string;
 };
 
+export type PickupAcknowledgment = {
+  note: string;
+  signatureFullName: string;
+  signedAt: string;
+};
+
 export type AuditEntry = {
   id: string;
   actorId: string;
@@ -204,6 +210,7 @@ export type RepairOrder = {
   diagnosisCharge?: DiagnosisCharge;
   estimate?: Estimate;
   foundProblems?: FoundProblem[];
+  pickupAcknowledgment?: PickupAcknowledgment;
 };
 
 export type StaffAccount = Profile & {

@@ -167,6 +167,11 @@ export function createDemoAccount(): AccountState {
           respondedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 86).toISOString(),
           lines: [{ id: 'line_old', name: 'Front brake service', amount: 420 }],
         },
+        pickupAcknowledgment: {
+          note: 'I received my vehicle and everything looks alright after the brake service.',
+          signatureFullName: 'Farahnaz',
+          signedAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 85).toISOString(),
+        },
       },
     ],
     messages: [

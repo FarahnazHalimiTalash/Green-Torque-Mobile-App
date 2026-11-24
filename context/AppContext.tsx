@@ -26,6 +26,7 @@ import {
   shopSavePaymentMethod,
   shopSendMessage,
   shopSignup,
+  shopSubmitPickupAcknowledgment,
 } from '@/lib/shop-api';
 import { dueChargesForOrder } from '@/lib/billing';
 import { tokenizeCard } from '@/lib/card';
@@ -105,6 +106,11 @@ type AppContextValue = {
   }) => Promise<void>;
   removePaymentMethod: (paymentMethodId: string) => Promise<void>;
   payDue: (repairOrderId: string, paymentMethodId: string) => Promise<void>;
+  submitPickupAcknowledgment: (
+    repairOrderId: string,
+    note: string,
+    signatureFullName: string,
+  ) => Promise<void>;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -403,6 +409,73 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [apiCustomerId, liveWithShop, updateAccount],
   );
 
+  const submitPickupAcknowledgment = useCallback(
+    async (repairOrderId: string, note: string, signatureFullName: string) => {
+      if (liveWithShop && apiCustomerId) {
+        const next = await shopSubmitPickupAcknowledgment(
+          apiCustomerId,
+          repairOrderId,
+          note,
+          signatureFullName,
+        );
+        if (next) setApiAccount(next);
+        return;
+      }
+      await updateAccount((current) => {
+        const order = current.repairOrders.find((item) => item.id === repairOrderId);
+        if (!order) throw new Error('Repair order not found.');
+        if (order.status !== 'ready' && order.status !== 'picked_up') {
+          throw new Error('Pickup acknowledgment is only available when the vehicle is ready.');
+        }
+        if (order.pickupAcknowledgment) {
+          throw new Error('Pickup acknowledgment is locked and cannot be edited.');
+        }
+        const trimmedNote = note.trim();
+        const trimmedSignature = signatureFullName.trim();
+        if (trimmedNote.length < 10) {
+          throw new Error('Add a short note confirming you received the vehicle and that it is alright.');
+        }
+        if (trimmedSignature.length < 3) {
+          throw new Error('Type your full name as your signature.');
+        }
+        const normalize = (value: string) => value.replace(/\s+/g, ' ').trim().toLowerCase();
+        if (normalize(trimmedSignature) !== normalize(current.profile.fullName)) {
+          throw new Error('Signature must match your full name on the account.');
+        }
+        const signedAt = new Date().toISOString();
+        return {
+          ...current,
+          repairOrders: current.repairOrders.map((item) =>
+            item.id === repairOrderId
+              ? {
+                  ...item,
+                  status: 'picked_up' as const,
+                  pickedUpAt: item.pickedUpAt ?? signedAt,
+                  pickupAcknowledgment: {
+                    note: trimmedNote,
+                    signatureFullName: trimmedSignature,
+                    signedAt,
+                  },
+                }
+              : item,
+          ),
+          notifications: [
+            {
+              id: createId('ntf'),
+              title: 'Pickup confirmed',
+              body: `You signed for repair order #${order.number}. This acknowledgment is locked in your service history.`,
+              createdAt: signedAt,
+              read: false,
+              href: `/(app)/repair/${repairOrderId}`,
+            },
+            ...current.notifications,
+          ],
+        };
+      });
+    },
+    [apiCustomerId, liveWithShop, updateAccount],
+  );
+
   const respondToEstimate = useCallback(
     async (
       repairOrderId: string,
@@ -673,6 +746,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       savePaymentMethod,
       removePaymentMethod,
       payDue,
+      submitPickupAcknowledgment,
     }),
     [
       account,
@@ -701,6 +775,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       signInDemo,
       signOut,
       signUp,
+      submitPickupAcknowledgment,
       unreadCount,
       upcomingAppointments,
       vehicles,
