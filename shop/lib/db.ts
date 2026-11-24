@@ -8,10 +8,18 @@ const dbPath = path.join(process.cwd(), "data", "db.json");
 
 let queue: Promise<unknown> = Promise.resolve();
 
+function normalizeState(state: ShopState): ShopState {
+  return {
+    ...state,
+    auditLog: state.auditLog ?? [],
+    payments: state.payments ?? [],
+  };
+}
+
 async function readFile(): Promise<ShopState> {
   try {
     const raw = await fs.readFile(dbPath, "utf8");
-    return JSON.parse(raw) as ShopState;
+    return normalizeState(JSON.parse(raw) as ShopState);
   } catch {
     const seeded = createShopState();
     await fs.mkdir(path.dirname(dbPath), { recursive: true });

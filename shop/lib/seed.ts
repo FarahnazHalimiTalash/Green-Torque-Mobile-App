@@ -316,6 +316,7 @@ export function createShopState(): ShopState {
       },
     ],
     payments: [],
+    auditLog: [],
     nextRepairNumber: 10453,
   };
 }

@@ -14,7 +14,9 @@ export default function HistoryScreen() {
   return (
     <Screen includeTopInset={false}>
       <Text style={styles.title}>Service history</Text>
-      <Text style={styles.subtitle}>Previous work, estimates, and completed visits.</Text>
+      <Text style={styles.subtitle}>
+        View-only record of previous work, estimates, and completed visits. History cannot be edited in the app.
+      </Text>
       {history.length === 0 && appointments.length === 0 ? (
         <Card>
           <Text style={styles.empty}>No history yet</Text>

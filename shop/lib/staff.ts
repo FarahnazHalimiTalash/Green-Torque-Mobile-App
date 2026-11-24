@@ -48,6 +48,10 @@ export function assertStaffAction(staff: { role: UserRole } | null, action: Acti
 
   if (staff.role === "admin") return;
 
+  if (action.type === "correct_history") {
+    throw new Error("Only admin can correct history.");
+  }
+
   if (staff.role === "sub_admin") {
     const media =
       action.type === "add_media" &&

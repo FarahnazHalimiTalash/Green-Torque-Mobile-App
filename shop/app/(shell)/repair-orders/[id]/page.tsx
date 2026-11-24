@@ -8,6 +8,7 @@ import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
 import { dueChargesForOrder } from "@/lib/billing";
 import { paymentMethodLabel } from "@/lib/card";
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline, vehicleLabel } from "@/lib/format";
+import { auditForTarget, isClosedRepair } from "@/lib/history";
 import { useShop } from "@/lib/shop-context";
 import { canUploadWorkMedia, isAdmin } from "@/lib/staff";
 import type { RepairStatus } from "@/lib/types";
@@ -32,6 +33,9 @@ export default function RepairOrderPage() {
   const [problemSummary, setProblemSummary] = useState("");
   const [problemLine, setProblemLine] = useState("");
   const [problemAmount, setProblemAmount] = useState("");
+  const [correctionSummary, setCorrectionSummary] = useState("");
+  const [correctionStatus, setCorrectionStatus] = useState<RepairStatus | "">("");
+  const [correctionReason, setCorrectionReason] = useState("");
   const [error, setError] = useState("");
 
   const order = state?.repairOrders.find((item) => item.id === id);
@@ -41,6 +45,8 @@ export default function RepairOrderPage() {
   const admin = Boolean(staff && isAdmin(staff.role));
   const canUpload = Boolean(staff && canUploadWorkMedia(staff.role));
   const subAdmin = staff?.role === "sub_admin";
+  const closed = order ? isClosedRepair(order) : false;
+  const auditEntries = state && order ? auditForTarget(state, "repair_order", order.id) : [];
 
   const totals = useMemo(() => {
     if (!order) return { parts: 0, labor: 0 };
@@ -120,11 +126,13 @@ export default function RepairOrderPage() {
     <Card>
       <h2 className="mb-4 font-bold">Work photos & videos</h2>
       <p className="mb-4 text-sm text-[#8AA99A]">
-        {subAdmin
-          ? "Upload photos and videos of the work. The customer sees them on this repair in their account. Messaging and other shop tools are admin-only."
-          : "Admin and sub-admin can upload photos and videos of the work. The customer sees them on this repair in their account."}
+        {closed
+          ? "Closed history is view-only for media. Admin can correct status and summary below with a reason."
+          : subAdmin
+            ? "Upload photos and videos of the work. The customer sees them on this repair in their account. Messaging and other shop tools are admin-only."
+            : "Admin and sub-admin can upload photos and videos of the work. The customer sees them on this repair in their account."}
       </p>
-      {canUpload ? (
+      {canUpload && !closed ? (
         <form className="grid gap-3" onSubmit={uploadWorkMedia}>
           <input
             className={inputClass}
@@ -143,9 +151,9 @@ export default function RepairOrderPage() {
             {uploading ? "Uploading…" : "Upload photo or video"}
           </Button>
         </form>
-      ) : (
+      ) : !closed ? (
         <p className="text-sm text-[#8AA99A]">Ask an admin or sub-admin to upload work photos and videos.</p>
-      )}
+      ) : null}
       <div className="mt-4 grid gap-4">
         {order.media.map((item) => (
           <div key={item.id} className="rounded-xl bg-[#0B1C14] p-3">
@@ -163,6 +171,91 @@ export default function RepairOrderPage() {
     </Card>
   );
 
+  const historyCorrectionCard =
+    closed && admin ? (
+      <Card>
+        <h2 className="mb-2 font-bold">History correction</h2>
+        <p className="mb-4 text-sm text-[#8AA99A]">
+          Closed repairs are locked. Admin can correct them only with a reason so every change stays in the audit trail.
+        </p>
+        <form
+          className="grid gap-3"
+          onSubmit={async (event) => {
+            event.preventDefault();
+            await run({
+              type: "correct_history",
+              payload: {
+                targetType: "repair_order",
+                targetId: order.id,
+                reason: correctionReason,
+                serviceSummary: correctionSummary || undefined,
+                status: correctionStatus || undefined,
+              },
+            });
+            setCorrectionReason("");
+            setCorrectionSummary("");
+            setCorrectionStatus("");
+          }}
+        >
+          <Field label="Service summary">
+            <input
+              className={inputClass}
+              value={correctionSummary}
+              onChange={(event) => setCorrectionSummary(event.target.value)}
+              placeholder={order.serviceSummary}
+            />
+          </Field>
+          <Field label="Status">
+            <select
+              className={inputClass}
+              value={correctionStatus}
+              onChange={(event) => setCorrectionStatus(event.target.value as RepairStatus | "")}
+            >
+              <option value="">Keep current ({repairStatusCopy[order.status]})</option>
+              {([...repairTimeline, "cancelled"] as RepairStatus[]).map((step) => (
+                <option key={step} value={step}>
+                  {repairStatusCopy[step]}
+                </option>
+              ))}
+            </select>
+          </Field>
+          <Field label="Reason (required for audit)">
+            <textarea
+              className={`${inputClass} min-h-20 py-3`}
+              value={correctionReason}
+              onChange={(event) => setCorrectionReason(event.target.value)}
+              placeholder="Why is this history being corrected?"
+              required
+            />
+          </Field>
+          <Button type="submit">Save correction with audit trail</Button>
+        </form>
+      </Card>
+    ) : null;
+
+  const auditCard = (
+    <Card>
+      <h2 className="mb-4 font-bold">Audit trail</h2>
+      {auditEntries.length === 0 ? (
+        <p className="text-sm text-[#8AA99A]">No history corrections recorded for this repair yet.</p>
+      ) : (
+        <div className="grid gap-3">
+          {auditEntries.map((entry) => (
+            <div key={entry.id} className="rounded-xl bg-[#0B1C14] p-3 text-sm">
+              <p className="font-bold">{entry.summary}</p>
+              <p className="mt-1 text-[#8AA99A]">
+                {entry.actorName} ({entry.actorRole}) · {formatDateTime(entry.createdAt)}
+              </p>
+              <p className="mt-2">Reason: {entry.reason}</p>
+              <p className="mt-1 text-xs text-[#8AA99A]">Before: {entry.before}</p>
+              <p className="text-xs text-[#8AA99A]">After: {entry.after}</p>
+            </div>
+          ))}
+        </div>
+      )}
+    </Card>
+  );
+
   return (
     <div className="grid gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
@@ -172,35 +265,54 @@ export default function RepairOrderPage() {
           <p className="text-[#8AA99A]">
             {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · opened {formatDateTime(order.openedAt)}
           </p>
+          {closed ? (
+            <p className="mt-2 text-sm font-semibold text-[#F5A524]">
+              Closed history — customers cannot edit. Admin corrections are audited.
+            </p>
+          ) : null}
         </div>
         <StatusBadge status={order.status} />
       </div>
       {error ? <p className="text-[#E85D4C]">{error}</p> : null}
 
-      {subAdmin ? mediaCard : (
+      {subAdmin ? (
+        <>
+          {mediaCard}
+          {closed ? auditCard : null}
+        </>
+      ) : (
         <div className="grid gap-6 xl:grid-cols-[1.2fr_0.8fr]">
           <div className="grid gap-6">
+            {historyCorrectionCard}
+            {closed ? auditCard : null}
             <Card>
               <h2 className="mb-4 font-bold">Status and assignment</h2>
-              <div className="mb-4 flex flex-wrap gap-2">
-                {repairTimeline.map((step, index) => (
-                  <button
-                    key={step}
-                    onClick={() => run({ type: "update_repair_order", payload: { id: order.id, status: step } })}
-                    className={`rounded-full px-3 py-1 text-sm ${index === currentIndex ? "bg-[#F5A524] text-[#07140F] font-bold" : index < currentIndex ? "bg-[#3DDC84]/20 text-[#3DDC84]" : "bg-white/5 text-[#8AA99A]"}`}
-                  >
-                    {repairStatusCopy[step as RepairStatus]}
-                  </button>
-                ))}
-                <Button variant="secondary" onClick={() => run({ type: "update_repair_order", payload: { id: order.id, status: "picked_up" } })}>
-                  Mark picked up
-                </Button>
-              </div>
+              {closed ? (
+                <p className="mb-4 text-sm text-[#8AA99A]">
+                  Status is locked. Use History correction above to change closed records.
+                </p>
+              ) : (
+                <div className="mb-4 flex flex-wrap gap-2">
+                  {repairTimeline.map((step, index) => (
+                    <button
+                      key={step}
+                      onClick={() => run({ type: "update_repair_order", payload: { id: order.id, status: step } })}
+                      className={`rounded-full px-3 py-1 text-sm ${index === currentIndex ? "bg-[#F5A524] text-[#07140F] font-bold" : index < currentIndex ? "bg-[#3DDC84]/20 text-[#3DDC84]" : "bg-white/5 text-[#8AA99A]"}`}
+                    >
+                      {repairStatusCopy[step as RepairStatus]}
+                    </button>
+                  ))}
+                  <Button variant="secondary" onClick={() => run({ type: "update_repair_order", payload: { id: order.id, status: "picked_up" } })}>
+                    Mark picked up
+                  </Button>
+                </div>
+              )}
               <div className="grid gap-3 md:grid-cols-3">
                 <Field label="Technician">
                   <select
                     className={inputClass}
                     value={order.assignedTechnicianId ?? ""}
+                    disabled={closed}
                     onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, assignedTechnicianId: event.target.value } })}
                   >
                     <option value="">Unassigned</option>
@@ -213,6 +325,7 @@ export default function RepairOrderPage() {
                   <select
                     className={inputClass}
                     value={order.assignedSubAdminId ?? ""}
+                    disabled={closed}
                     onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, assignedSubAdminId: event.target.value } })}
                   >
                     <option value="">Unassigned</option>
@@ -225,6 +338,7 @@ export default function RepairOrderPage() {
                   <select
                     className={inputClass}
                     value={order.bayId ?? ""}
+                    disabled={closed}
                     onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, bayId: event.target.value } })}
                   >
                     <option value="">Unassigned</option>
@@ -250,7 +364,7 @@ export default function RepairOrderPage() {
               ) : (
                 <p className="mb-4 text-sm text-[#F5A524]">No diagnosis charge has been sent yet.</p>
               )}
-              {admin ? (
+              {admin && !closed ? (
                 <form
                   className="grid gap-3"
                   onSubmit={async (event) => {
@@ -286,21 +400,23 @@ export default function RepairOrderPage() {
                   </div>
                 ))}
               </div>
-              <form
-                className="mt-4 grid gap-3"
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  await run({ type: "add_note", payload: { repairOrderId: order.id, body: note, visibleToCustomer } });
-                  setNote("");
-                }}
-              >
-                <textarea className={`${inputClass} min-h-24 py-3`} value={note} onChange={(event) => setNote(event.target.value)} placeholder="What did you find?" />
-                <label className="flex items-center gap-2 text-sm text-[#8AA99A]">
-                  <input type="checkbox" checked={visibleToCustomer} onChange={(event) => setVisibleToCustomer(event.target.checked)} />
-                  Visible to customer
-                </label>
-                <Button type="submit">Add note</Button>
-              </form>
+              {!closed ? (
+                <form
+                  className="mt-4 grid gap-3"
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    await run({ type: "add_note", payload: { repairOrderId: order.id, body: note, visibleToCustomer } });
+                    setNote("");
+                  }}
+                >
+                  <textarea className={`${inputClass} min-h-24 py-3`} value={note} onChange={(event) => setNote(event.target.value)} placeholder="What did you find?" />
+                  <label className="flex items-center gap-2 text-sm text-[#8AA99A]">
+                    <input type="checkbox" checked={visibleToCustomer} onChange={(event) => setVisibleToCustomer(event.target.checked)} />
+                    Visible to customer
+                  </label>
+                  <Button type="submit">Add note</Button>
+                </form>
+              ) : null}
             </Card>
 
             {mediaCard}
@@ -320,56 +436,60 @@ export default function RepairOrderPage() {
               <p className="mt-3 font-bold">
                 Total {formatMoney(totals.parts + totals.labor)}
               </p>
-              <form
-                className="mt-4 grid gap-2"
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  await run({
-                    type: "add_part",
-                    payload: {
-                      repairOrderId: order.id,
-                      name: partName,
-                      partNumber,
-                      qty: Number(qty),
-                      unitCost: Number(unitCost),
-                    },
-                  });
-                  setPartName("");
-                  setPartNumber("");
-                  setUnitCost("");
-                }}
-              >
-                <input className={inputClass} placeholder="Part name" value={partName} onChange={(event) => setPartName(event.target.value)} />
-                <div className="grid grid-cols-3 gap-2">
-                  <input className={inputClass} placeholder="PN" value={partNumber} onChange={(event) => setPartNumber(event.target.value)} />
-                  <input className={inputClass} placeholder="Qty" value={qty} onChange={(event) => setQty(event.target.value)} />
-                  <input className={inputClass} placeholder="Cost" value={unitCost} onChange={(event) => setUnitCost(event.target.value)} />
-                </div>
-                <Button type="submit" variant="secondary">Add part</Button>
-              </form>
-              <form
-                className="mt-3 grid gap-2"
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  await run({
-                    type: "add_labor",
-                    payload: {
-                      repairOrderId: order.id,
-                      description: laborName,
-                      hours: Number(hours),
-                      rate: Number(rate),
-                    },
-                  });
-                  setLaborName("");
-                }}
-              >
-                <input className={inputClass} placeholder="Labor description" value={laborName} onChange={(event) => setLaborName(event.target.value)} />
-                <div className="grid grid-cols-2 gap-2">
-                  <input className={inputClass} placeholder="Hours" value={hours} onChange={(event) => setHours(event.target.value)} />
-                  <input className={inputClass} placeholder="Rate" value={rate} onChange={(event) => setRate(event.target.value)} />
-                </div>
-                <Button type="submit" variant="secondary">Add labor</Button>
-              </form>
+              {!closed ? (
+                <>
+                  <form
+                    className="mt-4 grid gap-2"
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      await run({
+                        type: "add_part",
+                        payload: {
+                          repairOrderId: order.id,
+                          name: partName,
+                          partNumber,
+                          qty: Number(qty),
+                          unitCost: Number(unitCost),
+                        },
+                      });
+                      setPartName("");
+                      setPartNumber("");
+                      setUnitCost("");
+                    }}
+                  >
+                    <input className={inputClass} placeholder="Part name" value={partName} onChange={(event) => setPartName(event.target.value)} />
+                    <div className="grid grid-cols-3 gap-2">
+                      <input className={inputClass} placeholder="PN" value={partNumber} onChange={(event) => setPartNumber(event.target.value)} />
+                      <input className={inputClass} placeholder="Qty" value={qty} onChange={(event) => setQty(event.target.value)} />
+                      <input className={inputClass} placeholder="Cost" value={unitCost} onChange={(event) => setUnitCost(event.target.value)} />
+                    </div>
+                    <Button type="submit" variant="secondary">Add part</Button>
+                  </form>
+                  <form
+                    className="mt-3 grid gap-2"
+                    onSubmit={async (event) => {
+                      event.preventDefault();
+                      await run({
+                        type: "add_labor",
+                        payload: {
+                          repairOrderId: order.id,
+                          description: laborName,
+                          hours: Number(hours),
+                          rate: Number(rate),
+                        },
+                      });
+                      setLaborName("");
+                    }}
+                  >
+                    <input className={inputClass} placeholder="Labor description" value={laborName} onChange={(event) => setLaborName(event.target.value)} />
+                    <div className="grid grid-cols-2 gap-2">
+                      <input className={inputClass} placeholder="Hours" value={hours} onChange={(event) => setHours(event.target.value)} />
+                      <input className={inputClass} placeholder="Rate" value={rate} onChange={(event) => setRate(event.target.value)} />
+                    </div>
+                    <Button type="submit" variant="secondary">Add labor</Button>
+                  </form>
+                </>
+              ) : null}
               {order.estimate ? (
                 <div className="mt-4 grid gap-3">
                   <StatusBadge status={order.estimate.status} />
@@ -394,7 +514,7 @@ export default function RepairOrderPage() {
                   ) : null}
                 </div>
               ) : null}
-              {admin ? (
+              {admin && !closed ? (
                 <div className="mt-4">
                   <Button onClick={() => run({ type: "send_estimate", payload: { repairOrderId: order.id } })}>
                     Send further-service estimate to customer
@@ -406,7 +526,9 @@ export default function RepairOrderPage() {
             <Card>
               <h2 className="mb-4 font-bold">New problem found during work</h2>
               <p className="mb-4 text-sm text-[#8AA99A]">
-                If another issue appears while the vehicle is in the shop, only admin can review it, send a new cost estimate, and notify the customer. They can approve or decline that extra work.
+                {closed
+                  ? "Closed history is view-only for found problems."
+                  : "If another issue appears while the vehicle is in the shop, only admin can review it, send a new cost estimate, and notify the customer. They can approve or decline that extra work."}
               </p>
               {(order.foundProblems ?? []).map((problem) => (
                 <div key={problem.id} className="mb-4 rounded-xl bg-[#0B1C14] p-4">
@@ -429,7 +551,7 @@ export default function RepairOrderPage() {
                   ) : null}
                 </div>
               ))}
-              {admin ? (
+              {admin && !closed ? (
                 <form
                   className="grid gap-3"
                   onSubmit={async (event) => {
@@ -474,9 +596,9 @@ export default function RepairOrderPage() {
                   </Field>
                   <Button type="submit">Notify customer and send estimate</Button>
                 </form>
-              ) : (
+              ) : !closed ? (
                 <p className="text-sm text-[#8AA99A]">Ask an admin to review a newly found problem and send the customer an estimate.</p>
-              )}
+              ) : null}
             </Card>
 
             <Card>

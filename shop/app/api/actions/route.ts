@@ -15,7 +15,10 @@ export async function POST(request: Request) {
     const state = await updateDb((current) => {
       const staff = staffId ? current.staff.find((item) => item.id === staffId) ?? null : null;
       assertStaffAction(staff, action);
-      return applyAction(structuredClone(current), action);
+      const actor = staff
+        ? { id: staff.id, fullName: staff.fullName, role: staff.role }
+        : null;
+      return applyAction(structuredClone(current), action, actor);
     });
     const customerId =
       action.type === "signup_customer"

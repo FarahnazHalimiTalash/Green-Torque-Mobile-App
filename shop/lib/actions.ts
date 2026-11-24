@@ -1,6 +1,7 @@
 import { dueChargesForOrder } from "./billing";
 import { tokenizeCard } from "./card";
 import { dropOffSlotTaken } from "./drop-off";
+import { isClosedAppointment, isClosedRepair, recordAudit, type HistoryActor } from "./history";
 import { createId } from "./ids";
 import { customerSnapshot } from "./portal";
 import { serviceTypes, type ShopState } from "./types";
@@ -101,6 +102,18 @@ export type Action =
   | { type: "check_in"; payload: { appointmentId: string; technicianId?: string; bayId?: string } }
   | { type: "create_repair_order"; payload: { customerId: string; vehicleId: string; serviceSummary: string; technicianId?: string; bayId?: string; appointmentId?: string } }
   | { type: "update_repair_order"; payload: { id: string; status?: ShopState["repairOrders"][number]["status"]; assignedTechnicianId?: string; assignedSubAdminId?: string; bayId?: string; serviceSummary?: string } }
+  | {
+      type: "correct_history";
+      payload: {
+        targetType: "repair_order" | "appointment";
+        targetId: string;
+        reason: string;
+        serviceSummary?: string;
+        status?: ShopState["repairOrders"][number]["status"] | ShopState["appointments"][number]["status"];
+        notes?: string;
+        scheduledAt?: string;
+      };
+    }
   | { type: "add_note"; payload: { repairOrderId: string; body: string; visibleToCustomer: boolean } }
   | { type: "add_part"; payload: { repairOrderId: string; name: string; partNumber?: string; qty: number; unitCost: number } }
   | { type: "add_labor"; payload: { repairOrderId: string; description: string; hours: number; rate: number } }
@@ -115,8 +128,15 @@ export type Action =
   | { type: "remove_payment_method"; payload: { customerId: string; paymentMethodId: string } }
   | { type: "pay_due"; payload: { customerId: string; repairOrderId: string; paymentMethodId: string } };
 
-export function applyAction(state: ShopState, action: Action): ShopState {
+function assertOpenRepair(order: ShopState["repairOrders"][number], label: string) {
+  if (isClosedRepair(order)) {
+    throw new Error(`${label} on closed history is admin-only. Use History correction.`);
+  }
+}
+
+export function applyAction(state: ShopState, action: Action, actor: HistoryActor | null = null): ShopState {
   const next = state;
+  next.auditLog = next.auditLog ?? [];
 
   switch (action.type) {
     case "signup_customer": {
@@ -181,12 +201,19 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "update_appointment": {
       const appointment = next.appointments.find((item) => item.id === action.payload.id);
       if (!appointment) throw new Error("Appointment not found.");
+      if (!actor) {
+        if (action.payload.status !== "cancelled") {
+          throw new Error("Only the shop can update appointment status.");
+        }
+        if (appointment.status !== "requested" && appointment.status !== "confirmed") {
+          throw new Error("This appointment is history and cannot be changed by the customer.");
+        }
+      } else if (isClosedAppointment(appointment)) {
+        throw new Error("Closed appointment history can only be changed with History correction.");
+      }
       appointment.status = action.payload.status;
       if (action.payload.status === "confirmed") {
         notify(next, appointment.customerId, "Appointment confirmed", "Your drop-off time is confirmed.", `/(app)/appointment/${appointment.id}`);
-      }
-      if (action.payload.status === "cancelled") {
-        appointment.status = "cancelled";
       }
       break;
     }
@@ -195,17 +222,21 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       if (!appointment) throw new Error("Appointment not found.");
       appointment.status = "checked_in";
       const service = serviceTypes.find((item) => item.id === appointment.serviceTypeId);
-      applyAction(next, {
-        type: "create_repair_order",
-        payload: {
-          customerId: appointment.customerId,
-          vehicleId: appointment.vehicleId,
-          serviceSummary: service?.name ?? "Service",
-          technicianId: action.payload.technicianId,
-          bayId: action.payload.bayId,
-          appointmentId: appointment.id,
+      applyAction(
+        next,
+        {
+          type: "create_repair_order",
+          payload: {
+            customerId: appointment.customerId,
+            vehicleId: appointment.vehicleId,
+            serviceSummary: service?.name ?? "Service",
+            technicianId: action.payload.technicianId,
+            bayId: action.payload.bayId,
+            appointmentId: appointment.id,
+          },
         },
-      });
+        actor,
+      );
       break;
     }
     case "create_repair_order": {
@@ -243,6 +274,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "update_repair_order": {
       const order = next.repairOrders.find((item) => item.id === action.payload.id);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Repair updates");
       if (action.payload.serviceSummary) order.serviceSummary = action.payload.serviceSummary;
       if (action.payload.assignedTechnicianId !== undefined) {
         order.assignedTechnicianId = action.payload.assignedTechnicianId || undefined;
@@ -268,9 +300,88 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       }
       break;
     }
+    case "correct_history": {
+      if (!actor || actor.role !== "admin") {
+        throw new Error("Only admin can correct history.");
+      }
+      const reason = action.payload.reason.trim();
+      if (reason.length < 3) {
+        throw new Error("Enter a reason so the history change is traceable.");
+      }
+      if (action.payload.targetType === "repair_order") {
+        const order = next.repairOrders.find((item) => item.id === action.payload.targetId);
+        if (!order) throw new Error("Repair order not found.");
+        if (!isClosedRepair(order)) {
+          throw new Error("Use normal repair tools for open jobs. History correction is for closed records.");
+        }
+        const before = JSON.stringify({
+          status: order.status,
+          serviceSummary: order.serviceSummary,
+        });
+        if (action.payload.serviceSummary?.trim()) {
+          order.serviceSummary = action.payload.serviceSummary.trim();
+        }
+        if (action.payload.status) {
+          order.status = action.payload.status as ShopState["repairOrders"][number]["status"];
+          if (order.status === "ready") order.readyAt = order.readyAt ?? new Date().toISOString();
+          if (order.status === "picked_up") order.pickedUpAt = order.pickedUpAt ?? new Date().toISOString();
+        }
+        const after = JSON.stringify({
+          status: order.status,
+          serviceSummary: order.serviceSummary,
+        });
+        if (before === after) throw new Error("No history changes to save.");
+        recordAudit(next, {
+          actor,
+          targetType: "repair_order",
+          targetId: order.id,
+          summary: `Corrected repair order #${order.number}`,
+          reason,
+          before,
+          after,
+        });
+        break;
+      }
+      const appointment = next.appointments.find((item) => item.id === action.payload.targetId);
+      if (!appointment) throw new Error("Appointment not found.");
+      if (!isClosedAppointment(appointment)) {
+        throw new Error("Use normal appointment tools for open bookings. History correction is for closed records.");
+      }
+      const before = JSON.stringify({
+        status: appointment.status,
+        notes: appointment.notes,
+        scheduledAt: appointment.scheduledAt,
+      });
+      if (action.payload.status) {
+        appointment.status = action.payload.status as ShopState["appointments"][number]["status"];
+      }
+      if (action.payload.notes !== undefined) {
+        appointment.notes = action.payload.notes.trim();
+      }
+      if (action.payload.scheduledAt) {
+        appointment.scheduledAt = action.payload.scheduledAt;
+      }
+      const after = JSON.stringify({
+        status: appointment.status,
+        notes: appointment.notes,
+        scheduledAt: appointment.scheduledAt,
+      });
+      if (before === after) throw new Error("No history changes to save.");
+      recordAudit(next, {
+        actor,
+        targetType: "appointment",
+        targetId: appointment.id,
+        summary: "Corrected appointment history",
+        reason,
+        before,
+        after,
+      });
+      break;
+    }
     case "add_note": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Notes");
       order.notes.unshift({
         id: createId("note"),
         body: action.payload.body.trim(),
@@ -285,6 +396,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "add_part": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Parts");
       order.parts.push({
         id: createId("part"),
         name: action.payload.name.trim(),
@@ -298,6 +410,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "add_labor": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Labor");
       order.labor.push({
         id: createId("labor"),
         description: action.payload.description.trim(),
@@ -310,6 +423,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "add_media": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Media uploads");
       if (action.payload.kind === "video_clip" && !action.payload.uri) {
         throw new Error("Upload a work video first.");
       }
@@ -336,6 +450,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "send_diagnosis_charge": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Diagnosis charges");
       const amount = Number(action.payload.amount);
       if (!Number.isFinite(amount) || amount <= 0) {
         throw new Error("Enter a diagnosis amount.");
@@ -361,6 +476,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "send_estimate": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Estimates");
       rebuildEstimate(next, order.id, true);
       if (!order.estimate || order.estimate.amount <= 0) {
         throw new Error("Add further-service parts or labor before sending an estimate.");
@@ -380,6 +496,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "report_found_problem": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      assertOpenRepair(order, "Found-problem estimates");
       const summary = action.payload.summary.trim();
       const lineName = action.payload.lineName.trim() || "Additional repair";
       const amount = Number(action.payload.amount);
@@ -418,6 +535,9 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "respond_estimate": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      if (isClosedRepair(order)) {
+        throw new Error("This repair is closed history and cannot be changed.");
+      }
       const estimate = resolveEstimate(order, action.payload.estimateId);
       if (estimate.status !== "sent") {
         throw new Error("Estimate is not waiting for a decision.");

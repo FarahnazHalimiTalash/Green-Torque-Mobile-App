@@ -27,6 +27,7 @@ export default function RepairDetailScreen() {
     );
   }
 
+  const closed = order.status === 'picked_up' || order.status === 'cancelled';
   const visibleNotes = order.notes.filter((note) => note.visibleToCustomer);
   const visibleMedia = order.media.filter((item) => item.visibleToCustomer);
   const estimate = order.estimate;
@@ -42,6 +43,9 @@ export default function RepairDetailScreen() {
         {order.serviceSummary}
         {order.bayName ? ` · ${order.bayName}` : ''}
       </Text>
+      {closed ? (
+        <Text style={styles.meta}>Closed history — view only. Contact the shop if something looks wrong.</Text>
+      ) : null}
 
       <Card>
         <Text style={styles.label}>Status</Text>
@@ -98,7 +102,7 @@ export default function RepairDetailScreen() {
             </Text>
           ))}
           <EstimateDecisionBox status={estimate.status} />
-          {estimate.status === 'sent' ? (
+          {!closed && estimate.status === 'sent' ? (
             <View style={{ gap: 10, marginTop: 8 }}>
               <Button label="Approve estimate" onPress={() => respondToEstimate(order.id, 'approved', estimate.id)} />
               <Button label="Decline estimate" variant="danger" onPress={() => respondToEstimate(order.id, 'declined', estimate.id)} />
@@ -121,7 +125,7 @@ export default function RepairDetailScreen() {
             </Text>
           ))}
           <EstimateDecisionBox status={problem.estimate.status} variant="found_problem" />
-          {problem.estimate.status === 'sent' ? (
+          {!closed && problem.estimate.status === 'sent' ? (
             <View style={{ gap: 10, marginTop: 8 }}>
               <Button
                 label="Approve extra repair"

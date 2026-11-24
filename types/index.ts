@@ -133,6 +133,20 @@ export type ShopPayment = {
   methodLast4: string;
 };
 
+export type AuditEntry = {
+  id: string;
+  actorId: string;
+  actorName: string;
+  actorRole: UserRole;
+  targetType: 'repair_order' | 'appointment';
+  targetId: string;
+  summary: string;
+  reason: string;
+  before: string;
+  after: string;
+  createdAt: string;
+};
+
 export type PartLine = {
   id: string;
   name: string;
@@ -222,6 +236,7 @@ export type ShopState = {
   conversations: Conversation[];
   notifications: Array<AppNotification & { userId: string }>;
   payments: ShopPayment[];
+  auditLog: AuditEntry[];
   nextRepairNumber: number;
 };
 
