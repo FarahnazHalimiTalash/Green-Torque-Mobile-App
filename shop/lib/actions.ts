@@ -35,14 +35,11 @@ function getConversation(state: ShopState, customerId: string, repairOrderId?: s
   return conversation;
 }
 
-function resolveBayCamera(state: ShopState, bayId?: string, cameraId?: string) {
+function resolveBay(state: ShopState, bayId?: string) {
   const bay = state.bays.find((item) => item.id === bayId);
-  const camera = state.cameras.find((item) => item.id === (cameraId ?? bay?.cameraId));
   return {
     bayId: bay?.id,
-    cameraId: camera?.id,
     bayName: bay?.name,
-    cameraName: camera?.name,
   };
 }
 
@@ -78,7 +75,7 @@ export type Action =
   | { type: "update_appointment"; payload: { id: string; status: ShopState["appointments"][number]["status"] } }
   | { type: "check_in"; payload: { appointmentId: string; technicianId?: string; bayId?: string } }
   | { type: "create_repair_order"; payload: { customerId: string; vehicleId: string; serviceSummary: string; technicianId?: string; bayId?: string; appointmentId?: string } }
-  | { type: "update_repair_order"; payload: { id: string; status?: ShopState["repairOrders"][number]["status"]; assignedTechnicianId?: string; bayId?: string; cameraId?: string; serviceSummary?: string } }
+  | { type: "update_repair_order"; payload: { id: string; status?: ShopState["repairOrders"][number]["status"]; assignedTechnicianId?: string; bayId?: string; serviceSummary?: string } }
   | { type: "add_note"; payload: { repairOrderId: string; body: string; visibleToCustomer: boolean } }
   | { type: "add_part"; payload: { repairOrderId: string; name: string; partNumber?: string; qty: number; unitCost: number } }
   | { type: "add_labor"; payload: { repairOrderId: string; description: string; hours: number; rate: number } }
@@ -181,7 +178,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       break;
     }
     case "create_repair_order": {
-      const assignment = resolveBayCamera(next, action.payload.bayId);
+      const assignment = resolveBay(next, action.payload.bayId);
       const number = String(next.nextRepairNumber);
       next.nextRepairNumber += 1;
       const order = {
@@ -218,8 +215,8 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       if (action.payload.assignedTechnicianId !== undefined) {
         order.assignedTechnicianId = action.payload.assignedTechnicianId;
       }
-      if (action.payload.bayId || action.payload.cameraId) {
-        Object.assign(order, resolveBayCamera(next, action.payload.bayId ?? order.bayId, action.payload.cameraId ?? order.cameraId));
+      if (action.payload.bayId !== undefined) {
+        Object.assign(order, resolveBay(next, action.payload.bayId || undefined));
       }
       if (action.payload.status) {
         order.status = action.payload.status;
@@ -229,8 +226,6 @@ export function applyAction(state: ShopState, action: Action): ShopState {
         }
         if (action.payload.status === "picked_up") {
           order.pickedUpAt = new Date().toISOString();
-          order.cameraId = undefined;
-          order.cameraName = undefined;
         }
         if (action.payload.status === "in_progress") {
           notify(next, order.customerId, "Repair in progress", `Work has started on repair order #${order.number}.`, `/(app)/repair/${order.id}`);
@@ -280,6 +275,9 @@ export function applyAction(state: ShopState, action: Action): ShopState {
     case "add_media": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
+      if (action.payload.kind === "video_clip" && !action.payload.uri) {
+        throw new Error("Upload a work video first.");
+      }
       order.media.unshift({
         id: createId("media"),
         kind: action.payload.kind,
@@ -294,7 +292,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
           next,
           order.customerId,
           action.payload.kind === "video_clip" ? "New video update" : "New photo update",
-          action.payload.caption.trim(),
+          action.payload.caption.trim() || "Green Torque posted a work video on your repair.",
           `/(app)/repair/${order.id}`,
         );
       }

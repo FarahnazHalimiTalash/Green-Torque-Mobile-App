@@ -6,11 +6,12 @@ import { useMemo, useState } from "react";
 import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
+import { canUploadWorkVideo } from "@/lib/staff";
 import type { RepairStatus } from "@/lib/types";
 
 export default function RepairOrderPage() {
   const { id } = useParams<{ id: string }>();
-  const { state, act } = useShop();
+  const { state, staff, act } = useShop();
   const [note, setNote] = useState("");
   const [visibleToCustomer, setVisibleToCustomer] = useState(true);
   const [partName, setPartName] = useState("");
@@ -21,6 +22,8 @@ export default function RepairOrderPage() {
   const [hours, setHours] = useState("1");
   const [rate, setRate] = useState("140");
   const [clip, setClip] = useState("");
+  const [videoFile, setVideoFile] = useState<File | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
 
@@ -82,7 +85,7 @@ export default function RepairOrderPage() {
                 Mark picked up
               </Button>
             </div>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2">
               <Field label="Technician">
                 <select
                   className={inputClass}
@@ -104,18 +107,6 @@ export default function RepairOrderPage() {
                   <option value="">Unassigned</option>
                   {state.bays.map((bay) => (
                     <option key={bay.id} value={bay.id}>{bay.name}</option>
-                  ))}
-                </select>
-              </Field>
-              <Field label="Camera">
-                <select
-                  className={inputClass}
-                  value={order.cameraId ?? ""}
-                  onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, cameraId: event.target.value } })}
-                >
-                  <option value="">None</option>
-                  {state.cameras.map((camera) => (
-                    <option key={camera.id} value={camera.id}>{camera.name}</option>
                   ))}
                 </select>
               </Field>
@@ -152,32 +143,77 @@ export default function RepairOrderPage() {
           </Card>
 
           <Card>
-            <h2 className="mb-4 font-bold">Recorded update</h2>
-            <form
-              className="grid gap-3"
-              onSubmit={async (event) => {
-                event.preventDefault();
-                await run({
-                  type: "add_media",
-                  payload: {
-                    repairOrderId: order.id,
-                    kind: "video_clip",
-                    caption: clip,
-                    durationSec: 30,
-                    visibleToCustomer: true,
-                  },
-                });
-                setClip("");
-              }}
-            >
-              <textarea className={`${inputClass} min-h-20 py-3`} value={clip} onChange={(event) => setClip(event.target.value)} placeholder="We found the issue with your Model 3..." />
-              <Button type="submit">Send 30s video update</Button>
-            </form>
-            <div className="mt-4 grid gap-2">
+            <h2 className="mb-4 font-bold">Work videos</h2>
+            <p className="mb-4 text-sm text-[#8AA99A]">
+              Admin and sub-admin can upload a video of the work. The customer sees it on this repair in their account.
+            </p>
+            {staff && canUploadWorkVideo(staff.role) ? (
+              <form
+                className="grid gap-3"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  if (!videoFile) {
+                    setError("Choose a video file.");
+                    return;
+                  }
+                  setError("");
+                  setUploading(true);
+                  try {
+                    const form = new FormData();
+                    form.append("file", videoFile);
+                    const response = await fetch("/api/upload", { method: "POST", body: form });
+                    const data = (await response.json()) as { uri?: string; error?: string };
+                    if (!response.ok || !data.uri) {
+                      throw new Error(data.error ?? "Could not upload video.");
+                    }
+                    await run({
+                      type: "add_media",
+                      payload: {
+                        repairOrderId: order.id,
+                        kind: "video_clip",
+                        caption: clip,
+                        uri: data.uri,
+                        visibleToCustomer: true,
+                      },
+                    });
+                    setClip("");
+                    setVideoFile(null);
+                  } catch (err) {
+                    setError(err instanceof Error ? err.message : "Could not upload video.");
+                  } finally {
+                    setUploading(false);
+                  }
+                }}
+              >
+                <input
+                  className={inputClass}
+                  type="file"
+                  accept="video/*"
+                  onChange={(event) => setVideoFile(event.target.files?.[0] ?? null)}
+                />
+                {videoFile ? <p className="text-sm text-[#8AA99A]">{videoFile.name}</p> : null}
+                <textarea
+                  className={`${inputClass} min-h-20 py-3`}
+                  value={clip}
+                  onChange={(event) => setClip(event.target.value)}
+                  placeholder="What should the customer know about this video?"
+                />
+                <Button type="submit" disabled={uploading}>
+                  {uploading ? "Uploading…" : "Upload work video"}
+                </Button>
+              </form>
+            ) : (
+              <p className="text-sm text-[#8AA99A]">Ask an admin or sub-admin to upload the customer video.</p>
+            )}
+            <div className="mt-4 grid gap-4">
               {order.media.map((item) => (
-                <p key={item.id} className="text-sm text-[#8AA99A]">
-                  {item.kind.replaceAll("_", " ")} · {item.caption}
-                </p>
+                <div key={item.id} className="rounded-xl bg-[#0B1C14] p-3">
+                  {item.uri ? (
+                    <video src={item.uri} controls className="mb-2 w-full rounded-xl bg-black" />
+                  ) : null}
+                  <p className="text-sm">{item.caption || "Work video"}</p>
+                  <p className="mt-1 text-xs text-[#8AA99A]">{formatDateTime(item.createdAt)}</p>
+                </div>
               ))}
             </div>
           </Card>

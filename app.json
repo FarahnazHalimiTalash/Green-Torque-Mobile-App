@@ -45,7 +45,8 @@
           "photosPermission": "Allow Green Torque to access photos so you can upload pictures of your vehicle.",
           "cameraPermission": "Allow Green Torque to take photos of your vehicle."
         }
-      ]
+      ],
+      "expo-video"
     ],
     "experiments": {
       "typedRoutes": true

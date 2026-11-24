@@ -43,7 +43,7 @@ function LoginForm() {
           className="mb-5 h-14 w-auto"
         />
         <h1 className="text-3xl font-extrabold">Shop dashboard</h1>
-        <p className="mt-2 mb-6 text-[#8AA99A]">For advisors and technicians. Customers use the mobile app.</p>
+        <p className="mt-2 mb-6 text-[#8AA99A]">For admin, sub-admin, and technicians. Customers use the mobile app.</p>
         <div className="grid gap-4">
           <Field label="Email">
             <input className={inputClass} value={email} onChange={(event) => setEmail(event.target.value)} />
@@ -57,7 +57,7 @@ function LoginForm() {
           </Button>
         </div>
         <p className="mt-6 text-sm text-[#8AA99A]">
-          Demo: advisor@greentorque.demo or tech@greentorque.demo / shop123
+          Demo: advisor@greentorque.demo (admin), subadmin@greentorque.demo, or tech@greentorque.demo / shop123
         </p>
       </form>
     </main>

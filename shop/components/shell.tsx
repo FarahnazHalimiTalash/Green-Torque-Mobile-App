@@ -12,7 +12,7 @@ const links = [
   { href: "/repair-orders", label: "Repair orders" },
   { href: "/customers", label: "Customers" },
   { href: "/vehicles", label: "Vehicles" },
-  { href: "/bays", label: "Bays & cameras" },
+  { href: "/bays", label: "Bays" },
 ];
 
 export function Shell({ children }: { children: React.ReactNode }) {

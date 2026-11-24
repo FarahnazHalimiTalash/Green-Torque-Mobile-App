@@ -1,4 +1,4 @@
-export type UserRole = "customer" | "technician" | "advisor" | "admin";
+export type UserRole = "customer" | "technician" | "advisor" | "admin" | "sub_admin";
 export type EvType = "ev" | "hybrid" | "ice";
 
 export type AppointmentStatus =
@@ -18,7 +18,7 @@ export type RepairStatus =
   | "cancelled";
 
 export type EstimateStatus = "draft" | "sent" | "approved" | "declined" | "expired";
-export type MediaKind = "photo" | "video_clip" | "diagnostic_report" | "live_session";
+export type MediaKind = "photo" | "video_clip" | "diagnostic_report";
 
 export type Profile = {
   id: string;
@@ -105,13 +105,6 @@ export type LaborLine = {
 export type WorkBay = {
   id: string;
   name: string;
-  cameraId?: string;
-};
-
-export type Camera = {
-  id: string;
-  name: string;
-  isActive: boolean;
 };
 
 export type ShopMessage = {
@@ -146,10 +139,8 @@ export type RepairOrder = {
   customerId: string;
   assignedTechnicianId?: string;
   bayId?: string;
-  cameraId?: string;
   serviceSummary: string;
   bayName?: string;
-  cameraName?: string;
   status: RepairStatus;
   openedAt: string;
   readyAt?: string;
@@ -183,7 +174,6 @@ export type ShopState = {
   appointments: Appointment[];
   repairOrders: RepairOrder[];
   bays: WorkBay[];
-  cameras: Camera[];
   conversations: Conversation[];
   notifications: AppNotification[];
   nextRepairNumber: number;

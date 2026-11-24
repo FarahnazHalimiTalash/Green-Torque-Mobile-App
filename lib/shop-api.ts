@@ -2,6 +2,13 @@ import type { AccountState, CustomerSnapshot, EstimateStatus, Vehicle } from '@/
 
 export const SHOP_API_URL = process.env.EXPO_PUBLIC_API_URL ?? 'http://localhost:3000';
 
+export function shopMediaUrl(uri?: string) {
+  if (!uri) return '';
+  if (/^(https?:|blob:|data:|file:)/i.test(uri)) return uri;
+  const path = uri.startsWith('/') ? uri : `/${uri}`;
+  return `${SHOP_API_URL}${path}`;
+}
+
 type AuthResponse = {
   kind: 'customer';
   user: { id: string; email: string };

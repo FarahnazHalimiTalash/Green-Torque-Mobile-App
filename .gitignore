@@ -44,3 +44,5 @@ yarn-error.*
 # shop dashboard
 shop/.next/
 shop/data/db.json
+shop/public/uploads/*
+!shop/public/uploads/.gitkeep

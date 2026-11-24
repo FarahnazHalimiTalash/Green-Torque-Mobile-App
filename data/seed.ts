@@ -57,7 +57,6 @@ export function createDemoAccount(): AccountState {
         customerId,
         serviceSummary: 'Coolant / thermal system',
         bayName: 'Bay 3',
-        cameraName: 'Camera 3',
         status: 'in_progress',
         openedAt: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
         notes: [

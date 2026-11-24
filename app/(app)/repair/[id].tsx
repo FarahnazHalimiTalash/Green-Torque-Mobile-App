@@ -2,6 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { WorkVideo } from '@/components/ui/WorkVideo';
 import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline } from '@/lib/format';
@@ -79,20 +80,30 @@ export default function RepairDetailScreen() {
 
       {visibleMedia.length ? (
         <Card>
-          <Text style={styles.label}>Updates</Text>
+          <Text style={styles.label}>Work videos</Text>
           {visibleMedia.map((item) => (
             <View key={item.id} style={styles.media}>
-              <Text style={styles.mediaKind}>
-                {item.kind === 'video_clip' ? 'Video update' : item.kind.replaceAll('_', ' ')}
-                {item.durationSec ? ` · ${item.durationSec}s` : ''}
-              </Text>
-              <Text style={styles.body}>{item.caption}</Text>
+              {item.uri ? (
+                <WorkVideo uri={item.uri} caption={item.caption} />
+              ) : (
+                <>
+                  <Text style={styles.mediaKind}>
+                    {item.kind === 'video_clip' ? 'Video update' : item.kind.replaceAll('_', ' ')}
+                  </Text>
+                  <Text style={styles.body}>{item.caption}</Text>
+                </>
+              )}
+              <Text style={styles.meta}>{formatDateTime(item.createdAt)}</Text>
             </View>
           ))}
         </Card>
-      ) : null}
+      ) : (
+        <Card>
+          <Text style={styles.label}>Work videos</Text>
+          <Text style={styles.body}>The shop will post a video here when they record the work on your vehicle.</Text>
+        </Card>
+      )}
 
-      <Button label="View vehicle camera" variant="secondary" onPress={() => router.push('/(app)/live-view')} />
       <Button label="Message shop" variant="ghost" onPress={() => router.push('/(app)/messages')} />
     </Screen>
   );

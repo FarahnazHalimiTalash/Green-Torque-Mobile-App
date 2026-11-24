@@ -29,9 +29,18 @@ export function createShopState(): ShopState {
         fullName: "Maya Chen",
         email: "advisor@greentorque.demo",
         phone: "(555) 014-2210",
-        role: "advisor",
+        role: "admin",
         password: DEMO_STAFF_PASSWORD,
-        title: "Service advisor",
+        title: "Admin",
+      },
+      {
+        id: "staff_nora",
+        fullName: "Nora Patel",
+        email: "subadmin@greentorque.demo",
+        phone: "(555) 014-2212",
+        role: "sub_admin",
+        password: DEMO_STAFF_PASSWORD,
+        title: "Sub-admin",
       },
       {
         id: "staff_luis",
@@ -126,15 +135,10 @@ export function createShopState(): ShopState {
         createdAt: hoursAgo(9),
       },
     ],
-    cameras: [
-      { id: "cam_1", name: "Camera 1", isActive: true },
-      { id: "cam_2", name: "Camera 2", isActive: true },
-      { id: "cam_3", name: "Camera 3", isActive: true },
-    ],
     bays: [
-      { id: "bay_1", name: "Bay 1", cameraId: "cam_1" },
-      { id: "bay_2", name: "Bay 2", cameraId: "cam_2" },
-      { id: "bay_3", name: "Bay 3", cameraId: "cam_3" },
+      { id: "bay_1", name: "Bay 1" },
+      { id: "bay_2", name: "Bay 2" },
+      { id: "bay_3", name: "Bay 3" },
     ],
     repairOrders: [
       {
@@ -145,10 +149,8 @@ export function createShopState(): ShopState {
         customerId: "cust_farahnaz",
         assignedTechnicianId: "staff_luis",
         bayId: "bay_3",
-        cameraId: "cam_3",
         serviceSummary: "Coolant / thermal system",
         bayName: "Bay 3",
-        cameraName: "Camera 3",
         status: "in_progress",
         openedAt: hoursAgo(5),
         notes: [

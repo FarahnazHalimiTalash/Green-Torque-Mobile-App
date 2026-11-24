@@ -54,11 +54,6 @@ export default function HomeScreen() {
             {activeRepair.bayName ? ` · ${activeRepair.bayName}` : ''}
           </Text>
           <Button
-            label="View vehicle"
-            variant="secondary"
-            onPress={() => router.push('/(app)/live-view')}
-          />
-          <Button
             label="Repair details"
             onPress={() => router.push(`/(app)/repair/${activeRepair.id}`)}
           />

@@ -35,7 +35,6 @@ export default function AppLayout() {
       <Stack.Screen name="repair/[id]" options={{ headerShown: true, title: 'Repair details' }} />
       <Stack.Screen name="notifications" options={{ headerShown: true, title: 'Notifications' }} />
       <Stack.Screen name="messages" options={{ headerShown: true, title: 'Message shop' }} />
-      <Stack.Screen name="live-view" options={{ headerShown: true, title: 'View vehicle' }} />
     </Stack>
   );
 }
