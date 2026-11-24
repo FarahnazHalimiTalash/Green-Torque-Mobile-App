@@ -17,13 +17,13 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
-    marginTop: 8,
+    marginTop: 14,
   },
   title: {
-    color: colors.textMuted,
-    fontSize: 12,
+    color: colors.primaryDark,
+    fontSize: 13,
     fontWeight: '800',
-    letterSpacing: 1.4,
+    letterSpacing: 1.1,
   },
   action: {
     color: colors.primary,

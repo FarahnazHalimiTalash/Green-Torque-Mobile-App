@@ -29,8 +29,13 @@ const styles = StyleSheet.create({
     borderColor: colors.border,
     padding: spacing.lg,
     gap: 10,
+    shadowColor: '#0B1C14',
+    shadowOpacity: 0.06,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
   },
   pressed: {
-    opacity: 0.9,
+    opacity: 0.92,
   },
 });

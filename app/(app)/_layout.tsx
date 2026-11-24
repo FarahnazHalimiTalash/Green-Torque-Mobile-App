@@ -23,9 +23,9 @@ export default function AppLayout() {
       screenOptions={{
         headerShown: false,
         contentStyle: { backgroundColor: colors.bg },
-        headerTintColor: colors.primary,
-        headerStyle: { backgroundColor: colors.bg },
-        headerTitleStyle: { color: colors.text, fontWeight: '700' },
+        headerTintColor: colors.textOnDark,
+        headerStyle: { backgroundColor: colors.header },
+        headerTitleStyle: { color: colors.textOnDark, fontWeight: '700' },
         headerShadowVisible: false,
       }}>
       <Stack.Screen name="(tabs)" />

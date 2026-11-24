@@ -30,7 +30,7 @@ export default function RootLayout() {
   return (
     <AppProvider>
       <View style={{ flex: 1, backgroundColor: colors.bg }}>
-        <StatusBar style="light" />
+        <StatusBar style="dark" />
         <Stack
           screenOptions={{
             headerShown: false,

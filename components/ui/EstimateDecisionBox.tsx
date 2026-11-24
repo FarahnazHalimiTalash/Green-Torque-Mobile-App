@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
   },
   body: {
     color: colors.text,
-    lineHeight: 20,
+    lineHeight: 21,
+    fontSize: 15,
   },
 });

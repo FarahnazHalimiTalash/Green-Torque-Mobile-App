@@ -4,6 +4,7 @@ import { EstimateDecisionBox } from '@/components/ui/EstimateDecisionBox';
 import { Screen } from '@/components/ui/Screen';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { StatusTimeline } from '@/components/ui/StatusTimeline';
 import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
@@ -25,24 +26,23 @@ export default function HomeScreen() {
       {liveWithShop ? <Text style={styles.live}>Live with shop</Text> : null}
 
       {selectedVehicle ? (
-        <Card onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)}>
-          <View style={styles.vehicleRow}>
-            {selectedVehicle.photoUrl ? (
-              <Image source={{ uri: selectedVehicle.photoUrl }} style={styles.vehiclePhoto} />
-            ) : (
-              <View style={styles.vehiclePhotoFallback}>
-                <Ionicons name="car-sport" size={22} color={colors.primary} />
-              </View>
-            )}
-            <View style={{ flex: 1 }}>
-              <Text style={styles.vehicleKicker}>VEHICLE</Text>
-              <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
-              <Text style={styles.muted}>{formatMileage(selectedVehicle.mileage)}</Text>
+        <Card onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)} style={styles.vehicleCard}>
+          {selectedVehicle.photoUrl ? (
+            <Image source={{ uri: selectedVehicle.photoUrl }} style={styles.vehicleHero} />
+          ) : (
+            <View style={styles.vehicleHeroFallback}>
+              <Ionicons name="car-sport" size={56} color={colors.primary} />
             </View>
-          </View>
+          )}
+          <Text style={styles.vehicleKicker}>YOUR VEHICLE</Text>
+          <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
+          <Text style={styles.muted}>{formatMileage(selectedVehicle.mileage)}</Text>
         </Card>
       ) : (
         <Card>
+          <View style={styles.vehicleHeroFallback}>
+            <Ionicons name="car-sport-outline" size={48} color={colors.primary} />
+          </View>
           <Text style={styles.vehicleName}>Add your first vehicle</Text>
           <Text style={styles.muted}>VIN, year, make, model, and mileage.</Text>
           <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} />
@@ -57,16 +57,16 @@ export default function HomeScreen() {
           <Text style={styles.muted}>
             Repair Order #{activeRepair.number}
             {activeRepair.bayName ? ` · ${activeRepair.bayName}` : ''}
-            {activeRepair.diagnosisCharge?.status === 'sent'
-              ? ` · Diagnosis ${formatMoney(activeRepair.diagnosisCharge.amount)}`
-              : ''}
           </Text>
+          <StatusTimeline status={activeRepair.status} />
           {(activeRepair.foundProblems ?? [])
             .filter((item) => item.estimate.status === 'sent')
             .map((item) => (
               <EstimateDecisionBox key={item.id} status={item.estimate.status} variant="found_problem" />
             ))}
-          {activeRepair.estimate ? <EstimateDecisionBox status={activeRepair.estimate.status} /> : null}
+          {activeRepair.estimate?.status === 'sent' ? (
+            <EstimateDecisionBox status={activeRepair.estimate.status} />
+          ) : null}
           <Button
             label="Repair details"
             onPress={() => router.push(`/(app)/repair/${activeRepair.id}`)}
@@ -82,25 +82,30 @@ export default function HomeScreen() {
 
       <SectionHeader title="PAYMENT" />
       <Card onPress={() => router.push('/(app)/payments')}>
-        <Text style={styles.vehicleKicker}>PAYMENT METHOD</Text>
-        <Text style={styles.vehicleName}>{card ? paymentMethodLabel(card) : 'Add a payment method'}</Text>
-        <Text style={styles.muted}>
-          {due.length && activeRepair
-            ? `${formatMoney(dueTotal(due))} due on repair #${activeRepair.number}`
-            : 'Pay diagnosis and approved extra work from here.'}
-        </Text>
+        <View style={styles.row}>
+          <Ionicons name="card-outline" size={22} color={colors.primary} />
+          <View style={{ flex: 1 }}>
+            <Text style={styles.vehicleKicker}>PAYMENT METHOD</Text>
+            <Text style={styles.vehicleName}>{card ? paymentMethodLabel(card) : 'Add a payment method'}</Text>
+            <Text style={styles.muted}>
+              {due.length && activeRepair
+                ? `${formatMoney(dueTotal(due))} due on repair #${activeRepair.number}`
+                : 'Pay diagnosis and approved extra work from here.'}
+            </Text>
+          </View>
+        </View>
         <Button label={card ? 'Manage payment' : 'Add payment method'} onPress={() => router.push('/(app)/payments')} />
       </Card>
 
-      <SectionHeader title="APPOINTMENTS" />
-      <Button label="+ Book appointment" onPress={() => router.push('/(app)/(tabs)/book')} />
-
-      <SectionHeader title="HISTORY" />
-      <Button
-        label="View service history"
-        variant="secondary"
-        onPress={() => router.push('/(app)/(tabs)/history')}
-      />
+      <SectionHeader title="QUICK ACTIONS" />
+      <View style={styles.actions}>
+        <Button label="Book appointment" onPress={() => router.push('/(app)/(tabs)/book')} />
+        <Button
+          label="Service history"
+          variant="secondary"
+          onPress={() => router.push('/(app)/(tabs)/history')}
+        />
+      </View>
 
       <Pressable onPress={signOut} style={styles.signOut}>
         <Text style={styles.signOutText}>Sign out</Text>
@@ -114,33 +119,35 @@ const styles = StyleSheet.create({
     color: colors.primary,
     marginTop: 2,
     marginBottom: spacing.md,
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: '700',
   },
   hello: {
     color: colors.text,
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '800',
     marginTop: spacing.sm,
     marginBottom: 4,
   },
-  vehicleRow: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'center',
+  vehicleCard: {
+    overflow: 'hidden',
+    paddingTop: spacing.md,
   },
-  vehiclePhoto: {
-    width: 58,
-    height: 58,
+  vehicleHero: {
+    width: '100%',
+    height: 170,
     borderRadius: radius.md,
+    marginBottom: 8,
+    backgroundColor: colors.bgElevated,
   },
-  vehiclePhotoFallback: {
-    width: 58,
-    height: 58,
+  vehicleHeroFallback: {
+    width: '100%',
+    height: 140,
     borderRadius: radius.md,
     backgroundColor: colors.primaryMuted,
     alignItems: 'center',
     justifyContent: 'center',
+    marginBottom: 8,
   },
   vehicleKicker: {
     color: colors.textDim,
@@ -150,17 +157,26 @@ const styles = StyleSheet.create({
   },
   vehicleName: {
     color: colors.text,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
   },
   muted: {
     color: colors.textMuted,
-    lineHeight: 20,
+    lineHeight: 21,
+    fontSize: 15,
   },
   repairTitle: {
     color: colors.text,
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: '800',
+  },
+  row: {
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'flex-start',
+  },
+  actions: {
+    gap: 10,
   },
   signOut: {
     alignItems: 'center',

@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Screen } from '@/components/ui/Screen';
-import { colors, spacing } from '@/constants/theme';
+import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatMileage, vehicleLabel } from '@/lib/format';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function VehiclesScreen() {
   const { vehicles, selectedVehicle, selectVehicle } = useApp();
@@ -17,6 +18,9 @@ export default function VehiclesScreen() {
       <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} style={{ marginBottom: 18 }} />
       {vehicles.length === 0 ? (
         <Card>
+          <View style={styles.heroFallback}>
+            <Ionicons name="car-sport-outline" size={48} color={colors.primary} />
+          </View>
           <Text style={styles.empty}>No vehicles yet</Text>
           <Text style={styles.subtitle}>Start with VIN, year, make, model, and mileage.</Text>
         </Card>
@@ -26,6 +30,13 @@ export default function VehiclesScreen() {
             const selected = selectedVehicle?.id === vehicle.id;
             return (
               <Card key={vehicle.id} onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}>
+                {vehicle.photoUrl ? (
+                  <Image source={{ uri: vehicle.photoUrl }} style={styles.hero} />
+                ) : (
+                  <View style={styles.heroFallback}>
+                    <Ionicons name="car-sport" size={48} color={colors.primary} />
+                  </View>
+                )}
                 <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
                 <Text style={styles.meta}>
                   {vehicle.vin || 'VIN not added'} · {formatMileage(vehicle.mileage)}
@@ -55,7 +66,8 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginBottom: 18,
     marginTop: 6,
-    lineHeight: 20,
+    lineHeight: 21,
+    fontSize: 15,
   },
   empty: {
     color: colors.text,
@@ -64,10 +76,25 @@ const styles = StyleSheet.create({
   },
   name: {
     color: colors.text,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
   },
   meta: {
     color: colors.textMuted,
+    fontSize: 15,
+  },
+  hero: {
+    width: '100%',
+    height: 150,
+    borderRadius: radius.md,
+    backgroundColor: colors.bgElevated,
+  },
+  heroFallback: {
+    width: '100%',
+    height: 120,
+    borderRadius: radius.md,
+    backgroundColor: colors.primaryMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });

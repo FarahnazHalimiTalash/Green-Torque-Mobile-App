@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     borderRadius: radius.md,
-    backgroundColor: '#050C09',
+    backgroundColor: colors.bgElevated,
   },
   caption: {
     color: colors.text,

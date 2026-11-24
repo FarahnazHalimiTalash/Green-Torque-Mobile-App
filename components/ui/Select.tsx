@@ -198,22 +198,22 @@ const styles = StyleSheet.create({
     marginTop: -2,
   },
   optionTaken: {
-    backgroundColor: '#050C09',
+    backgroundColor: '#E8EEEA',
   },
   optionTextTaken: {
-    color: '#4A6358',
+    color: '#5E7A6C',
     fontWeight: '700',
   },
   backdrop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.55)',
+    backgroundColor: 'rgba(11,28,20,0.35)',
     justifyContent: 'flex-end',
     padding: 16,
   },
   sheet: {
     maxHeight: '70%',
     borderRadius: radius.lg,
-    backgroundColor: colors.bgElevated,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
     padding: 12,

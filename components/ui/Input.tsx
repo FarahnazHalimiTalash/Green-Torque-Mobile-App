@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
   input: {
     minHeight: 52,
     borderRadius: radius.md,
-    backgroundColor: colors.card,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
     color: colors.text,

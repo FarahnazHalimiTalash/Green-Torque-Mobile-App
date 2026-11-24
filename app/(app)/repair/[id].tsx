@@ -3,12 +3,14 @@ import { Card } from '@/components/ui/Card';
 import { EstimateDecisionBox } from '@/components/ui/EstimateDecisionBox';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
+import { StatusTimeline } from '@/components/ui/StatusTimeline';
 import { WorkVideo } from '@/components/ui/WorkVideo';
 import { colors, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
-import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline } from '@/lib/format';
+import { formatDateTime, formatMoney } from '@/lib/format';
 import { shopMediaUrl } from '@/lib/shop-api';
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -25,7 +27,6 @@ export default function RepairDetailScreen() {
     );
   }
 
-  const currentIndex = repairTimeline.indexOf(order.status as (typeof repairTimeline)[number]);
   const visibleNotes = order.notes.filter((note) => note.visibleToCustomer);
   const visibleMedia = order.media.filter((item) => item.visibleToCustomer);
   const estimate = order.estimate;
@@ -43,19 +44,16 @@ export default function RepairDetailScreen() {
       </Text>
 
       <Card>
-        {repairTimeline.map((step, index) => (
-          <View key={step} style={styles.step}>
-            <View style={[styles.dot, index <= currentIndex && styles.dotOn]} />
-            <Text style={[styles.stepText, index === currentIndex && styles.current]}>
-              {repairStatusCopy[step]}
-            </Text>
-          </View>
-        ))}
+        <Text style={styles.label}>Status</Text>
+        <StatusTimeline status={order.status} />
       </Card>
 
       {due.length || paid.length ? (
         <Card>
-          <Text style={styles.label}>Payment</Text>
+          <View style={styles.row}>
+            <Ionicons name="card-outline" size={20} color={colors.primary} />
+            <Text style={styles.label}>Payment</Text>
+          </View>
           {due.map((item) => (
             <Text key={item.sourceId} style={styles.body}>
               Due · {item.description} · {formatMoney(item.amount)}
@@ -111,7 +109,10 @@ export default function RepairDetailScreen() {
 
       {(order.foundProblems ?? []).map((problem) => (
         <Card key={problem.id}>
-          <Text style={styles.label}>New problem found</Text>
+          <View style={styles.row}>
+            <Ionicons name="alert-circle-outline" size={20} color={colors.warning} />
+            <Text style={styles.label}>New problem found</Text>
+          </View>
           <Text style={styles.body}>{problem.summary}</Text>
           <Text style={styles.amount}>{formatMoney(problem.estimate.amount)}</Text>
           {problem.estimate.lines.map((line) => (
@@ -187,7 +188,7 @@ export default function RepairDetailScreen() {
 const styles = StyleSheet.create({
   title: {
     color: colors.text,
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
     marginTop: 12,
   },
@@ -195,32 +196,14 @@ const styles = StyleSheet.create({
     color: colors.textMuted,
     marginBottom: 6,
     marginTop: 4,
-  },
-  step: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 10,
-  },
-  dot: {
-    width: 10,
-    height: 10,
-    borderRadius: 5,
-    backgroundColor: colors.border,
-  },
-  dotOn: {
-    backgroundColor: colors.primary,
-  },
-  stepText: {
-    color: colors.textDim,
-  },
-  current: {
-    color: colors.warning,
-    fontWeight: '800',
+    fontSize: 15,
+    lineHeight: 21,
   },
   label: {
-    color: colors.textMuted,
+    color: colors.primaryDark,
     fontWeight: '800',
-    letterSpacing: 0.6,
+    letterSpacing: 0.4,
+    fontSize: 13,
   },
   amount: {
     color: colors.text,
@@ -230,6 +213,12 @@ const styles = StyleSheet.create({
   body: {
     color: colors.text,
     lineHeight: 22,
+    fontSize: 16,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
   },
   media: {
     gap: 4,
@@ -238,7 +227,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 220,
     borderRadius: radius.md,
-    backgroundColor: '#050C09',
+    backgroundColor: colors.bgElevated,
   },
   mediaKind: {
     color: colors.primary,

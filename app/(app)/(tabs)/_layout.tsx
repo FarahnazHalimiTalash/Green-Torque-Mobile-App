@@ -14,7 +14,7 @@ function HeaderBell() {
 
   return (
     <Pressable style={styles.bell} onPress={() => router.push('/(app)/notifications')}>
-      <Ionicons name="notifications" size={20} color={colors.text} />
+      <Ionicons name="notifications-outline" size={20} color={colors.textOnDark} />
       {unreadCount > 0 ? (
         <View style={styles.dot}>
           <Text style={styles.dotText}>{unreadCount}</Text>
@@ -30,9 +30,7 @@ export default function TabLayout() {
       screenOptions={{
         headerShown: true,
         headerStyle: {
-          backgroundColor: colors.bg,
-          borderBottomWidth: 3,
-          borderBottomColor: '#00b000',
+          backgroundColor: colors.header,
         },
         headerShadowVisible: false,
         headerTitleAlign: 'left',
@@ -41,7 +39,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
-          backgroundColor: colors.bgElevated,
+          backgroundColor: colors.white,
           borderTopColor: colors.border,
           height: 64,
           paddingTop: 6,
@@ -57,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: 'Home',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name="home" color={tabColor(focused)} size={size} />
+            <Ionicons name={focused ? 'home' : 'home-outline'} color={tabColor(focused)} size={size} />
           ),
         }}
       />
@@ -66,7 +64,7 @@ export default function TabLayout() {
         options={{
           title: 'Vehicles',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name="car-sport" color={tabColor(focused)} size={size} />
+            <Ionicons name={focused ? 'car-sport' : 'car-sport-outline'} color={tabColor(focused)} size={size} />
           ),
         }}
       />
@@ -75,7 +73,7 @@ export default function TabLayout() {
         options={{
           title: 'Book',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name="calendar" color={tabColor(focused)} size={size} />
+            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} color={tabColor(focused)} size={size} />
           ),
         }}
       />
@@ -84,7 +82,7 @@ export default function TabLayout() {
         options={{
           title: 'History',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name="time" color={tabColor(focused)} size={size} />
+            <Ionicons name={focused ? 'time' : 'time-outline'} color={tabColor(focused)} size={size} />
           ),
         }}
       />
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
     height: 42,
     marginRight: 12,
     borderRadius: 21,
-    backgroundColor: '#12261C',
+    backgroundColor: 'rgba(255,255,255,0.1)',
     alignItems: 'center',
     justifyContent: 'center',
   },

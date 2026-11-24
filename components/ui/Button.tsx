@@ -21,6 +21,9 @@ export function Button({
   loading,
   style,
 }: Props) {
+  const spinner =
+    variant === 'primary' ? colors.white : variant === 'danger' ? colors.danger : colors.primary;
+
   return (
     <Pressable
       accessibilityRole="button"
@@ -34,9 +37,17 @@ export function Button({
         style,
       ]}>
       {loading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.bg : colors.primary} />
+        <ActivityIndicator color={spinner} />
       ) : (
-        <Text style={[styles.label, variant === 'primary' ? styles.primaryLabel : styles.mutedLabel]}>
+        <Text
+          style={[
+            styles.label,
+            variant === 'primary' && styles.primaryLabel,
+            variant === 'secondary' && styles.secondaryLabel,
+            variant === 'ghost' && styles.ghostLabel,
+            variant === 'danger' && styles.dangerLabel,
+          ]}
+        >
           {label}
         </Text>
       )}
@@ -56,7 +67,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
   },
   secondary: {
-    backgroundColor: colors.cardAlt,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
   },
@@ -64,7 +75,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   danger: {
-    backgroundColor: colors.dangerMuted,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.danger,
   },
@@ -79,9 +90,15 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   primaryLabel: {
-    color: colors.bg,
+    color: colors.white,
   },
-  mutedLabel: {
+  secondaryLabel: {
     color: colors.text,
+  },
+  ghostLabel: {
+    color: colors.primary,
+  },
+  dangerLabel: {
+    color: colors.danger,
   },
 });
