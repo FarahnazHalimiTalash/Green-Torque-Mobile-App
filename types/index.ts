@@ -103,6 +103,13 @@ export type DiagnosisCharge = {
   sentAt?: string;
 };
 
+export type FoundProblem = {
+  id: string;
+  summary: string;
+  createdAt: string;
+  estimate: Estimate;
+};
+
 export type PartLine = {
   id: string;
   name: string;
@@ -151,6 +158,7 @@ export type RepairOrder = {
   labor: LaborLine[];
   diagnosisCharge?: DiagnosisCharge;
   estimate?: Estimate;
+  foundProblems?: FoundProblem[];
 };
 
 export type StaffAccount = Profile & {

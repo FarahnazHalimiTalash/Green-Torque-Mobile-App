@@ -117,6 +117,20 @@ export function createDemoAccount(): AccountState {
             { id: 'line_2', name: 'Labor — thermal system repair', amount: 560 },
           ],
         },
+        foundProblems: [
+          {
+            id: 'fp_brakes',
+            summary: 'Front brake pads are worn and need replacement.',
+            createdAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+            estimate: {
+              id: 'est_brakes',
+              amount: 420,
+              status: 'sent',
+              sentAt: new Date(Date.now() - 1000 * 60 * 60).toISOString(),
+              lines: [{ id: 'line_brakes', name: 'Front brake pad replacement', amount: 420 }],
+            },
+          },
+        ],
       },
       {
         id: 'ro_10118',

@@ -27,6 +27,9 @@ export default function RepairOrderPage() {
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
   const [diagnosisAmount, setDiagnosisAmount] = useState("149");
+  const [problemSummary, setProblemSummary] = useState("");
+  const [problemLine, setProblemLine] = useState("");
+  const [problemAmount, setProblemAmount] = useState("");
   const [error, setError] = useState("");
 
   const order = state?.repairOrders.find((item) => item.id === id);
@@ -242,26 +245,28 @@ export default function RepairOrderPage() {
               ) : (
                 <p className="mb-4 text-sm text-[#F5A524]">No diagnosis charge has been sent yet.</p>
               )}
-              <form
-                className="grid gap-3"
-                onSubmit={async (event) => {
-                  event.preventDefault();
-                  await run({
-                    type: "send_diagnosis_charge",
-                    payload: { repairOrderId: order.id, amount: Number(diagnosisAmount) },
-                  });
-                }}
-              >
-                <Field label="Diagnosis amount">
-                  <input
-                    className={inputClass}
-                    value={diagnosisAmount}
-                    onChange={(event) => setDiagnosisAmount(event.target.value)}
-                    inputMode="decimal"
-                  />
-                </Field>
-                <Button type="submit">Send diagnosis charge to customer</Button>
-              </form>
+              {admin ? (
+                <form
+                  className="grid gap-3"
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    await run({
+                      type: "send_diagnosis_charge",
+                      payload: { repairOrderId: order.id, amount: Number(diagnosisAmount) },
+                    });
+                  }}
+                >
+                  <Field label="Diagnosis amount">
+                    <input
+                      className={inputClass}
+                      value={diagnosisAmount}
+                      onChange={(event) => setDiagnosisAmount(event.target.value)}
+                      inputMode="decimal"
+                    />
+                  </Field>
+                  <Button type="submit">Send diagnosis charge to customer</Button>
+                </form>
+              ) : null}
             </Card>
 
             <Card>
@@ -384,11 +389,89 @@ export default function RepairOrderPage() {
                   ) : null}
                 </div>
               ) : null}
-              <div className="mt-4">
-                <Button onClick={() => run({ type: "send_estimate", payload: { repairOrderId: order.id } })}>
-                  Send further-service estimate to customer
-                </Button>
-              </div>
+              {admin ? (
+                <div className="mt-4">
+                  <Button onClick={() => run({ type: "send_estimate", payload: { repairOrderId: order.id } })}>
+                    Send further-service estimate to customer
+                  </Button>
+                </div>
+              ) : null}
+            </Card>
+
+            <Card>
+              <h2 className="mb-4 font-bold">New problem found during work</h2>
+              <p className="mb-4 text-sm text-[#8AA99A]">
+                If another issue appears while the vehicle is in the shop, only admin can review it, send a new cost estimate, and notify the customer. They can approve or decline that extra work.
+              </p>
+              {(order.foundProblems ?? []).map((problem) => (
+                <div key={problem.id} className="mb-4 rounded-xl bg-[#0B1C14] p-4">
+                  <p className="font-bold">{problem.summary}</p>
+                  <p className="mt-1 text-2xl font-extrabold">{formatMoney(problem.estimate.amount)}</p>
+                  {problem.estimate.lines.map((line) => (
+                    <p key={line.id} className="text-sm text-[#8AA99A]">{line.name} · {formatMoney(line.amount)}</p>
+                  ))}
+                  <div className="mt-3">
+                    <StatusBadge status={problem.estimate.status} />
+                  </div>
+                  {problem.estimate.status === "sent" ? (
+                    <p className="mt-2 text-sm text-[#F5A524]">Customer notified. Waiting for approve or decline.</p>
+                  ) : null}
+                  {problem.estimate.status === "approved" ? (
+                    <p className="mt-2 text-sm text-[#3DDC84]">Customer approved this extra repair.</p>
+                  ) : null}
+                  {problem.estimate.status === "declined" ? (
+                    <p className="mt-2 text-sm text-[#E85D4C]">Customer declined this extra repair. Do not continue it unless you send a new estimate.</p>
+                  ) : null}
+                </div>
+              ))}
+              {admin ? (
+                <form
+                  className="grid gap-3"
+                  onSubmit={async (event) => {
+                    event.preventDefault();
+                    await run({
+                      type: "report_found_problem",
+                      payload: {
+                        repairOrderId: order.id,
+                        summary: problemSummary,
+                        lineName: problemLine,
+                        amount: Number(problemAmount),
+                      },
+                    });
+                    setProblemSummary("");
+                    setProblemLine("");
+                    setProblemAmount("");
+                  }}
+                >
+                  <Field label="What was found">
+                    <textarea
+                      className={`${inputClass} min-h-24 py-3`}
+                      value={problemSummary}
+                      onChange={(event) => setProblemSummary(event.target.value)}
+                      placeholder="Example: Front brake pads are worn and need replacement."
+                    />
+                  </Field>
+                  <Field label="Repair item">
+                    <input
+                      className={inputClass}
+                      value={problemLine}
+                      onChange={(event) => setProblemLine(event.target.value)}
+                      placeholder="Front brake pad replacement"
+                    />
+                  </Field>
+                  <Field label="Estimate amount">
+                    <input
+                      className={inputClass}
+                      value={problemAmount}
+                      onChange={(event) => setProblemAmount(event.target.value)}
+                      inputMode="decimal"
+                    />
+                  </Field>
+                  <Button type="submit">Notify customer and send estimate</Button>
+                </form>
+              ) : (
+                <p className="text-sm text-[#8AA99A]">Ask an admin to review a newly found problem and send the customer an estimate.</p>
+              )}
             </Card>
 
             {admin ? (

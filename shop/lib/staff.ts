@@ -54,8 +54,13 @@ export function assertStaffAction(staff: { role: UserRole } | null, action: Acti
     throw new Error("Sub-admins can only upload work photos and videos for the customer.");
   }
 
-  if (action.type === "send_message") {
-    throw new Error("Only admin can message customers.");
+  if (
+    action.type === "send_message" ||
+    action.type === "send_estimate" ||
+    action.type === "send_diagnosis_charge" ||
+    action.type === "report_found_problem"
+  ) {
+    throw new Error("Only admin can message customers and send cost estimates.");
   }
   if (action.type === "add_media") {
     throw new Error("Only admin and sub-admin can upload work photos and videos.");

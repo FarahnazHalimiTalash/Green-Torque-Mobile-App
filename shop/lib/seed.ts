@@ -211,6 +211,20 @@ export function createShopState(): ShopState {
             { id: "line_2", name: "Labor — thermal system repair", amount: 560 },
           ],
         },
+        foundProblems: [
+          {
+            id: "fp_brakes",
+            summary: "Front brake pads are worn and need replacement.",
+            createdAt: hoursAgo(1),
+            estimate: {
+              id: "est_brakes",
+              amount: 420,
+              status: "sent",
+              sentAt: hoursAgo(1),
+              lines: [{ id: "line_brakes", name: "Front brake pad replacement", amount: 420 }],
+            },
+          },
+        ],
       },
       {
         id: "ro_10118",

@@ -57,6 +57,11 @@ export default function HomeScreen() {
               ? ` · Diagnosis ${formatMoney(activeRepair.diagnosisCharge.amount)}`
               : ''}
           </Text>
+          {(activeRepair.foundProblems ?? [])
+            .filter((item) => item.estimate.status === 'sent')
+            .map((item) => (
+              <EstimateDecisionBox key={item.id} status={item.estimate.status} variant="found_problem" />
+            ))}
           {activeRepair.estimate ? <EstimateDecisionBox status={activeRepair.estimate.status} /> : null}
           <Button
             label="Repair details"

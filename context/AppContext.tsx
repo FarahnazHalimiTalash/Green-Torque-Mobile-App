@@ -79,7 +79,11 @@ type AppContextValue = {
   selectVehicle: (id: string) => Promise<void>;
   bookAppointment: (input: BookInput) => Promise<Appointment>;
   cancelAppointment: (id: string) => Promise<void>;
-  respondToEstimate: (repairOrderId: string, status: Extract<EstimateStatus, 'approved' | 'declined'>) => Promise<void>;
+  respondToEstimate: (
+    repairOrderId: string,
+    status: Extract<EstimateStatus, 'approved' | 'declined'>,
+    estimateId?: string,
+  ) => Promise<void>;
   sendMessage: (body: string) => Promise<void>;
   markNotificationRead: (id: string) => Promise<void>;
   markAllNotificationsRead: () => Promise<void>;
@@ -380,26 +384,34 @@ export function AppProvider({ children }: { children: ReactNode }) {
   );
 
   const respondToEstimate = useCallback(
-    async (repairOrderId: string, status: Extract<EstimateStatus, 'approved' | 'declined'>) => {
+    async (
+      repairOrderId: string,
+      status: Extract<EstimateStatus, 'approved' | 'declined'>,
+      estimateId?: string,
+    ) => {
       if (liveWithShop && apiCustomerId) {
-        const next = await shopRespondEstimate(repairOrderId, apiCustomerId, status);
+        const next = await shopRespondEstimate(repairOrderId, apiCustomerId, status, estimateId);
         if (next) setApiAccount(next);
         return;
       }
+      const respondedAt = new Date().toISOString();
       await updateAccount((current) => ({
         ...current,
-        repairOrders: current.repairOrders.map((order) =>
-          order.id === repairOrderId && order.estimate
-            ? {
-                ...order,
-                estimate: {
-                  ...order.estimate,
-                  status,
-                  respondedAt: new Date().toISOString(),
-                },
-              }
-            : order,
-        ),
+        repairOrders: current.repairOrders.map((order) => {
+          if (order.id !== repairOrderId) return order;
+          return {
+            ...order,
+            estimate:
+              order.estimate && (!estimateId || order.estimate.id === estimateId)
+                ? { ...order.estimate, status, respondedAt }
+                : order.estimate,
+            foundProblems: (order.foundProblems ?? []).map((item) =>
+              estimateId && item.estimate.id === estimateId
+                ? { ...item, estimate: { ...item.estimate, status, respondedAt } }
+                : item,
+            ),
+          };
+        }),
         messages: [
           ...current.messages,
           {

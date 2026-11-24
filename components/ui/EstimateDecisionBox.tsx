@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native';
 import { colors, radius, spacing } from '@/constants/theme';
 import type { Estimate } from '@/types';
 
-const copy: Record<'sent' | 'approved' | 'declined', { title: string; body: string; tone: 'pending' | 'ok' | 'no' }> = {
+const furtherCopy: Record<'sent' | 'approved' | 'declined', { title: string; body: string; tone: 'pending' | 'ok' | 'no' }> = {
   sent: {
     title: 'Waiting for your decision',
     body: 'Approve this further-service estimate to continue the extra repair, or decline if you do not want that work.',
@@ -21,7 +21,32 @@ const copy: Record<'sent' | 'approved' | 'declined', { title: string; body: stri
   },
 };
 
-export function EstimateDecisionBox({ status }: { status: Estimate['status'] }) {
+const foundCopy: Record<'sent' | 'approved' | 'declined', { title: string; body: string; tone: 'pending' | 'ok' | 'no' }> = {
+  sent: {
+    title: 'New problem found — waiting for your decision',
+    body: 'The shop found another issue while working on your vehicle. Approve this estimate to have it repaired, or decline if you do not want that extra work.',
+    tone: 'pending',
+  },
+  approved: {
+    title: 'New-problem estimate approved',
+    body: 'You accepted the extra repair for this newly found problem. The shop can continue that work.',
+    tone: 'ok',
+  },
+  declined: {
+    title: 'New-problem estimate declined',
+    body: 'You declined this extra repair. The shop will not do that additional work unless a new estimate is sent.',
+    tone: 'no',
+  },
+};
+
+export function EstimateDecisionBox({
+  status,
+  variant = 'further',
+}: {
+  status: Estimate['status'];
+  variant?: 'further' | 'found_problem';
+}) {
+  const copy = variant === 'found_problem' ? foundCopy : furtherCopy;
   const result = copy[status as 'sent' | 'approved' | 'declined'];
   if (!result) return null;
 

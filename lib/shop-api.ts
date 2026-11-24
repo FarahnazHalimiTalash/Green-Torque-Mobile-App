@@ -151,10 +151,11 @@ export async function shopRespondEstimate(
   repairOrderId: string,
   customerId: string,
   status: Extract<EstimateStatus, 'approved' | 'declined'>,
+  estimateId?: string,
 ) {
   return shopAction({
     type: 'respond_estimate',
-    payload: { repairOrderId, customerId, status },
+    payload: { repairOrderId, customerId, status, estimateId },
   });
 }
 

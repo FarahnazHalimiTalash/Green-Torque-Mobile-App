@@ -73,12 +73,39 @@ export default function RepairDetailScreen() {
           <EstimateDecisionBox status={estimate.status} />
           {estimate.status === 'sent' ? (
             <View style={{ gap: 10, marginTop: 8 }}>
-              <Button label="Approve estimate" onPress={() => respondToEstimate(order.id, 'approved')} />
-              <Button label="Decline estimate" variant="danger" onPress={() => respondToEstimate(order.id, 'declined')} />
+              <Button label="Approve estimate" onPress={() => respondToEstimate(order.id, 'approved', estimate.id)} />
+              <Button label="Decline estimate" variant="danger" onPress={() => respondToEstimate(order.id, 'declined', estimate.id)} />
             </View>
           ) : null}
         </Card>
       ) : null}
+
+      {(order.foundProblems ?? []).map((problem) => (
+        <Card key={problem.id}>
+          <Text style={styles.label}>New problem found</Text>
+          <Text style={styles.body}>{problem.summary}</Text>
+          <Text style={styles.amount}>{formatMoney(problem.estimate.amount)}</Text>
+          {problem.estimate.lines.map((line) => (
+            <Text key={line.id} style={styles.meta}>
+              {line.name} · {formatMoney(line.amount)}
+            </Text>
+          ))}
+          <EstimateDecisionBox status={problem.estimate.status} variant="found_problem" />
+          {problem.estimate.status === 'sent' ? (
+            <View style={{ gap: 10, marginTop: 8 }}>
+              <Button
+                label="Approve extra repair"
+                onPress={() => respondToEstimate(order.id, 'approved', problem.estimate.id)}
+              />
+              <Button
+                label="Decline extra repair"
+                variant="danger"
+                onPress={() => respondToEstimate(order.id, 'declined', problem.estimate.id)}
+              />
+            </View>
+          ) : null}
+        </Card>
+      ))}
 
       {visibleNotes.length ? (
         <Card>
