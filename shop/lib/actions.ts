@@ -43,9 +43,12 @@ function resolveBay(state: ShopState, bayId?: string) {
   };
 }
 
-function rebuildEstimate(state: ShopState, orderId: string) {
+function rebuildEstimate(state: ShopState, orderId: string, force = false) {
   const order = state.repairOrders.find((item) => item.id === orderId);
   if (!order) return;
+  if (!force && (order.estimate?.status === "approved" || order.estimate?.status === "declined")) {
+    return;
+  }
   const partLines = order.parts.map((part) => ({
     id: part.id,
     name: part.name,
@@ -58,10 +61,17 @@ function rebuildEstimate(state: ShopState, orderId: string) {
   }));
   const lines = [...partLines, ...laborLines];
   const amount = lines.reduce((sum, line) => sum + line.amount, 0);
+  if (!lines.length) {
+    if (!order.estimate || order.estimate.status === "draft") {
+      order.estimate = undefined;
+    }
+    return;
+  }
+  const previous = order.estimate?.status;
   order.estimate = {
     id: order.estimate?.id ?? createId("est"),
     amount,
-    status: order.estimate?.status === "sent" ? "sent" : "draft",
+    status: previous === "sent" ? "sent" : "draft",
     lines,
     sentAt: order.estimate?.sentAt,
     respondedAt: order.estimate?.respondedAt,
@@ -80,6 +90,7 @@ export type Action =
   | { type: "add_part"; payload: { repairOrderId: string; name: string; partNumber?: string; qty: number; unitCost: number } }
   | { type: "add_labor"; payload: { repairOrderId: string; description: string; hours: number; rate: number } }
   | { type: "add_media"; payload: { repairOrderId: string; kind: "photo" | "video_clip" | "diagnostic_report"; caption: string; uri?: string; durationSec?: number; visibleToCustomer: boolean } }
+  | { type: "send_diagnosis_charge"; payload: { repairOrderId: string; amount: number; description?: string } }
   | { type: "send_estimate"; payload: { repairOrderId: string } }
   | { type: "respond_estimate"; payload: { repairOrderId: string; status: "approved" | "declined"; customerId: string } }
   | { type: "send_message"; payload: { customerId: string; sender: "customer" | "shop"; body: string; repairOrderId?: string } }
@@ -301,25 +312,55 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       }
       break;
     }
-    case "send_estimate": {
+    case "send_diagnosis_charge": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
       if (!order) throw new Error("Repair order not found.");
-      rebuildEstimate(next, order.id);
-      if (!order.estimate) throw new Error("Add parts or labor before sending an estimate.");
-      order.estimate.status = "sent";
-      order.estimate.sentAt = new Date().toISOString();
+      const amount = Number(action.payload.amount);
+      if (!Number.isFinite(amount) || amount <= 0) {
+        throw new Error("Enter a diagnosis amount.");
+      }
+      order.diagnosisCharge = {
+        amount,
+        description: action.payload.description?.trim() || "Vehicle diagnosis",
+        status: "sent",
+        sentAt: new Date().toISOString(),
+      };
+      if (order.status === "checked_in") {
+        order.status = "diagnosis";
+      }
       notify(
         next,
         order.customerId,
-        "Estimate ready",
-        `Repair order #${order.number} estimate is $${order.estimate.amount.toLocaleString()}.`,
+        "Diagnosis charge",
+        `Diagnosis for repair order #${order.number} is $${amount.toLocaleString()}. If more work is needed, the shop will send a separate estimate for you to approve or decline.`,
+        `/(app)/repair/${order.id}`,
+      );
+      break;
+    }
+    case "send_estimate": {
+      const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
+      if (!order) throw new Error("Repair order not found.");
+      rebuildEstimate(next, order.id, true);
+      if (!order.estimate || order.estimate.amount <= 0) {
+        throw new Error("Add further-service parts or labor before sending an estimate.");
+      }
+      order.estimate.status = "sent";
+      order.estimate.sentAt = new Date().toISOString();
+      order.estimate.respondedAt = undefined;
+      notify(
+        next,
+        order.customerId,
+        "Further service estimate",
+        `Repair order #${order.number} further-service estimate is $${order.estimate.amount.toLocaleString()}. Approve or decline in the app.`,
         `/(app)/repair/${order.id}`,
       );
       break;
     }
     case "respond_estimate": {
       const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
-      if (!order?.estimate) throw new Error("Estimate not found.");
+      if (!order?.estimate || order.estimate.status !== "sent") {
+        throw new Error("Estimate is not waiting for a decision.");
+      }
       order.estimate.status = action.payload.status;
       order.estimate.respondedAt = new Date().toISOString();
       const conversation = getConversation(next, action.payload.customerId, order.id);
@@ -328,10 +369,19 @@ export function applyAction(state: ShopState, action: Action): ShopState {
         sender: "customer",
         body:
           action.payload.status === "approved"
-            ? "Estimate approved. Please continue the repair."
-            : "I need to decline this estimate for now. Please contact me before continuing.",
+            ? "Estimate approved. Please continue the additional repair."
+            : "I declined this further-service estimate. Please do not continue that extra work.",
         createdAt: new Date().toISOString(),
       });
+      notify(
+        next,
+        action.payload.customerId,
+        action.payload.status === "approved" ? "Estimate approved" : "Estimate declined",
+        action.payload.status === "approved"
+          ? "The shop can continue the additional repair work."
+          : "You declined the further-service estimate. The diagnosis charge still applies.",
+        `/(app)/repair/${order.id}`,
+      );
       break;
     }
     case "send_message": {

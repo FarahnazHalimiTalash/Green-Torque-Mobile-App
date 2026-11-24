@@ -101,6 +101,12 @@ export function createDemoAccount(): AccountState {
             rate: 140,
           },
         ],
+        diagnosisCharge: {
+          amount: 149,
+          description: 'Vehicle diagnosis',
+          status: 'sent',
+          sentAt: new Date(Date.now() - 1000 * 60 * 60 * 4).toISOString(),
+        },
         estimate: {
           id: 'est_10452',
           amount: 1240,
@@ -133,6 +139,12 @@ export function createDemoAccount(): AccountState {
         media: [],
         parts: [],
         labor: [],
+        diagnosisCharge: {
+          amount: 129,
+          description: 'Vehicle diagnosis',
+          status: 'sent',
+          sentAt: new Date(Date.now() - 1000 * 60 * 60 * 24 * 86).toISOString(),
+        },
         estimate: {
           id: 'est_10118',
           amount: 420,

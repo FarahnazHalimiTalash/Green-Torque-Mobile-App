@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { EstimateDecisionBox } from '@/components/ui/EstimateDecisionBox';
 import { Screen } from '@/components/ui/Screen';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
-import { formatMileage, vehicleLabel } from '@/lib/format';
+import { formatMileage, formatMoney, vehicleLabel } from '@/lib/format';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -52,7 +53,11 @@ export default function HomeScreen() {
           <Text style={styles.muted}>
             Repair Order #{activeRepair.number}
             {activeRepair.bayName ? ` · ${activeRepair.bayName}` : ''}
+            {activeRepair.diagnosisCharge?.status === 'sent'
+              ? ` · Diagnosis ${formatMoney(activeRepair.diagnosisCharge.amount)}`
+              : ''}
           </Text>
+          {activeRepair.estimate ? <EstimateDecisionBox status={activeRepair.estimate.status} /> : null}
           <Button
             label="Repair details"
             onPress={() => router.push(`/(app)/repair/${activeRepair.id}`)}

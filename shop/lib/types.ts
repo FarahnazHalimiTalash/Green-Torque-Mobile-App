@@ -87,6 +87,13 @@ export type Estimate = {
   respondedAt?: string;
 };
 
+export type DiagnosisCharge = {
+  amount: number;
+  description: string;
+  status: "draft" | "sent";
+  sentAt?: string;
+};
+
 export type PartLine = {
   id: string;
   name: string;
@@ -150,6 +157,7 @@ export type RepairOrder = {
   media: MediaItem[];
   parts: PartLine[];
   labor: LaborLine[];
+  diagnosisCharge?: DiagnosisCharge;
   estimate?: Estimate;
 };
 

@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { EstimateDecisionBox } from '@/components/ui/EstimateDecisionBox';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { WorkVideo } from '@/components/ui/WorkVideo';
@@ -27,6 +28,7 @@ export default function RepairDetailScreen() {
   const visibleNotes = order.notes.filter((note) => note.visibleToCustomer);
   const visibleMedia = order.media.filter((item) => item.visibleToCustomer);
   const estimate = order.estimate;
+  const diagnosis = order.diagnosisCharge;
 
   return (
     <Screen>
@@ -48,16 +50,27 @@ export default function RepairDetailScreen() {
         ))}
       </Card>
 
+      {diagnosis?.status === 'sent' ? (
+        <Card>
+          <Text style={styles.label}>Diagnosis charge</Text>
+          <Text style={styles.amount}>{formatMoney(diagnosis.amount)}</Text>
+          <Text style={styles.body}>{diagnosis.description || 'Vehicle diagnosis'}</Text>
+          <Text style={styles.meta}>
+            This is the fee for diagnosing the vehicle after check-in. It still applies if you decline extra repairs.
+          </Text>
+        </Card>
+      ) : null}
+
       {estimate ? (
         <Card>
-          <Text style={styles.label}>Estimate</Text>
+          <Text style={styles.label}>Further service estimate</Text>
           <Text style={styles.amount}>{formatMoney(estimate.amount)}</Text>
           {estimate.lines.map((line) => (
             <Text key={line.id} style={styles.meta}>
               {line.name} · {formatMoney(line.amount)}
             </Text>
           ))}
-          <StatusBadge status={estimate.status} />
+          <EstimateDecisionBox status={estimate.status} />
           {estimate.status === 'sent' ? (
             <View style={{ gap: 10, marginTop: 8 }}>
               <Button label="Approve estimate" onPress={() => respondToEstimate(order.id, 'approved')} />

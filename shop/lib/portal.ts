@@ -25,7 +25,13 @@ export function customerSnapshot(state: ShopState, customerId: string): Customer
     vehicles,
     selectedVehicleId: vehicles[0]?.id ?? null,
     appointments: state.appointments.filter((item) => item.customerId === customerId),
-    repairOrders: state.repairOrders.filter((item) => item.customerId === customerId),
+    repairOrders: state.repairOrders
+      .filter((item) => item.customerId === customerId)
+      .map((order) => ({
+        ...order,
+        estimate: !order.estimate || order.estimate.status === "draft" ? undefined : order.estimate,
+        diagnosisCharge: order.diagnosisCharge?.status === "sent" ? order.diagnosisCharge : undefined,
+      })),
     messages: conversation.messages,
     notifications: state.notifications
       .filter((item) => item.userId === customerId)

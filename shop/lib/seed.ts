@@ -195,6 +195,12 @@ export function createShopState(): ShopState {
             rate: 140,
           },
         ],
+        diagnosisCharge: {
+          amount: 149,
+          description: "Vehicle diagnosis",
+          status: "sent",
+          sentAt: hoursAgo(4),
+        },
         estimate: {
           id: "est_10452",
           amount: 1240,
@@ -227,6 +233,12 @@ export function createShopState(): ShopState {
         media: [],
         parts: [],
         labor: [],
+        diagnosisCharge: {
+          amount: 129,
+          description: "Vehicle diagnosis",
+          status: "sent",
+          sentAt: daysAgo(86),
+        },
         estimate: {
           id: "est_10118",
           amount: 420,

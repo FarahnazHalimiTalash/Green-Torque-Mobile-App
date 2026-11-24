@@ -26,6 +26,7 @@ export default function RepairOrderPage() {
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [uploading, setUploading] = useState(false);
   const [message, setMessage] = useState("");
+  const [diagnosisAmount, setDiagnosisAmount] = useState("149");
   const [error, setError] = useState("");
 
   const order = state?.repairOrders.find((item) => item.id === id);
@@ -228,6 +229,42 @@ export default function RepairOrderPage() {
             </Card>
 
             <Card>
+              <h2 className="mb-4 font-bold">Diagnosis charge</h2>
+              <p className="mb-4 text-sm text-[#8AA99A]">
+                After check-in, diagnosis has a fee. Send it to the customer. If more work is needed, send a separate further-service estimate they can accept or decline.
+              </p>
+              {order.diagnosisCharge?.status === "sent" ? (
+                <div className="mb-4 rounded-xl border border-[#3DDC84]/40 bg-[#3DDC84]/10 p-4">
+                  <p className="font-bold text-[#3DDC84]">Diagnosis sent to customer</p>
+                  <p className="mt-1 text-2xl font-extrabold">{formatMoney(order.diagnosisCharge.amount)}</p>
+                  <p className="mt-1 text-sm text-[#8AA99A]">{order.diagnosisCharge.description}</p>
+                </div>
+              ) : (
+                <p className="mb-4 text-sm text-[#F5A524]">No diagnosis charge has been sent yet.</p>
+              )}
+              <form
+                className="grid gap-3"
+                onSubmit={async (event) => {
+                  event.preventDefault();
+                  await run({
+                    type: "send_diagnosis_charge",
+                    payload: { repairOrderId: order.id, amount: Number(diagnosisAmount) },
+                  });
+                }}
+              >
+                <Field label="Diagnosis amount">
+                  <input
+                    className={inputClass}
+                    value={diagnosisAmount}
+                    onChange={(event) => setDiagnosisAmount(event.target.value)}
+                    inputMode="decimal"
+                  />
+                </Field>
+                <Button type="submit">Send diagnosis charge to customer</Button>
+              </form>
+            </Card>
+
+            <Card>
               <h2 className="mb-4 font-bold">Diagnosis notes</h2>
               <div className="grid gap-3">
                 {order.notes.map((item) => (
@@ -324,14 +361,32 @@ export default function RepairOrderPage() {
                 <Button type="submit" variant="secondary">Add labor</Button>
               </form>
               {order.estimate ? (
-                <div className="mt-4">
+                <div className="mt-4 grid gap-3">
                   <StatusBadge status={order.estimate.status} />
-                  <p className="mt-2 text-2xl font-extrabold">{formatMoney(order.estimate.amount)}</p>
+                  <p className="text-2xl font-extrabold">{formatMoney(order.estimate.amount)}</p>
+                  {order.estimate.status === "sent" ? (
+                    <div className="rounded-xl border border-[#F5A524] bg-[#F5A524]/15 p-4">
+                      <p className="font-bold text-[#F5A524]">Waiting for customer decision</p>
+                      <p className="mt-1 text-sm">The customer can approve or decline this further-service estimate in the app.</p>
+                    </div>
+                  ) : null}
+                  {order.estimate.status === "approved" ? (
+                    <div className="rounded-xl border border-[#3DDC84] bg-[#3DDC84]/15 p-4">
+                      <p className="font-bold text-[#3DDC84]">Customer approved</p>
+                      <p className="mt-1 text-sm">The customer accepted this further-service estimate. Continue the additional repair.</p>
+                    </div>
+                  ) : null}
+                  {order.estimate.status === "declined" ? (
+                    <div className="rounded-xl border border-[#E85D4C] bg-[#E85D4C]/15 p-4">
+                      <p className="font-bold text-[#E85D4C]">Customer declined</p>
+                      <p className="mt-1 text-sm">The customer declined this further-service estimate. The diagnosis charge still applies. Do not continue this extra work unless you send a new estimate.</p>
+                    </div>
+                  ) : null}
                 </div>
               ) : null}
               <div className="mt-4">
                 <Button onClick={() => run({ type: "send_estimate", payload: { repairOrderId: order.id } })}>
-                  Send estimate to customer
+                  Send further-service estimate to customer
                 </Button>
               </div>
             </Card>
