@@ -198,7 +198,7 @@ const styles = StyleSheet.create({
     marginTop: -2,
   },
   optionTaken: {
-    backgroundColor: '#E8EEEA',
+    backgroundColor: '#F0F2F1',
   },
   optionTextTaken: {
     color: '#5E7A6C',
