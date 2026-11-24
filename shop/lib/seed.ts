@@ -148,6 +148,7 @@ export function createShopState(): ShopState {
         vehicleId: "veh_model3",
         customerId: "cust_farahnaz",
         assignedTechnicianId: "staff_luis",
+        assignedSubAdminId: "staff_nora",
         bayId: "bay_3",
         serviceSummary: "Coolant / thermal system",
         bayName: "Bay 3",

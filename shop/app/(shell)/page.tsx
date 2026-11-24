@@ -107,6 +107,7 @@ export default function TodayPage() {
               const customer = state.customers.find((item) => item.id === order.customerId);
               const vehicle = state.vehicles.find((item) => item.id === order.vehicleId);
               const tech = state.staff.find((item) => item.id === order.assignedTechnicianId);
+              const subAdmin = state.staff.find((item) => item.id === order.assignedSubAdminId);
               return (
                 <Link key={order.id} href={`/repair-orders/${order.id}`} className="rounded-2xl border border-[#1E3D2E] bg-[#0B1C14] p-4 hover:border-[#3DDC84]">
                   <div className="flex items-center justify-between gap-2">
@@ -114,7 +115,7 @@ export default function TodayPage() {
                     <StatusBadge status={order.status} />
                   </div>
                   <p className="mt-1 text-sm text-[#8AA99A]">
-                    {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {order.bayName ?? "Unassigned bay"} · {tech?.fullName ?? "Unassigned"}
+                    {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {order.bayName ?? "Unassigned bay"} · {tech?.fullName ?? "No technician"} · {subAdmin?.fullName ?? "No sub-admin"}
                   </p>
                 </Link>
               );

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
@@ -45,6 +46,15 @@ export default function RepairOrderPage() {
 
   if (!state || !order) {
     return <p>Repair order not found.</p>;
+  }
+
+  if (subAdmin && order.assignedSubAdminId !== staff?.id) {
+    return (
+      <div className="grid gap-3">
+        <p>This repair order is not assigned to you.</p>
+        <Link href="/repair-orders" className="font-semibold text-[#3DDC84]">Back to assigned jobs</Link>
+      </div>
+    );
   }
 
   const repairOrder = order;
@@ -177,7 +187,7 @@ export default function RepairOrderPage() {
                   Mark picked up
                 </Button>
               </div>
-              <div className="grid gap-3 md:grid-cols-2">
+              <div className="grid gap-3 md:grid-cols-3">
                 <Field label="Technician">
                   <select
                     className={inputClass}
@@ -185,7 +195,19 @@ export default function RepairOrderPage() {
                     onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, assignedTechnicianId: event.target.value } })}
                   >
                     <option value="">Unassigned</option>
-                    {state.staff.map((person) => (
+                    {state.staff.filter((person) => person.role === "technician").map((person) => (
+                      <option key={person.id} value={person.id}>{person.fullName}</option>
+                    ))}
+                  </select>
+                </Field>
+                <Field label="Sub-admin">
+                  <select
+                    className={inputClass}
+                    value={order.assignedSubAdminId ?? ""}
+                    onChange={(event) => run({ type: "update_repair_order", payload: { id: order.id, assignedSubAdminId: event.target.value } })}
+                  >
+                    <option value="">Unassigned</option>
+                    {state.staff.filter((person) => person.role === "sub_admin").map((person) => (
                       <option key={person.id} value={person.id}>{person.fullName}</option>
                     ))}
                   </select>

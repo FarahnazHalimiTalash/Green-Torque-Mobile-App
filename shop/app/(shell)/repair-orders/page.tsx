@@ -10,15 +10,26 @@ export default function RepairOrdersPage() {
   const { state, staff } = useShop();
   if (!state) return null;
 
+  const orders =
+    staff?.role === "sub_admin"
+      ? state.repairOrders.filter((order) => order.assignedSubAdminId === staff.id)
+      : state.repairOrders;
+
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">Repair orders</h1>
+      <h1 className="text-3xl font-extrabold">{staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}</h1>
       {staff?.role === "sub_admin" ? (
-        <p className="text-[#8AA99A]">Upload work photos and videos for the customer. Messaging and other shop tools are admin-only.</p>
+        <p className="text-[#8AA99A]">
+          Admin assigns jobs here. Open a job to upload work photos and videos for the customer. Messaging and other shop tools are admin-only.
+        </p>
       ) : null}
-      {state.repairOrders.map((order) => {
+      {staff?.role === "sub_admin" && orders.length === 0 ? (
+        <p className="text-[#8AA99A]">No jobs are assigned to you yet.</p>
+      ) : null}
+      {orders.map((order) => {
         const customer = state.customers.find((item) => item.id === order.customerId);
         const vehicle = state.vehicles.find((item) => item.id === order.vehicleId);
+        const assigned = state.staff.find((item) => item.id === order.assignedSubAdminId);
         return (
           <Link key={order.id} href={`/repair-orders/${order.id}`}>
             <Card className="hover:border-[#3DDC84]">
@@ -27,6 +38,7 @@ export default function RepairOrdersPage() {
                   <p className="font-bold">#{order.number} · {order.serviceSummary}</p>
                   <p className="text-sm text-[#8AA99A]">
                     {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {formatDate(order.openedAt)} · {order.bayName ?? "No bay"}
+                    {staff?.role === "sub_admin" ? "" : ` · ${assigned?.fullName ?? "No sub-admin"}`}
                   </p>
                 </div>
                 <StatusBadge status={order.status} />

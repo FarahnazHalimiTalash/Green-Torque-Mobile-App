@@ -138,6 +138,7 @@ export type RepairOrder = {
   vehicleId: string;
   customerId: string;
   assignedTechnicianId?: string;
+  assignedSubAdminId?: string;
   bayId?: string;
   serviceSummary: string;
   bayName?: string;

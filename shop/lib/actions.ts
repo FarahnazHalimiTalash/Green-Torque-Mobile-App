@@ -75,7 +75,7 @@ export type Action =
   | { type: "update_appointment"; payload: { id: string; status: ShopState["appointments"][number]["status"] } }
   | { type: "check_in"; payload: { appointmentId: string; technicianId?: string; bayId?: string } }
   | { type: "create_repair_order"; payload: { customerId: string; vehicleId: string; serviceSummary: string; technicianId?: string; bayId?: string; appointmentId?: string } }
-  | { type: "update_repair_order"; payload: { id: string; status?: ShopState["repairOrders"][number]["status"]; assignedTechnicianId?: string; bayId?: string; serviceSummary?: string } }
+  | { type: "update_repair_order"; payload: { id: string; status?: ShopState["repairOrders"][number]["status"]; assignedTechnicianId?: string; assignedSubAdminId?: string; bayId?: string; serviceSummary?: string } }
   | { type: "add_note"; payload: { repairOrderId: string; body: string; visibleToCustomer: boolean } }
   | { type: "add_part"; payload: { repairOrderId: string; name: string; partNumber?: string; qty: number; unitCost: number } }
   | { type: "add_labor"; payload: { repairOrderId: string; description: string; hours: number; rate: number } }
@@ -213,7 +213,10 @@ export function applyAction(state: ShopState, action: Action): ShopState {
       if (!order) throw new Error("Repair order not found.");
       if (action.payload.serviceSummary) order.serviceSummary = action.payload.serviceSummary;
       if (action.payload.assignedTechnicianId !== undefined) {
-        order.assignedTechnicianId = action.payload.assignedTechnicianId;
+        order.assignedTechnicianId = action.payload.assignedTechnicianId || undefined;
+      }
+      if (action.payload.assignedSubAdminId !== undefined) {
+        order.assignedSubAdminId = action.payload.assignedSubAdminId || undefined;
       }
       if (action.payload.bayId !== undefined) {
         Object.assign(order, resolveBay(next, action.payload.bayId || undefined));
