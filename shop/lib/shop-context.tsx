@@ -12,7 +12,7 @@ type ShopContextValue = {
   staff: SafeStaff | null;
   state: ShopState | null;
   error: string;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<SafeStaff>;
   signOut: () => void;
   act: (action: Action) => Promise<void>;
   refresh: () => Promise<void>;
@@ -65,6 +65,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     setStaff(data.user);
     setState(data.state);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data.user));
+    return data.user as SafeStaff;
   }, []);
 
   const signOut = useCallback(() => {
@@ -76,7 +77,10 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
     async (action: Action) => {
       const response = await fetch("/api/actions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          ...(staff ? { "x-user-id": staff.id } : {}),
+        },
         body: JSON.stringify(action),
       });
       const data = await response.json();
@@ -85,7 +89,7 @@ export function ShopProvider({ children }: { children: React.ReactNode }) {
       }
       setState(data.state);
     },
-    [],
+    [staff],
   );
 
   const value = useMemo(

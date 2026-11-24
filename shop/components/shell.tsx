@@ -5,15 +5,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 import { useShop } from "@/lib/shop-context";
-
-const links = [
-  { href: "/", label: "Today" },
-  { href: "/appointments", label: "Appointments" },
-  { href: "/repair-orders", label: "Repair orders" },
-  { href: "/customers", label: "Customers" },
-  { href: "/vehicles", label: "Vehicles" },
-  { href: "/bays", label: "Bays" },
-];
+import { shopNavLinks, subAdminHome } from "@/lib/staff";
 
 export function Shell({ children }: { children: React.ReactNode }) {
   const { ready, staff, signOut } = useShop();
@@ -26,16 +18,25 @@ export function Shell({ children }: { children: React.ReactNode }) {
     }
   }, [ready, router, staff]);
 
+  useEffect(() => {
+    if (!staff || staff.role !== "sub_admin") return;
+    const allowed = pathname === "/repair-orders" || pathname.startsWith("/repair-orders/");
+    if (!allowed) router.replace(subAdminHome());
+  }, [pathname, router, staff]);
+
   if (!ready || !staff) {
     return (
       <div className="grid min-h-screen place-items-center text-[#3DDC84]">Loading shop…</div>
     );
   }
 
+  const links = shopNavLinks(staff.role);
+  const home = staff.role === "sub_admin" ? subAdminHome() : "/";
+
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-[#1E3D2E] bg-[#0B1C14] lg:border-r lg:border-b-0">
-        <Link href="/" className="block border-b-[3px] border-[#00b000] bg-black px-4 py-3">
+        <Link href={home} className="block border-b-[3px] border-[#00b000] bg-black px-4 py-3">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -47,7 +48,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="p-5">
           <nav className="grid gap-1">
             {links.map((link) => {
-              const active = pathname === link.href;
+              const active = pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`));
               return (
                 <Link
                   key={link.href}

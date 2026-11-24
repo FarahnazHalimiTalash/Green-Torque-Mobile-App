@@ -7,12 +7,15 @@ import { formatDate, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 
 export default function RepairOrdersPage() {
-  const { state } = useShop();
+  const { state, staff } = useShop();
   if (!state) return null;
 
   return (
     <div className="grid gap-5">
       <h1 className="text-3xl font-extrabold">Repair orders</h1>
+      {staff?.role === "sub_admin" ? (
+        <p className="text-[#8AA99A]">Upload work photos and videos for the customer. Messaging and other shop tools are admin-only.</p>
+      ) : null}
       {state.repairOrders.map((order) => {
         const customer = state.customers.find((item) => item.id === order.customerId);
         const vehicle = state.vehicles.find((item) => item.id === order.vehicleId);

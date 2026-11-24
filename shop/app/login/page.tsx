@@ -5,13 +5,18 @@ import { useRouter } from "next/navigation";
 
 import { Button, Field, inputClass } from "@/components/ui";
 import { ShopProvider, useShop } from "@/lib/shop-context";
+import { subAdminHome } from "@/lib/staff";
+
+function staffHome(role: string) {
+  return role === "sub_admin" ? subAdminHome() : "/";
+}
 
 function LoginForm() {
   const { signIn, staff, ready } = useShop();
   const router = useRouter();
 
   useEffect(() => {
-    if (ready && staff) router.replace("/");
+    if (ready && staff) router.replace(staffHome(staff.role));
   }, [ready, router, staff]);
   const [email, setEmail] = useState("advisor@greentorque.demo");
   const [password, setPassword] = useState("shop123");
@@ -23,8 +28,8 @@ function LoginForm() {
     setError("");
     setLoading(true);
     try {
-      await signIn(email, password);
-      router.replace("/");
+      const user = await signIn(email, password);
+      router.replace(staffHome(user.role));
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not sign in.");
     } finally {
@@ -43,7 +48,9 @@ function LoginForm() {
           className="mb-5 h-14 w-auto"
         />
         <h1 className="text-3xl font-extrabold">Shop dashboard</h1>
-        <p className="mt-2 mb-6 text-[#8AA99A]">For admin, sub-admin, and technicians. Customers use the mobile app.</p>
+        <p className="mt-2 mb-6 text-[#8AA99A]">
+          Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the mobile app.
+        </p>
         <div className="grid gap-4">
           <Field label="Email">
             <input className={inputClass} value={email} onChange={(event) => setEmail(event.target.value)} />

@@ -3,11 +3,12 @@ import { Card } from '@/components/ui/Card';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { WorkVideo } from '@/components/ui/WorkVideo';
-import { colors } from '@/constants/theme';
+import { colors, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline } from '@/lib/format';
+import { shopMediaUrl } from '@/lib/shop-api';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function RepairDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -80,11 +81,16 @@ export default function RepairDetailScreen() {
 
       {visibleMedia.length ? (
         <Card>
-          <Text style={styles.label}>Work videos</Text>
+          <Text style={styles.label}>Work photos & videos</Text>
           {visibleMedia.map((item) => (
             <View key={item.id} style={styles.media}>
-              {item.uri ? (
+              {item.uri && item.kind === 'video_clip' ? (
                 <WorkVideo uri={item.uri} caption={item.caption} />
+              ) : item.uri && item.kind === 'photo' ? (
+                <>
+                  <Image source={{ uri: shopMediaUrl(item.uri) }} style={styles.photo} />
+                  {item.caption ? <Text style={styles.body}>{item.caption}</Text> : null}
+                </>
               ) : (
                 <>
                   <Text style={styles.mediaKind}>
@@ -99,8 +105,8 @@ export default function RepairDetailScreen() {
         </Card>
       ) : (
         <Card>
-          <Text style={styles.label}>Work videos</Text>
-          <Text style={styles.body}>The shop will post a video here when they record the work on your vehicle.</Text>
+          <Text style={styles.label}>Work photos & videos</Text>
+          <Text style={styles.body}>The shop will post photos and videos here when they record the work on your vehicle.</Text>
         </Card>
       )}
 
@@ -158,6 +164,12 @@ const styles = StyleSheet.create({
   },
   media: {
     gap: 4,
+  },
+  photo: {
+    width: '100%',
+    height: 220,
+    borderRadius: radius.md,
+    backgroundColor: '#050C09',
   },
   mediaKind: {
     color: colors.primary,
