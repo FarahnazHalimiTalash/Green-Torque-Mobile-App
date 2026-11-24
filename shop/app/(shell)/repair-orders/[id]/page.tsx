@@ -5,6 +5,8 @@ import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
+import { dueChargesForOrder } from "@/lib/billing";
+import { paymentMethodLabel } from "@/lib/card";
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 import { canUploadWorkMedia, isAdmin } from "@/lib/staff";
@@ -47,6 +49,9 @@ export default function RepairOrderPage() {
       labor: order.labor.reduce((sum, item) => sum + item.hours * item.rate, 0),
     };
   }, [order]);
+  const orderPayments = (state?.payments ?? []).filter((item) => item.repairOrderId === order?.id);
+  const due = order ? dueChargesForOrder(order, state?.payments ?? []) : [];
+  const customerCard = customer?.paymentMethods?.[0];
 
   if (!state || !order) {
     return <p>Repair order not found.</p>;
@@ -472,6 +477,24 @@ export default function RepairOrderPage() {
               ) : (
                 <p className="text-sm text-[#8AA99A]">Ask an admin to review a newly found problem and send the customer an estimate.</p>
               )}
+            </Card>
+
+            <Card>
+              <h2 className="mb-4 font-bold">Customer payment</h2>
+              <p className="mb-3 text-sm text-[#8AA99A]">
+                {customerCard ? paymentMethodLabel(customerCard) : "No payment method on file. The customer adds a card in the app."}
+              </p>
+              {due.map((item) => (
+                <p key={item.sourceId} className="text-sm">Due · {item.description} · {formatMoney(item.amount)}</p>
+              ))}
+              {orderPayments.map((item) => (
+                <p key={item.id} className="mt-2 text-sm text-[#3DDC84]">
+                  Paid {formatMoney(item.amount)} · {item.methodBrand} •••• {item.methodLast4} · {item.description}
+                </p>
+              ))}
+              {!due.length && !orderPayments.length ? (
+                <p className="text-sm text-[#8AA99A]">No charges due yet. Diagnosis and approved extra work appear here after the customer can pay.</p>
+              ) : null}
             </Card>
 
             {admin ? (

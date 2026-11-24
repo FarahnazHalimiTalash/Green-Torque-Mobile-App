@@ -183,6 +183,8 @@ export function createDemoAccount(): AccountState {
         createdAt: new Date(Date.now() - 1000 * 60 * 50).toISOString(),
       },
     ],
+    paymentMethods: [],
+    payments: [],
     notifications: [
       {
         id: 'ntf_video',

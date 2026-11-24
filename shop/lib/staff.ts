@@ -36,7 +36,10 @@ export function assertStaffAction(staff: { role: UserRole } | null, action: Acti
       action.type === "add_vehicle" ||
       action.type === "book_appointment" ||
       action.type === "respond_estimate" ||
-      action.type === "mark_notification"
+      action.type === "mark_notification" ||
+      action.type === "save_payment_method" ||
+      action.type === "remove_payment_method" ||
+      action.type === "pay_due"
     ) {
       return;
     }

@@ -60,6 +60,7 @@ export function createShopState(): ShopState {
         phone: "(555) 014-2208",
         role: "customer",
         password: DEMO_CUSTOMER_PASSWORD,
+        paymentMethods: [],
       },
       {
         id: "cust_omar",
@@ -68,6 +69,7 @@ export function createShopState(): ShopState {
         phone: "(555) 018-4402",
         role: "customer",
         password: DEMO_CUSTOMER_PASSWORD,
+        paymentMethods: [],
       },
     ],
     vehicles: [
@@ -313,6 +315,7 @@ export function createShopState(): ShopState {
         href: "/(app)/repair/ro_10452",
       },
     ],
+    payments: [],
     nextRepairNumber: 10453,
   };
 }

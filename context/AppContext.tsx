@@ -19,11 +19,16 @@ import {
   shopDemoLogin,
   shopHealth,
   shopMarkNotification,
+  shopPayDue,
   shopPortal,
+  shopRemovePaymentMethod,
   shopRespondEstimate,
+  shopSavePaymentMethod,
   shopSendMessage,
   shopSignup,
 } from '@/lib/shop-api';
+import { dueChargesForOrder } from '@/lib/billing';
+import { tokenizeCard } from '@/lib/card';
 import type {
   AccountState,
   Appointment,
@@ -32,7 +37,9 @@ import type {
   PersistedStore,
   Profile,
   RepairOrder,
+  SavedPaymentMethod,
   ShopMessage,
+  ShopPayment,
   Vehicle,
 } from '@/types';
 
@@ -87,6 +94,17 @@ type AppContextValue = {
   sendMessage: (body: string) => Promise<void>;
   markNotificationRead: (id: string) => Promise<void>;
   markAllNotificationsRead: () => Promise<void>;
+  paymentMethods: SavedPaymentMethod[];
+  payments: ShopPayment[];
+  savePaymentMethod: (input: {
+    cardNumber: string;
+    expMonth: string;
+    expYear: string;
+    cardholderName: string;
+    cvc?: string;
+  }) => Promise<void>;
+  removePaymentMethod: (paymentMethodId: string) => Promise<void>;
+  payDue: (repairOrderId: string, paymentMethodId: string) => Promise<void>;
 };
 
 const AppContext = createContext<AppContextValue | null>(null);
@@ -106,6 +124,8 @@ function emptyAccount(input: SignUpInput): AccountState {
     selectedVehicleId: null,
     appointments: [],
     repairOrders: [],
+    paymentMethods: [],
+    payments: [],
     messages: [
       {
         id: createId('msg'),
@@ -443,6 +463,107 @@ export function AppProvider({ children }: { children: ReactNode }) {
     [apiCustomerId, liveWithShop, updateAccount],
   );
 
+  const savePaymentMethod = useCallback(
+    async (input: {
+      cardNumber: string;
+      expMonth: string;
+      expYear: string;
+      cardholderName: string;
+      cvc?: string;
+    }) => {
+      const token = tokenizeCard(input);
+      if (liveWithShop && apiCustomerId) {
+        const next = await shopSavePaymentMethod(apiCustomerId, input);
+        if (next) setApiAccount(next);
+        return;
+      }
+      await updateAccount((current) => {
+        const methods = current.paymentMethods ?? [];
+        if (methods.length >= 3) {
+          throw new Error('Remove a card before adding another.');
+        }
+        if (methods.some((item) => item.last4 === token.last4 && item.expMonth === token.expMonth && item.expYear === token.expYear)) {
+          throw new Error('That card is already saved.');
+        }
+        return {
+          ...current,
+          paymentMethods: [
+            {
+              id: createId('pm'),
+              ...token,
+              addedAt: new Date().toISOString(),
+            },
+            ...methods,
+          ],
+        };
+      });
+    },
+    [apiCustomerId, liveWithShop, updateAccount],
+  );
+
+  const removePaymentMethod = useCallback(
+    async (paymentMethodId: string) => {
+      if (liveWithShop && apiCustomerId) {
+        const next = await shopRemovePaymentMethod(apiCustomerId, paymentMethodId);
+        if (next) setApiAccount(next);
+        return;
+      }
+      await updateAccount((current) => ({
+        ...current,
+        paymentMethods: (current.paymentMethods ?? []).filter((item) => item.id !== paymentMethodId),
+      }));
+    },
+    [apiCustomerId, liveWithShop, updateAccount],
+  );
+
+  const payDue = useCallback(
+    async (repairOrderId: string, paymentMethodId: string) => {
+      if (liveWithShop && apiCustomerId) {
+        const next = await shopPayDue(apiCustomerId, repairOrderId, paymentMethodId);
+        if (next) setApiAccount(next);
+        return;
+      }
+      await updateAccount((current) => {
+        const method = (current.paymentMethods ?? []).find((item) => item.id === paymentMethodId);
+        if (!method) throw new Error('Choose a saved payment method.');
+        const order = current.repairOrders.find((item) => item.id === repairOrderId);
+        if (!order) throw new Error('Repair order not found.');
+        const due = dueChargesForOrder(order, current.payments ?? []);
+        if (!due.length) throw new Error('Nothing is due on this repair order.');
+        const paidAt = new Date().toISOString();
+        const payments: ShopPayment[] = due.map((charge) => ({
+          id: createId('pay'),
+          customerId: current.profile.id,
+          repairOrderId: order.id,
+          sourceId: charge.sourceId,
+          kind: charge.kind,
+          amount: charge.amount,
+          description: charge.description,
+          paidAt,
+          methodBrand: method.brand,
+          methodLast4: method.last4,
+        }));
+        const total = due.reduce((sum, item) => sum + item.amount, 0);
+        return {
+          ...current,
+          payments: [...payments, ...(current.payments ?? [])],
+          notifications: [
+            {
+              id: createId('ntf'),
+              title: 'Payment received',
+              body: `You paid $${total.toLocaleString()} for repair order #${order.number} with ${method.brand} •••• ${method.last4}.`,
+              createdAt: paidAt,
+              read: false,
+              href: `/(app)/repair/${order.id}`,
+            },
+            ...current.notifications,
+          ],
+        };
+      });
+    },
+    [apiCustomerId, liveWithShop, updateAccount],
+  );
+
   const sendMessage = useCallback(
     async (body: string) => {
       const trimmed = body.trim();
@@ -504,6 +625,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const repairOrders = account?.repairOrders ?? [];
   const messages = account?.messages ?? [];
   const notifications = account?.notifications ?? [];
+  const paymentMethods = account?.paymentMethods ?? [];
+  const payments = account?.payments ?? [];
   const unreadCount = notifications.filter((item) => !item.read).length;
   const activeRepair =
     repairOrders.find(
@@ -545,6 +668,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
       sendMessage,
       markNotificationRead,
       markAllNotificationsRead,
+      paymentMethods,
+      payments,
+      savePaymentMethod,
+      removePaymentMethod,
+      payDue,
     }),
     [
       account,
@@ -557,10 +685,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
       markAllNotificationsRead,
       markNotificationRead,
       messages,
+      payDue,
+      paymentMethods,
+      payments,
       notifications,
       ready,
+      removePaymentMethod,
       repairOrders,
       respondToEstimate,
+      savePaymentMethod,
       selectVehicle,
       selectedVehicle,
       sendMessage,

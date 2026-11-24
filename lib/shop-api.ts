@@ -36,6 +36,8 @@ export function snapshotToAccount(snapshot: CustomerSnapshot, password = ''): Ac
     })),
     messages: snapshot.messages,
     notifications: snapshot.notifications,
+    paymentMethods: snapshot.paymentMethods ?? [],
+    payments: snapshot.payments ?? [],
   };
 }
 
@@ -170,5 +172,29 @@ export async function shopMarkNotification(userId: string, id?: string, all?: bo
   return shopAction({
     type: 'mark_notification',
     payload: { userId, id, all },
+  });
+}
+
+export async function shopSavePaymentMethod(
+  customerId: string,
+  payload: { cardNumber: string; expMonth: string; expYear: string; cardholderName: string; cvc?: string },
+) {
+  return shopAction({
+    type: 'save_payment_method',
+    payload: { customerId, ...payload },
+  });
+}
+
+export async function shopRemovePaymentMethod(customerId: string, paymentMethodId: string) {
+  return shopAction({
+    type: 'remove_payment_method',
+    payload: { customerId, paymentMethodId },
+  });
+}
+
+export async function shopPayDue(customerId: string, repairOrderId: string, paymentMethodId: string) {
+  return shopAction({
+    type: 'pay_due',
+    payload: { customerId, repairOrderId, paymentMethodId },
   });
 }

@@ -110,6 +110,29 @@ export type FoundProblem = {
   estimate: Estimate;
 };
 
+export type SavedPaymentMethod = {
+  id: string;
+  brand: string;
+  last4: string;
+  expMonth: number;
+  expYear: number;
+  cardholderName: string;
+  addedAt: string;
+};
+
+export type ShopPayment = {
+  id: string;
+  customerId: string;
+  repairOrderId: string;
+  sourceId: string;
+  kind: 'diagnosis' | 'estimate' | 'found_problem';
+  amount: number;
+  description: string;
+  paidAt: string;
+  methodBrand: string;
+  methodLast4: string;
+};
+
 export type PartLine = {
   id: string;
   name: string;
@@ -168,6 +191,7 @@ export type StaffAccount = Profile & {
 
 export type CustomerAccount = Profile & {
   password: string;
+  paymentMethods?: SavedPaymentMethod[];
 };
 
 export type CustomerSnapshot = {
@@ -178,6 +202,8 @@ export type CustomerSnapshot = {
   messages: ShopMessage[];
   notifications: AppNotification[];
   selectedVehicleId: string | null;
+  paymentMethods: SavedPaymentMethod[];
+  payments: ShopPayment[];
 };
 
 export type ShopState = {
@@ -195,6 +221,7 @@ export type ShopState = {
   bays: WorkBay[];
   conversations: Conversation[];
   notifications: Array<AppNotification & { userId: string }>;
+  payments: ShopPayment[];
   nextRepairNumber: number;
 };
 
@@ -223,6 +250,8 @@ export type AccountState = {
   repairOrders: RepairOrder[];
   messages: ShopMessage[];
   notifications: AppNotification[];
+  paymentMethods: SavedPaymentMethod[];
+  payments: ShopPayment[];
 };
 
 export type PersistedStore = {

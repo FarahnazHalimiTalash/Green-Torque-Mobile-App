@@ -1,6 +1,7 @@
 "use client";
 
 import { Card } from "@/components/ui";
+import { paymentMethodLabel } from "@/lib/card";
 import { useShop } from "@/lib/shop-context";
 
 export default function CustomersPage() {
@@ -21,6 +22,8 @@ export default function CustomersPage() {
             <p className="text-sm text-[#8AA99A]">{customer.email} · {customer.phone}</p>
             <p className="mt-2 text-sm text-[#8AA99A]">
               {vehicles.length} vehicle{vehicles.length === 1 ? "" : "s"} · {open.length} open repair order{open.length === 1 ? "" : "s"}
+              {" · "}
+              {customer.paymentMethods?.[0] ? paymentMethodLabel(customer.paymentMethods[0]) : "No card on file"}
             </p>
           </Card>
         );

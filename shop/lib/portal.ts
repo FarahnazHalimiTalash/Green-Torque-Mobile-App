@@ -36,5 +36,7 @@ export function customerSnapshot(state: ShopState, customerId: string): Customer
     notifications: state.notifications
       .filter((item) => item.userId === customerId)
       .map(({ userId: _userId, ...item }) => item),
+    paymentMethods: customer.paymentMethods ?? [],
+    payments: (state.payments ?? []).filter((item) => item.customerId === customerId),
   };
 }

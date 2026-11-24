@@ -1,3 +1,5 @@
+import { dueChargesForOrder } from "./billing";
+import { tokenizeCard } from "./card";
 import { dropOffSlotTaken } from "./drop-off";
 import { createId } from "./ids";
 import { customerSnapshot } from "./portal";
@@ -108,7 +110,10 @@ export type Action =
   | { type: "report_found_problem"; payload: { repairOrderId: string; summary: string; lineName: string; amount: number } }
   | { type: "respond_estimate"; payload: { repairOrderId: string; status: "approved" | "declined"; customerId: string; estimateId?: string } }
   | { type: "send_message"; payload: { customerId: string; sender: "customer" | "shop"; body: string; repairOrderId?: string } }
-  | { type: "mark_notification"; payload: { id?: string; userId: string; all?: boolean } };
+  | { type: "mark_notification"; payload: { id?: string; userId: string; all?: boolean } }
+  | { type: "save_payment_method"; payload: { customerId: string; cardNumber: string; expMonth: string | number; expYear: string | number; cardholderName: string; cvc?: string } }
+  | { type: "remove_payment_method"; payload: { customerId: string; paymentMethodId: string } }
+  | { type: "pay_due"; payload: { customerId: string; repairOrderId: string; paymentMethodId: string } };
 
 export function applyAction(state: ShopState, action: Action): ShopState {
   const next = state;
@@ -126,6 +131,7 @@ export function applyAction(state: ShopState, action: Action): ShopState {
         phone: action.payload.phone.trim(),
         role: "customer" as const,
         password: action.payload.password,
+        paymentMethods: [],
       };
       next.customers.push(customer);
       getConversation(next, customer.id);
@@ -460,6 +466,66 @@ export function applyAction(state: ShopState, action: Action): ShopState {
         }
         return item;
       });
+      break;
+    }
+    case "save_payment_method": {
+      const customer = next.customers.find((item) => item.id === action.payload.customerId);
+      if (!customer) throw new Error("Customer not found.");
+      const token = tokenizeCard(action.payload);
+      customer.paymentMethods = customer.paymentMethods ?? [];
+      if (customer.paymentMethods.length >= 3) {
+        throw new Error("Remove a card before adding another.");
+      }
+      if (customer.paymentMethods.some((item) => item.last4 === token.last4 && item.expMonth === token.expMonth && item.expYear === token.expYear)) {
+        throw new Error("That card is already saved.");
+      }
+      customer.paymentMethods.unshift({
+        id: createId("pm"),
+        ...token,
+        addedAt: new Date().toISOString(),
+      });
+      notify(next, customer.id, "Payment method added", `${token.brand} ending in ${token.last4} is ready for shop charges.`, "/(app)/payments");
+      break;
+    }
+    case "remove_payment_method": {
+      const customer = next.customers.find((item) => item.id === action.payload.customerId);
+      if (!customer) throw new Error("Customer not found.");
+      customer.paymentMethods = (customer.paymentMethods ?? []).filter((item) => item.id !== action.payload.paymentMethodId);
+      break;
+    }
+    case "pay_due": {
+      const customer = next.customers.find((item) => item.id === action.payload.customerId);
+      if (!customer) throw new Error("Customer not found.");
+      const method = (customer.paymentMethods ?? []).find((item) => item.id === action.payload.paymentMethodId);
+      if (!method) throw new Error("Choose a saved payment method.");
+      const order = next.repairOrders.find((item) => item.id === action.payload.repairOrderId);
+      if (!order || order.customerId !== customer.id) throw new Error("Repair order not found.");
+      next.payments = next.payments ?? [];
+      const due = dueChargesForOrder(order, next.payments);
+      if (!due.length) throw new Error("Nothing is due on this repair order.");
+      const paidAt = new Date().toISOString();
+      for (const charge of due) {
+        next.payments.unshift({
+          id: createId("pay"),
+          customerId: customer.id,
+          repairOrderId: order.id,
+          sourceId: charge.sourceId,
+          kind: charge.kind,
+          amount: charge.amount,
+          description: charge.description,
+          paidAt,
+          methodBrand: method.brand,
+          methodLast4: method.last4,
+        });
+      }
+      const total = due.reduce((sum, item) => sum + item.amount, 0);
+      notify(
+        next,
+        customer.id,
+        "Payment received",
+        `You paid $${total.toLocaleString()} for repair order #${order.number} with ${method.brand} •••• ${method.last4}.`,
+        `/(app)/repair/${order.id}`,
+      );
       break;
     }
     default:

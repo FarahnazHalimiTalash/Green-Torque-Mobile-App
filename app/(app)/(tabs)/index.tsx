@@ -6,13 +6,17 @@ import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { colors, radius, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
+import { dueChargesForOrder, dueTotal } from '@/lib/billing';
+import { paymentMethodLabel } from '@/lib/card';
 import { formatMileage, formatMoney, vehicleLabel } from '@/lib/format';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const { profile, selectedVehicle, activeRepair, signOut, liveWithShop } = useApp();
+  const { profile, selectedVehicle, activeRepair, signOut, liveWithShop, paymentMethods, payments } = useApp();
+  const due = activeRepair ? dueChargesForOrder(activeRepair, payments) : [];
+  const card = paymentMethods[0];
   const firstName = profile?.fullName.split(' ')[0] ?? 'there';
 
   return (
@@ -75,6 +79,18 @@ export default function HomeScreen() {
           <Text style={styles.muted}>Book a drop-off and we’ll keep this card updated.</Text>
         </Card>
       )}
+
+      <SectionHeader title="PAYMENT" />
+      <Card onPress={() => router.push('/(app)/payments')}>
+        <Text style={styles.vehicleKicker}>PAYMENT METHOD</Text>
+        <Text style={styles.vehicleName}>{card ? paymentMethodLabel(card) : 'Add a payment method'}</Text>
+        <Text style={styles.muted}>
+          {due.length && activeRepair
+            ? `${formatMoney(dueTotal(due))} due on repair #${activeRepair.number}`
+            : 'Pay diagnosis and approved extra work from here.'}
+        </Text>
+        <Button label={card ? 'Manage payment' : 'Add payment method'} onPress={() => router.push('/(app)/payments')} />
+      </Card>
 
       <SectionHeader title="APPOINTMENTS" />
       <Button label="+ Book appointment" onPress={() => router.push('/(app)/(tabs)/book')} />

@@ -6,6 +6,7 @@ import { StatusBadge } from '@/components/ui/StatusBadge';
 import { WorkVideo } from '@/components/ui/WorkVideo';
 import { colors, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
+import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { formatDateTime, formatMoney, repairStatusCopy, repairTimeline } from '@/lib/format';
 import { shopMediaUrl } from '@/lib/shop-api';
 import { router, useLocalSearchParams } from 'expo-router';
@@ -13,7 +14,7 @@ import { Image, StyleSheet, Text, View } from 'react-native';
 
 export default function RepairDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { repairOrders, respondToEstimate } = useApp();
+  const { repairOrders, respondToEstimate, payments, paymentMethods } = useApp();
   const order = repairOrders.find((item) => item.id === id);
 
   if (!order) {
@@ -29,6 +30,8 @@ export default function RepairDetailScreen() {
   const visibleMedia = order.media.filter((item) => item.visibleToCustomer);
   const estimate = order.estimate;
   const diagnosis = order.diagnosisCharge;
+  const due = dueChargesForOrder(order, payments);
+  const paid = payments.filter((item) => item.repairOrderId === order.id);
 
   return (
     <Screen>
@@ -49,6 +52,32 @@ export default function RepairDetailScreen() {
           </View>
         ))}
       </Card>
+
+      {due.length || paid.length ? (
+        <Card>
+          <Text style={styles.label}>Payment</Text>
+          {due.map((item) => (
+            <Text key={item.sourceId} style={styles.body}>
+              Due · {item.description} · {formatMoney(item.amount)}
+            </Text>
+          ))}
+          {paid.map((item) => (
+            <Text key={item.id} style={styles.meta}>
+              Paid {formatMoney(item.amount)} · {item.methodBrand} •••• {item.methodLast4}
+            </Text>
+          ))}
+          {due.length ? (
+            <Button
+              label={
+                paymentMethods.length
+                  ? `Pay ${formatMoney(dueTotal(due))}`
+                  : 'Add a payment method to pay'
+              }
+              onPress={() => router.push('/(app)/payments')}
+            />
+          ) : null}
+        </Card>
+      ) : null}
 
       {diagnosis?.status === 'sent' ? (
         <Card>
