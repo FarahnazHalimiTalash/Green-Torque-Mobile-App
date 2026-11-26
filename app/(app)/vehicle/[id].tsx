@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Screen } from '@/components/ui/Screen';
-import { colors } from '@/constants/theme';
+import { colors, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatMileage, vehicleLabel } from '@/lib/format';
+import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import { router, useLocalSearchParams } from 'expo-router';
-import { StyleSheet, Text } from 'react-native';
+import { Image, StyleSheet, Text } from 'react-native';
 
 export default function VehicleDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -24,6 +25,7 @@ export default function VehicleDetailScreen() {
 
   return (
     <Screen>
+      <Image source={{ uri: resolveVehiclePhoto(vehicle) }} style={styles.hero} />
       <Text style={styles.title}>{vehicleLabel(vehicle)}</Text>
       <Text style={styles.meta}>{vehicle.nickname ?? vehicle.evType.toUpperCase()}</Text>
       <Card>
@@ -51,6 +53,14 @@ export default function VehicleDetailScreen() {
 }
 
 const styles = StyleSheet.create({
+  hero: {
+    width: '100%',
+    height: 180,
+    borderRadius: radius.md,
+    backgroundColor: colors.bgElevated,
+    marginTop: 8,
+    marginBottom: 8,
+  },
   title: {
     color: colors.text,
     fontSize: 26,

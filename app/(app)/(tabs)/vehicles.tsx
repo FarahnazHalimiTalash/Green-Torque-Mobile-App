@@ -6,8 +6,7 @@ import { Screen } from '@/components/ui/Screen';
 import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatMileage, vehicleLabel } from '@/lib/format';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { LinearGradient } from 'expo-linear-gradient';
+import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import { router } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -28,9 +27,6 @@ export default function VehiclesScreen() {
       {vehicles.length === 0 ? (
         <FadeIn delay={80}>
           <Card>
-            <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.heroFallback}>
-              <Ionicons name="car-sport-outline" size={52} color={colors.primary} />
-            </LinearGradient>
             <Text style={styles.empty}>No vehicles yet</Text>
             <Text style={styles.meta}>Start with VIN, year, make, model, and mileage.</Text>
           </Card>
@@ -44,13 +40,10 @@ export default function VehiclesScreen() {
                 <Card
                   onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}
                   tone={selected ? 'emphasis' : 'default'}>
-                  {vehicle.photoUrl ? (
-                    <Image source={{ uri: vehicle.photoUrl }} style={styles.hero} />
-                  ) : (
-                    <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.heroFallback}>
-                      <Ionicons name="car-sport" size={48} color={colors.primary} />
-                    </LinearGradient>
-                  )}
+                  <Image
+                    source={{ uri: resolveVehiclePhoto(vehicle) }}
+                    style={styles.hero}
+                  />
                   <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
                   <Text style={styles.meta}>
                     {vehicle.vin || 'VIN not added'} · {formatMileage(vehicle.mileage)}
@@ -93,12 +86,5 @@ const styles = StyleSheet.create({
     height: 156,
     borderRadius: radius.md,
     backgroundColor: colors.bgElevated,
-  },
-  heroFallback: {
-    width: '100%',
-    height: 128,
-    borderRadius: radius.md,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });

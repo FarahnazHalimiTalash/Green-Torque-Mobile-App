@@ -30,6 +30,7 @@ import {
 } from '@/lib/shop-api';
 import { dueChargesForOrder } from '@/lib/billing';
 import { tokenizeCard } from '@/lib/card';
+import { vehiclePhotoFor } from '@/lib/vehicle-photo';
 import type {
   AccountState,
   Appointment,
@@ -310,14 +311,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
         if (!created) throw new Error('Vehicle was not saved.');
         return created;
       }
+      const make = input.make.trim();
+      const model = input.model.trim();
       const vehicle: Vehicle = {
         ...input,
         id: createId('veh'),
         customerId: account?.profile.id ?? '',
         vin: input.vin.trim().toUpperCase(),
-        make: input.make.trim(),
-        model: input.model.trim(),
+        make,
+        model,
         nickname: input.nickname?.trim() || undefined,
+        photoUrl: vehiclePhotoFor(make, model, input.evType),
       };
       await updateAccount((current) => ({
         ...current,

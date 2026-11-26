@@ -11,6 +11,7 @@ import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { paymentMethodLabel } from '@/lib/card';
 import { formatMileage, formatMoney, vehicleLabel } from '@/lib/format';
+import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -44,13 +45,10 @@ export default function HomeScreen() {
       <FadeIn delay={80}>
         {selectedVehicle ? (
           <Card onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)} tone="emphasis">
-            {selectedVehicle.photoUrl ? (
-              <Image source={{ uri: selectedVehicle.photoUrl }} style={styles.vehicleHero} />
-            ) : (
-              <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
-                <Ionicons name="car-sport" size={64} color={colors.primary} />
-              </LinearGradient>
-            )}
+            <Image
+              source={{ uri: resolveVehiclePhoto(selectedVehicle) }}
+              style={styles.vehicleHero}
+            />
             <Text style={styles.vehicleKicker}>Your vehicle</Text>
             <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
             <Text style={styles.muted}>{formatMileage(selectedVehicle.mileage)}</Text>

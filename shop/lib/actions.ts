@@ -5,6 +5,7 @@ import { isClosedAppointment, isClosedRepair, recordAudit, type HistoryActor } f
 import { createId } from "./ids";
 import { customerSnapshot } from "./portal";
 import { serviceTypes, type ShopState } from "./types";
+import { vehiclePhotoFor } from "./vehicle-photo";
 
 function notify(
   state: ShopState,
@@ -165,16 +166,19 @@ export function applyAction(state: ShopState, action: Action, actor: HistoryActo
       break;
     }
     case "add_vehicle": {
+      const make = action.payload.make.trim();
+      const model = action.payload.model.trim();
       next.vehicles.unshift({
         id: createId("veh"),
         customerId: action.payload.customerId,
         vin: action.payload.vin.trim().toUpperCase(),
         year: action.payload.year,
-        make: action.payload.make.trim(),
-        model: action.payload.model.trim(),
+        make,
+        model,
         mileage: action.payload.mileage,
         nickname: action.payload.nickname?.trim() || undefined,
         evType: action.payload.evType,
+        photoUrl: vehiclePhotoFor(make, model, action.payload.evType),
       });
       break;
     }
