@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '@/constants/theme';
+import { colors, fonts, type } from '@/constants/theme';
 
 export function SectionHeader({ title, action }: { title: string; action?: string }) {
   return (
@@ -16,18 +16,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 10,
-    marginTop: 14,
+    marginBottom: 12,
+    marginTop: 18,
   },
   title: {
     color: colors.primaryDark,
-    fontSize: 13,
-    fontWeight: '800',
-    letterSpacing: 1.1,
+    fontSize: type.overline,
+    fontFamily: fonts.caption,
+    letterSpacing: 1.4,
+    textTransform: 'uppercase',
   },
   action: {
-    color: colors.primary,
+    color: colors.primaryDeep,
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: fonts.bodyMedium,
   },
 });

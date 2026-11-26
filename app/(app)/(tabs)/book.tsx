@@ -1,10 +1,12 @@
 import { Button } from '@/components/ui/Button';
 import { CalendarPicker } from '@/components/ui/CalendarPicker';
 import { Card } from '@/components/ui/Card';
+import { FadeIn } from '@/components/ui/FadeIn';
 import { Input } from '@/components/ui/Input';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
 import { Select } from '@/components/ui/Select';
-import { colors, radius, spacing } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import {
   SERVICE_GROUP_OPTIONS,
@@ -196,10 +198,15 @@ export default function BookScreen() {
 
   return (
     <Screen includeTopInset={false}>
-      <Text style={styles.title}>Book appointment</Text>
-      <Text style={styles.subtitle}>Choose a vehicle, service, and drop-off window.</Text>
+      <FadeIn>
+        <PageHeader
+          eyebrow="Schedule"
+          title="Book appointment"
+          subtitle="Choose a vehicle, service, and drop-off window."
+        />
+      </FadeIn>
 
-      <View style={styles.form}>
+      <FadeIn delay={80} style={styles.form}>
         <Select
           label="Make"
           value={make}
@@ -282,41 +289,33 @@ export default function BookScreen() {
 
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button label="Request appointment" onPress={onSubmit} loading={loading} />
-      </View>
-      <Card style={{ marginTop: 12 }}>
-        <Text style={styles.note}>
-          The shop will confirm the time. You’ll see status updates here after drop-off.
-        </Text>
-      </Card>
+      </FadeIn>
+      <FadeIn delay={140}>
+        <Card style={{ marginTop: 12 }} tone="quiet">
+          <Text style={styles.note}>
+            The shop will confirm the time. You’ll see status updates here after drop-off.
+          </Text>
+        </Card>
+      </FadeIn>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 28,
-    fontWeight: '800',
-    marginTop: spacing.sm,
-  },
-  subtitle: {
-    color: colors.textMuted,
-    marginBottom: 22,
-    marginTop: 6,
-  },
   form: {
     gap: 14,
   },
   label: {
     color: colors.textMuted,
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: fonts.bodyMedium,
   },
   hint: {
     color: colors.textDim,
     fontSize: 13,
     marginTop: -6,
     lineHeight: 18,
+    fontFamily: fonts.body,
   },
   photos: {
     flexDirection: 'row',
@@ -358,15 +357,17 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   addPhotoText: {
-    color: colors.primary,
-    fontWeight: '700',
+    color: colors.primaryDeep,
+    fontFamily: fonts.bodyBold,
     fontSize: 12,
   },
   error: {
     color: colors.danger,
+    fontFamily: fonts.bodyMedium,
   },
   note: {
     color: colors.textMuted,
     lineHeight: 20,
+    fontFamily: fonts.body,
   },
 });

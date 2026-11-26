@@ -1,4 +1,4 @@
-import { colors } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { Redirect, Stack } from 'expo-router';
 import { ActivityIndicator, View } from 'react-native';
@@ -25,7 +25,7 @@ export default function AppLayout() {
         contentStyle: { backgroundColor: colors.bg },
         headerTintColor: colors.textOnDark,
         headerStyle: { backgroundColor: colors.header },
-        headerTitleStyle: { color: colors.textOnDark, fontWeight: '700' },
+        headerTitleStyle: { color: colors.textOnDark, fontFamily: fonts.displayMedium },
         headerShadowVisible: false,
       }}>
       <Stack.Screen name="(tabs)" />

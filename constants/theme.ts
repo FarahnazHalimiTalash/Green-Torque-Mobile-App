@@ -1,25 +1,31 @@
 export const colors = {
-  bg: '#FFFFFF',
-  bgElevated: '#FAFBFA',
-  header: '#0B1C14',
+  bg: '#F7FAF8',
+  bgElevated: '#EEF5F0',
+  bgSoft: '#E4F0E8',
+  header: '#07140F',
+  headerSoft: '#0F241A',
   card: '#FFFFFF',
-  cardAlt: '#FAFBFA',
-  border: '#E6EEE8',
-  primary: '#1FA85A',
+  cardAlt: '#F4F9F6',
+  border: '#D7E5DC',
+  borderStrong: '#B7CFC0',
+  primary: '#16A34A',
   primaryDark: '#0B1C14',
-  primaryMuted: 'rgba(31, 168, 90, 0.06)',
-  text: '#10241A',
-  textMuted: '#5E7A6C',
-  textDim: '#8AA99A',
-  textOnDark: '#F2FBF6',
-  warning: '#D97706',
-  warningMuted: 'rgba(217, 119, 6, 0.12)',
+  primaryDeep: '#15803D',
+  primaryMuted: 'rgba(22, 163, 74, 0.1)',
+  primaryGlow: 'rgba(22, 163, 74, 0.18)',
+  text: '#0C1F16',
+  textMuted: '#4F6B5C',
+  textDim: '#7F9A8B',
+  textOnDark: '#F3FBF6',
+  warning: '#C2410C',
+  warningMuted: 'rgba(194, 65, 12, 0.1)',
   danger: '#DC2626',
   dangerMuted: 'rgba(220, 38, 38, 0.1)',
-  info: '#0284C7',
-  infoMuted: 'rgba(2, 132, 199, 0.1)',
+  info: '#0369A1',
+  infoMuted: 'rgba(3, 105, 161, 0.1)',
   white: '#FFFFFF',
   black: '#000000',
+  overlay: 'rgba(7, 20, 15, 0.45)',
 };
 
 export const spacing = {
@@ -32,17 +38,60 @@ export const spacing = {
 };
 
 export const radius = {
-  sm: 12,
-  md: 18,
-  lg: 24,
-  xl: 28,
+  sm: 14,
+  md: 20,
+  lg: 26,
+  xl: 32,
   pill: 999,
 };
 
 export const fonts = {
+  display: 'Outfit_700Bold',
+  displayMedium: 'Outfit_600SemiBold',
+  title: 'Outfit_700Bold',
+  subtitle: 'Outfit_600SemiBold',
+  body: 'DMSans_400Regular',
+  bodyMedium: 'DMSans_500Medium',
+  bodyBold: 'DMSans_700Bold',
+  caption: 'DMSans_500Medium',
+};
+
+export const type = {
+  hero: 34,
   title: 28,
   subtitle: 18,
   body: 16,
   caption: 13,
   overline: 11,
+};
+
+export const shadow = {
+  card: {
+    shadowColor: '#07140F',
+    shadowOpacity: 0.08,
+    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 3,
+  },
+  soft: {
+    shadowColor: '#07140F',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 2,
+  },
+  float: {
+    shadowColor: '#15803D',
+    shadowOpacity: 0.22,
+    shadowRadius: 16,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 4,
+  },
+};
+
+export const gradients = {
+  screen: ['#F7FAF8', '#EEF6F1', '#E7F2EB'] as const,
+  hero: ['#07140F', '#0F241A', '#14532D'] as const,
+  vehicle: ['#E8F5EE', '#F7FAF8'] as const,
+  primaryButton: ['#22C55E', '#16A34A'] as const,
 };

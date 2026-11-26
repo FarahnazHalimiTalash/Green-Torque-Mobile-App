@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { repairStatusCopy, repairTimeline } from '@/lib/format';
 import type { RepairStatus } from '@/types';
 
@@ -83,12 +83,13 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 20,
     paddingBottom: 12,
+    fontFamily: fonts.body,
   },
   labelDone: {
     color: colors.textMuted,
   },
   labelCurrent: {
     color: colors.warning,
-    fontWeight: '800',
+    fontFamily: fonts.bodyBold,
   },
 });

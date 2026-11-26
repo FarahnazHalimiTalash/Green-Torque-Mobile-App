@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, radius, spacing } from '@/constants/theme';
+import { colors, fonts, radius, spacing } from '@/constants/theme';
 import type { Estimate } from '@/types';
 
 const furtherCopy: Record<'sent' | 'approved' | 'declined', { title: string; body: string; tone: 'pending' | 'ok' | 'no' }> = {
@@ -94,14 +94,14 @@ const styles = StyleSheet.create({
     borderColor: colors.danger,
   },
   title: {
-    fontWeight: '800',
+    fontFamily: fonts.bodyBold,
     fontSize: 16,
   },
   pendingText: {
     color: colors.warning,
   },
   okText: {
-    color: colors.primary,
+    color: colors.primaryDeep,
   },
   noText: {
     color: colors.danger,
@@ -110,5 +110,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     lineHeight: 21,
     fontSize: 15,
+    fontFamily: fonts.body,
   },
 });

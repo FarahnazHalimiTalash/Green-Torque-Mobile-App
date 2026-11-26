@@ -6,7 +6,7 @@ import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { StatusTimeline } from '@/components/ui/StatusTimeline';
 import { WorkVideo } from '@/components/ui/WorkVideo';
-import { colors, radius } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { formatDateTime, formatMoney } from '@/lib/format';
@@ -273,7 +273,8 @@ const styles = StyleSheet.create({
   title: {
     color: colors.text,
     fontSize: 28,
-    fontWeight: '800',
+    fontFamily: fonts.display,
+    letterSpacing: -0.5,
     marginTop: 12,
   },
   meta: {
@@ -282,22 +283,25 @@ const styles = StyleSheet.create({
     marginTop: 4,
     fontSize: 15,
     lineHeight: 21,
+    fontFamily: fonts.body,
   },
   label: {
     color: colors.primaryDark,
-    fontWeight: '800',
-    letterSpacing: 0.4,
-    fontSize: 13,
+    fontFamily: fonts.caption,
+    letterSpacing: 0.8,
+    fontSize: 12,
+    textTransform: 'uppercase',
   },
   amount: {
     color: colors.text,
     fontSize: 28,
-    fontWeight: '800',
+    fontFamily: fonts.display,
   },
   body: {
     color: colors.text,
     lineHeight: 22,
     fontSize: 16,
+    fontFamily: fonts.body,
   },
   row: {
     flexDirection: 'row',
@@ -314,13 +318,13 @@ const styles = StyleSheet.create({
     backgroundColor: colors.bgElevated,
   },
   mediaKind: {
-    color: colors.primary,
-    fontWeight: '700',
+    color: colors.primaryDeep,
+    fontFamily: fonts.bodyBold,
   },
   signature: {
     color: colors.text,
     fontSize: 22,
-    fontWeight: '700',
+    fontFamily: fonts.displayMedium,
     fontStyle: 'italic',
     marginTop: 8,
   },

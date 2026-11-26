@@ -1,6 +1,6 @@
 import { StyleSheet, Text, TextInput, View, type KeyboardTypeOptions } from 'react-native';
 
-import { colors, radius } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 
 type Props = {
   label: string;
@@ -49,21 +49,23 @@ const styles = StyleSheet.create({
   label: {
     color: colors.textMuted,
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: fonts.bodyMedium,
+    letterSpacing: 0.2,
   },
   input: {
-    minHeight: 52,
+    minHeight: 54,
     borderRadius: radius.md,
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
     color: colors.text,
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     fontSize: 16,
+    fontFamily: fonts.body,
   },
   multiline: {
-    minHeight: 96,
-    paddingTop: 14,
+    minHeight: 108,
+    paddingTop: 16,
     textAlignVertical: 'top',
   },
 });

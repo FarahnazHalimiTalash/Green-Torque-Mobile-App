@@ -1,7 +1,9 @@
 import { Card } from '@/components/ui/Card';
+import { FadeIn } from '@/components/ui/FadeIn';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
 import { StatusBadge } from '@/components/ui/StatusBadge';
-import { colors, spacing } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatDate, formatMoney, vehicleLabel } from '@/lib/format';
 import { router } from 'expo-router';
@@ -13,44 +15,59 @@ export default function HistoryScreen() {
 
   return (
     <Screen includeTopInset={false}>
-      <Text style={styles.title}>Service history</Text>
-      <Text style={styles.subtitle}>
-        View-only record of previous work, estimates, and completed visits. History cannot be edited in the app.
-      </Text>
+      <FadeIn>
+        <PageHeader
+          eyebrow="Records"
+          title="Service history"
+          subtitle="View-only record of previous work, estimates, and completed visits."
+        />
+      </FadeIn>
+
       {history.length === 0 && appointments.length === 0 ? (
-        <Card>
-          <Text style={styles.empty}>No history yet</Text>
-          <Text style={styles.subtitle}>Completed repair orders will show up here.</Text>
-        </Card>
+        <FadeIn delay={80}>
+          <Card tone="quiet">
+            <Text style={styles.empty}>No history yet</Text>
+            <Text style={styles.meta}>Completed repair orders will show up here.</Text>
+          </Card>
+        </FadeIn>
       ) : null}
+
       <View style={{ gap: 12 }}>
-        {history.map((order) => {
+        {history.map((order, index) => {
           const vehicle = vehicles.find((item) => item.id === order.vehicleId);
           return (
-            <Card key={order.id} onPress={() => router.push(`/(app)/repair/${order.id}`)}>
-              <StatusBadge status={order.status} />
-              <Text style={styles.name}>
-                #{order.number} · {order.serviceSummary}
-              </Text>
-              <Text style={styles.meta}>
-                {vehicle ? vehicleLabel(vehicle) : 'Vehicle'} · {formatDate(order.openedAt)}
-                {order.diagnosisCharge?.status === 'sent' ? ` · Diagnosis ${formatMoney(order.diagnosisCharge.amount)}` : ''}
-                {order.estimate ? ` · Estimate ${formatMoney(order.estimate.amount)} (${order.estimate.status})` : ''}
-                {order.foundProblems?.length ? ` · ${order.foundProblems.length} extra estimate${order.foundProblems.length === 1 ? '' : 's'}` : ''}
-              </Text>
-            </Card>
+            <FadeIn key={order.id} delay={70 + index * 45}>
+              <Card onPress={() => router.push(`/(app)/repair/${order.id}`)}>
+                <StatusBadge status={order.status} />
+                <Text style={styles.name}>
+                  #{order.number} · {order.serviceSummary}
+                </Text>
+                <Text style={styles.meta}>
+                  {vehicle ? vehicleLabel(vehicle) : 'Vehicle'} · {formatDate(order.openedAt)}
+                  {order.diagnosisCharge?.status === 'sent'
+                    ? ` · Diagnosis ${formatMoney(order.diagnosisCharge.amount)}`
+                    : ''}
+                  {order.estimate
+                    ? ` · Estimate ${formatMoney(order.estimate.amount)} (${order.estimate.status})`
+                    : ''}
+                  {order.foundProblems?.length
+                    ? ` · ${order.foundProblems.length} extra estimate${order.foundProblems.length === 1 ? '' : 's'}`
+                    : ''}
+                </Text>
+              </Card>
+            </FadeIn>
           );
         })}
         {appointments
           .filter((item) => !repairOrders.some((order) => order.appointmentId === item.id))
-          .map((appointment) => (
-            <Card
-              key={appointment.id}
-              onPress={() => router.push(`/(app)/appointment/${appointment.id}`)}>
-              <StatusBadge status={appointment.status} />
-              <Text style={styles.name}>Appointment</Text>
-              <Text style={styles.meta}>{formatDate(appointment.scheduledAt)}</Text>
-            </Card>
+          .map((appointment, index) => (
+            <FadeIn key={appointment.id} delay={90 + index * 45}>
+              <Card onPress={() => router.push(`/(app)/appointment/${appointment.id}`)}>
+                <StatusBadge status={appointment.status} />
+                <Text style={styles.name}>Appointment</Text>
+                <Text style={styles.meta}>{formatDate(appointment.scheduledAt)}</Text>
+              </Card>
+            </FadeIn>
           ))}
       </View>
     </Screen>
@@ -58,29 +75,20 @@ export default function HistoryScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 28,
-    fontWeight: '800',
-    marginTop: spacing.sm,
-  },
-  subtitle: {
-    color: colors.textMuted,
-    marginBottom: 18,
-    marginTop: 6,
-    lineHeight: 20,
-  },
   empty: {
     color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontFamily: fonts.displayMedium,
   },
   name: {
     color: colors.text,
     fontSize: 17,
-    fontWeight: '700',
+    fontFamily: fonts.displayMedium,
   },
   meta: {
     color: colors.textMuted,
+    fontFamily: fonts.body,
+    lineHeight: 21,
+    fontSize: 14,
   },
 });

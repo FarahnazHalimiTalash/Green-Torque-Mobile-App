@@ -1,10 +1,13 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { FadeIn } from '@/components/ui/FadeIn';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
-import { colors, radius, spacing } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatMileage, vehicleLabel } from '@/lib/format';
 import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
@@ -13,40 +16,52 @@ export default function VehiclesScreen() {
 
   return (
     <Screen includeTopInset={false}>
-      <Text style={styles.title}>Vehicles</Text>
-      <Text style={styles.subtitle}>Add every EV or hybrid you service with Green Torque.</Text>
-      <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} style={{ marginBottom: 18 }} />
+      <FadeIn>
+        <PageHeader
+          eyebrow="Garage"
+          title="Vehicles"
+          subtitle="Add every EV or hybrid you service with Green Torque."
+        />
+        <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} style={{ marginBottom: 8 }} />
+      </FadeIn>
+
       {vehicles.length === 0 ? (
-        <Card>
-          <View style={styles.heroFallback}>
-            <Ionicons name="car-sport-outline" size={48} color={colors.primary} />
-          </View>
-          <Text style={styles.empty}>No vehicles yet</Text>
-          <Text style={styles.subtitle}>Start with VIN, year, make, model, and mileage.</Text>
-        </Card>
+        <FadeIn delay={80}>
+          <Card>
+            <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.heroFallback}>
+              <Ionicons name="car-sport-outline" size={52} color={colors.primary} />
+            </LinearGradient>
+            <Text style={styles.empty}>No vehicles yet</Text>
+            <Text style={styles.meta}>Start with VIN, year, make, model, and mileage.</Text>
+          </Card>
+        </FadeIn>
       ) : (
-        <View style={{ gap: 12 }}>
-          {vehicles.map((vehicle) => {
+        <View style={{ gap: 14 }}>
+          {vehicles.map((vehicle, index) => {
             const selected = selectedVehicle?.id === vehicle.id;
             return (
-              <Card key={vehicle.id} onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}>
-                {vehicle.photoUrl ? (
-                  <Image source={{ uri: vehicle.photoUrl }} style={styles.hero} />
-                ) : (
-                  <View style={styles.heroFallback}>
-                    <Ionicons name="car-sport" size={48} color={colors.primary} />
-                  </View>
-                )}
-                <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
-                <Text style={styles.meta}>
-                  {vehicle.vin || 'VIN not added'} · {formatMileage(vehicle.mileage)}
-                </Text>
-                <Button
-                  label={selected ? 'Selected' : 'Use on home'}
-                  variant={selected ? 'secondary' : 'ghost'}
-                  onPress={() => selectVehicle(vehicle.id)}
-                />
-              </Card>
+              <FadeIn key={vehicle.id} delay={80 + index * 60}>
+                <Card
+                  onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}
+                  tone={selected ? 'emphasis' : 'default'}>
+                  {vehicle.photoUrl ? (
+                    <Image source={{ uri: vehicle.photoUrl }} style={styles.hero} />
+                  ) : (
+                    <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.heroFallback}>
+                      <Ionicons name="car-sport" size={48} color={colors.primary} />
+                    </LinearGradient>
+                  )}
+                  <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
+                  <Text style={styles.meta}>
+                    {vehicle.vin || 'VIN not added'} · {formatMileage(vehicle.mileage)}
+                  </Text>
+                  <Button
+                    label={selected ? 'Selected' : 'Use on home'}
+                    variant={selected ? 'secondary' : 'ghost'}
+                    onPress={() => selectVehicle(vehicle.id)}
+                  />
+                </Card>
+              </FadeIn>
             );
           })}
         </View>
@@ -56,46 +71,33 @@ export default function VehiclesScreen() {
 }
 
 const styles = StyleSheet.create({
-  title: {
-    color: colors.text,
-    fontSize: 28,
-    fontWeight: '800',
-    marginTop: spacing.sm,
-  },
-  subtitle: {
-    color: colors.textMuted,
-    marginBottom: 18,
-    marginTop: 6,
-    lineHeight: 21,
-    fontSize: 15,
-  },
   empty: {
     color: colors.text,
-    fontSize: 18,
-    fontWeight: '700',
+    fontSize: 20,
+    fontFamily: fonts.displayMedium,
   },
   name: {
     color: colors.text,
-    fontSize: 20,
-    fontWeight: '700',
+    fontSize: 21,
+    fontFamily: fonts.displayMedium,
+    letterSpacing: -0.3,
   },
   meta: {
     color: colors.textMuted,
     fontSize: 15,
+    fontFamily: fonts.body,
+    lineHeight: 21,
   },
   hero: {
     width: '100%',
-    height: 150,
+    height: 156,
     borderRadius: radius.md,
     backgroundColor: colors.bgElevated,
   },
   heroFallback: {
     width: '100%',
-    height: 120,
+    height: 128,
     borderRadius: radius.md,
-    backgroundColor: colors.bgElevated,
-    borderWidth: 1,
-    borderColor: colors.border,
     alignItems: 'center',
     justifyContent: 'center',
   },

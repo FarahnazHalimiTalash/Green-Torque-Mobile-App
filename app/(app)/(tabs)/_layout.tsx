@@ -1,5 +1,5 @@
 import { Logo } from '@/components/ui/Logo';
-import { colors } from '@/constants/theme';
+import { colors, fonts, shadow } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Tabs } from 'expo-router';
@@ -41,13 +41,15 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: colors.white,
           borderTopColor: colors.border,
-          height: 64,
-          paddingTop: 6,
+          height: 72,
+          paddingTop: 8,
+          paddingBottom: 10,
+          ...shadow.soft,
         },
         tabBarLabelStyle: {
           fontSize: 11,
-          fontWeight: '700',
-          paddingBottom: 8,
+          fontFamily: fonts.bodyBold,
+          letterSpacing: 0.2,
         },
       }}>
       <Tabs.Screen
@@ -64,7 +66,11 @@ export default function TabLayout() {
         options={{
           title: 'Vehicles',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'car-sport' : 'car-sport-outline'} color={tabColor(focused)} size={size} />
+            <Ionicons
+              name={focused ? 'car-sport' : 'car-sport-outline'}
+              color={tabColor(focused)}
+              size={size}
+            />
           ),
         }}
       />
@@ -73,7 +79,11 @@ export default function TabLayout() {
         options={{
           title: 'Book',
           tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'calendar' : 'calendar-outline'} color={tabColor(focused)} size={size} />
+            <Ionicons
+              name={focused ? 'calendar' : 'calendar-outline'}
+              color={tabColor(focused)}
+              size={size}
+            />
           ),
         }}
       />
@@ -96,7 +106,7 @@ const styles = StyleSheet.create({
     height: 42,
     marginRight: 12,
     borderRadius: 21,
-    backgroundColor: 'rgba(255,255,255,0.1)',
+    backgroundColor: 'rgba(255,255,255,0.12)',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -115,6 +125,6 @@ const styles = StyleSheet.create({
   dotText: {
     color: colors.white,
     fontSize: 10,
-    fontWeight: '800',
+    fontFamily: fonts.bodyBold,
   },
 });

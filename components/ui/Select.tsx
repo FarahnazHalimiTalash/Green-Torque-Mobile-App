@@ -1,4 +1,4 @@
-import { colors, radius } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { createElement, useState, type CSSProperties } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -155,18 +155,18 @@ const styles = StyleSheet.create({
   label: {
     color: colors.textMuted,
     fontSize: 13,
-    fontWeight: '600',
+    fontFamily: fonts.bodyMedium,
   },
   box: {
-    minHeight: 52,
+    minHeight: 54,
     borderRadius: radius.md,
-    backgroundColor: colors.card,
+    backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.border,
     justifyContent: 'center',
   },
   nativeBox: {
-    paddingHorizontal: 14,
+    paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -179,6 +179,7 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 16,
     flex: 1,
+    fontFamily: fonts.body,
   },
   placeholder: {
     color: colors.textDim,

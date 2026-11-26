@@ -1,7 +1,9 @@
 import { Button } from '@/components/ui/Button';
+import { FadeIn } from '@/components/ui/FadeIn';
 import { Input } from '@/components/ui/Input';
+import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
-import { colors } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -35,45 +37,66 @@ export default function SignupScreen() {
 
   return (
     <Screen>
-      <Pressable onPress={() => router.back()}>
-        <Text style={styles.back}>Back</Text>
-      </Pressable>
-      <Text style={styles.title}>Create account</Text>
-      <Text style={styles.subtitle}>Your vehicles, appointments, and repair updates will live here.</Text>
-      <View style={styles.form}>
-        <Input label="Full name" value={fullName} onChangeText={setFullName} autoCapitalize="words" placeholder="Farahnaz" />
-        <Input label="Email" value={email} onChangeText={setEmail} keyboardType="email-address" placeholder="you@email.com" />
-        <Input label="Phone" value={phone} onChangeText={setPhone} keyboardType="phone-pad" placeholder="(555) 000-0000" />
-        <Input label="Password" value={password} onChangeText={setPassword} secureTextEntry placeholder="At least 6 characters" />
-        {error ? <Text style={styles.error}>{error}</Text> : null}
-        <Button label="Create account" onPress={onSubmit} loading={loading} />
-      </View>
+      <FadeIn>
+        <Pressable onPress={() => router.back()}>
+          <Text style={styles.back}>Back</Text>
+        </Pressable>
+        <PageHeader
+          eyebrow="Account"
+          title="Create account"
+          subtitle="Your vehicles, appointments, and repair updates will live here."
+        />
+      </FadeIn>
+      <FadeIn delay={90}>
+        <View style={styles.form}>
+          <Input
+            label="Full name"
+            value={fullName}
+            onChangeText={setFullName}
+            autoCapitalize="words"
+            placeholder="Farahnaz"
+          />
+          <Input
+            label="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            placeholder="you@email.com"
+          />
+          <Input
+            label="Phone"
+            value={phone}
+            onChangeText={setPhone}
+            keyboardType="phone-pad"
+            placeholder="(555) 000-0000"
+          />
+          <Input
+            label="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            placeholder="At least 6 characters"
+          />
+          {error ? <Text style={styles.error}>{error}</Text> : null}
+          <Button label="Create account" onPress={onSubmit} loading={loading} />
+        </View>
+      </FadeIn>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   back: {
-    color: colors.primary,
-    marginTop: 12,
-    marginBottom: 24,
-    fontWeight: '600',
-  },
-  title: {
-    color: colors.text,
-    fontSize: 32,
-    fontWeight: '800',
-  },
-  subtitle: {
-    color: colors.textMuted,
+    color: colors.primaryDeep,
     marginTop: 8,
-    marginBottom: 28,
-    lineHeight: 22,
+    marginBottom: 8,
+    fontFamily: fonts.bodyMedium,
   },
   form: {
     gap: 16,
   },
   error: {
     color: colors.danger,
+    fontFamily: fonts.bodyMedium,
   },
 });

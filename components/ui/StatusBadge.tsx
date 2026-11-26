@@ -1,23 +1,23 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-import { colors, radius } from '@/constants/theme';
+import { colors, fonts, radius } from '@/constants/theme';
 import { repairStatusCopy } from '@/lib/format';
 import type { AppointmentStatus, EstimateStatus, RepairStatus } from '@/types';
 
 const tones: Record<string, { bg: string; fg: string }> = {
-  checked_in: { bg: colors.primaryMuted, fg: colors.primary },
+  checked_in: { bg: colors.primaryMuted, fg: colors.primaryDeep },
   diagnosis: { bg: colors.warningMuted, fg: colors.warning },
   in_progress: { bg: colors.warningMuted, fg: colors.warning },
   inspection: { bg: colors.warningMuted, fg: colors.warning },
-  ready: { bg: colors.primaryMuted, fg: colors.primary },
-  picked_up: { bg: colors.primaryMuted, fg: colors.primary },
+  ready: { bg: colors.primaryMuted, fg: colors.primaryDeep },
+  picked_up: { bg: colors.primaryMuted, fg: colors.primaryDeep },
   cancelled: { bg: colors.dangerMuted, fg: colors.danger },
   requested: { bg: colors.warningMuted, fg: colors.warning },
-  confirmed: { bg: colors.primaryMuted, fg: colors.primary },
-  completed: { bg: colors.primaryMuted, fg: colors.primary },
+  confirmed: { bg: colors.primaryMuted, fg: colors.primaryDeep },
+  completed: { bg: colors.primaryMuted, fg: colors.primaryDeep },
   draft: { bg: colors.bgElevated, fg: colors.textMuted },
   sent: { bg: colors.warningMuted, fg: colors.warning },
-  approved: { bg: colors.primaryMuted, fg: colors.primary },
+  approved: { bg: colors.primaryMuted, fg: colors.primaryDeep },
   declined: { bg: colors.dangerMuted, fg: colors.danger },
   expired: { bg: colors.dangerMuted, fg: colors.danger },
 };
@@ -31,6 +31,7 @@ export function StatusBadge({
   const label = repairStatusCopy[status as RepairStatus] ?? humanize(status);
   return (
     <View style={[styles.badge, { backgroundColor: tone.bg }]}>
+      <View style={[styles.dot, { backgroundColor: tone.fg }]} />
       <Text style={[styles.label, { color: tone.fg }]}>{label}</Text>
     </View>
   );
@@ -45,10 +46,19 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     borderRadius: radius.pill,
     paddingHorizontal: 12,
-    paddingVertical: 6,
+    paddingVertical: 7,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 7,
+  },
+  dot: {
+    width: 7,
+    height: 7,
+    borderRadius: 4,
   },
   label: {
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: fonts.bodyBold,
+    letterSpacing: 0.2,
   },
 });

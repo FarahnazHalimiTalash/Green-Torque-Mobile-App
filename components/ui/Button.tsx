@@ -1,6 +1,12 @@
+import { LinearGradient } from 'expo-linear-gradient';
 import { ActivityIndicator, Pressable, StyleSheet, Text, ViewStyle } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from 'react-native-reanimated';
 
-import { colors, radius } from '@/constants/theme';
+import { colors, fonts, gradients, radius, shadow } from '@/constants/theme';
 
 type Variant = 'primary' | 'secondary' | 'ghost' | 'danger';
 
@@ -13,6 +19,8 @@ type Props = {
   style?: ViewStyle;
 };
 
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+
 export function Button({
   label,
   onPress,
@@ -21,73 +29,106 @@ export function Button({
   loading,
   style,
 }: Props) {
+  const scale = useSharedValue(1);
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
   const spinner =
     variant === 'primary' ? colors.white : variant === 'danger' ? colors.danger : colors.primary;
 
+  const content = loading ? (
+    <ActivityIndicator color={spinner} />
+  ) : (
+    <Text
+      style={[
+        styles.label,
+        variant === 'primary' && styles.primaryLabel,
+        variant === 'secondary' && styles.secondaryLabel,
+        variant === 'ghost' && styles.ghostLabel,
+        variant === 'danger' && styles.dangerLabel,
+      ]}>
+      {label}
+    </Text>
+  );
+
   return (
-    <Pressable
+    <AnimatedPressable
       accessibilityRole="button"
       onPress={onPress}
       disabled={disabled || loading}
-      style={({ pressed }) => [
+      onPressIn={() => {
+        scale.value = withSpring(0.97, { damping: 16, stiffness: 320 });
+      }}
+      onPressOut={() => {
+        scale.value = withSpring(1, { damping: 14, stiffness: 240 });
+      }}
+      style={[
         styles.base,
-        styles[variant],
-        pressed && styles.pressed,
+        variant === 'secondary' && styles.secondary,
+        variant === 'ghost' && styles.ghost,
+        variant === 'danger' && styles.danger,
+        variant === 'primary' && styles.primaryShadow,
         (disabled || loading) && styles.disabled,
+        animatedStyle,
         style,
       ]}>
-      {loading ? (
-        <ActivityIndicator color={spinner} />
+      {variant === 'primary' ? (
+        <LinearGradient
+          colors={[...gradients.primaryButton]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+          style={styles.gradient}>
+          {content}
+        </LinearGradient>
       ) : (
-        <Text
-          style={[
-            styles.label,
-            variant === 'primary' && styles.primaryLabel,
-            variant === 'secondary' && styles.secondaryLabel,
-            variant === 'ghost' && styles.ghostLabel,
-            variant === 'danger' && styles.dangerLabel,
-          ]}
-        >
-          {label}
-        </Text>
+        content
       )}
-    </Pressable>
+    </AnimatedPressable>
   );
 }
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 52,
+    minHeight: 54,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: 16,
+    overflow: 'hidden',
   },
-  primary: {
-    backgroundColor: colors.primary,
+  gradient: {
+    minHeight: 54,
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 18,
+  },
+  primaryShadow: {
+    ...shadow.float,
   },
   secondary: {
     backgroundColor: colors.white,
     borderWidth: 1,
-    borderColor: colors.border,
+    borderColor: colors.borderStrong,
+    paddingHorizontal: 18,
   },
   ghost: {
     backgroundColor: 'transparent',
+    paddingHorizontal: 18,
   },
   danger: {
     backgroundColor: colors.white,
     borderWidth: 1,
     borderColor: colors.danger,
-  },
-  pressed: {
-    opacity: 0.86,
+    paddingHorizontal: 18,
   },
   disabled: {
     opacity: 0.5,
   },
   label: {
     fontSize: 16,
-    fontWeight: '700',
+    fontFamily: fonts.bodyBold,
+    letterSpacing: 0.2,
   },
   primaryLabel: {
     color: colors.white,
@@ -96,7 +137,7 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   ghostLabel: {
-    color: colors.primary,
+    color: colors.primaryDeep,
   },
   dangerLabel: {
     color: colors.danger,
