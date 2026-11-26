@@ -41,9 +41,9 @@ function LoginForm() {
     <main className="flex min-h-screen items-center justify-center p-6">
       <form
         onSubmit={onSubmit}
-        className="w-full max-w-md rounded-[28px] border border-[#D7E5DC] bg-white p-8 shadow-[0_16px_40px_rgba(7,20,15,0.08)]"
+        className="w-full max-w-md rounded-[28px] border border-gt-border bg-gt-card p-8 shadow-[0_16px_40px_rgba(7,20,15,0.08)]"
       >
-        <div className="mb-5 inline-flex rounded-2xl bg-[#07140F] px-3 py-2">
+        <div className="mb-5 inline-flex rounded-2xl bg-gt-header px-3 py-2">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -52,9 +52,9 @@ function LoginForm() {
             className="h-12 w-auto"
           />
         </div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#15803D]">Shop access</p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#0C1F16]">Shop dashboard</h1>
-        <p className="mt-2 mb-6 text-[#4F6B5C]">
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Shop access</p>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gt-text">Shop dashboard</h1>
+        <p className="mt-2 mb-6 text-gt-muted">
           Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the
           mobile app.
         </p>
@@ -70,12 +70,12 @@ function LoginForm() {
               onChange={(event) => setPassword(event.target.value)}
             />
           </Field>
-          {error ? <p className="text-sm text-[#DC2626]">{error}</p> : null}
+          {error ? <p className="text-sm text-gt-danger">{error}</p> : null}
           <Button type="submit" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
           </Button>
         </div>
-        <p className="mt-6 text-sm text-[#7F9A8B]">
+        <p className="mt-6 text-sm text-gt-dim">
           Demo: advisor@greentorque.demo (admin), subadmin@greentorque.demo, or tech@greentorque.demo /
           shop123
         </p>

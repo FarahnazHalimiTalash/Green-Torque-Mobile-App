@@ -19,12 +19,12 @@ export default function RepairOrdersPage() {
     <div className="grid gap-5">
       <h1 className="text-3xl font-extrabold">{staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}</h1>
       {staff?.role === "sub_admin" ? (
-        <p className="text-[#4F6B5C]">
+        <p className="text-gt-muted">
           Admin assigns jobs here. Open a job to upload work photos and videos for the customer. Messaging and other shop tools are admin-only.
         </p>
       ) : null}
       {staff?.role === "sub_admin" && orders.length === 0 ? (
-        <p className="text-[#4F6B5C]">No jobs are assigned to you yet.</p>
+        <p className="text-gt-muted">No jobs are assigned to you yet.</p>
       ) : null}
       {orders.map((order) => {
         const customer = state.customers.find((item) => item.id === order.customerId);
@@ -32,11 +32,11 @@ export default function RepairOrdersPage() {
         const assigned = state.staff.find((item) => item.id === order.assignedSubAdminId);
         return (
           <Link key={order.id} href={`/repair-orders/${order.id}`}>
-            <Card className="hover:border-[#16A34A]">
+            <Card className="hover:border-gt-primary">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
                   <p className="font-bold">#{order.number} · {order.serviceSummary}</p>
-                  <p className="text-sm text-[#4F6B5C]">
+                  <p className="text-sm text-gt-muted">
                     {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {formatDate(order.openedAt)} · {order.bayName ?? "No bay"}
                     {staff?.role === "sub_admin" ? "" : ` · ${assigned?.fullName ?? "No sub-admin"}`}
                   </p>

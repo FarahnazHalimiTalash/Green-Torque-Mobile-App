@@ -1,3 +1,4 @@
+/** Shared with shop admin/sub-admin (`shop/lib/theme.ts` + `shop/app/globals.css`). */
 export const colors = {
   bg: '#F7FAF8',
   bgElevated: '#EEF5F0',

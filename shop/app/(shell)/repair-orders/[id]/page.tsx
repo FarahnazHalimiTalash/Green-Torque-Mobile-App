@@ -69,7 +69,7 @@ export default function RepairOrderPage() {
     return (
       <div className="grid gap-3">
         <p>This repair order is not assigned to you.</p>
-        <Link href="/repair-orders" className="font-semibold text-[#15803D]">Back to assigned jobs</Link>
+        <Link href="/repair-orders" className="font-semibold text-gt-primary-deep">Back to assigned jobs</Link>
       </div>
     );
   }
@@ -127,7 +127,7 @@ export default function RepairOrderPage() {
   const mediaCard = (
     <Card>
       <h2 className="mb-4 font-bold">Work photos & videos</h2>
-      <p className="mb-4 text-sm text-[#4F6B5C]">
+      <p className="mb-4 text-sm text-gt-muted">
         {closed
           ? "Closed history is view-only for media. Admin can correct status and summary below with a reason."
           : subAdmin
@@ -142,7 +142,7 @@ export default function RepairOrderPage() {
             accept="image/*,video/*"
             onChange={(event) => setMediaFile(event.target.files?.[0] ?? null)}
           />
-          {mediaFile ? <p className="text-sm text-[#4F6B5C]">{mediaFile.name}</p> : null}
+          {mediaFile ? <p className="text-sm text-gt-muted">{mediaFile.name}</p> : null}
           <textarea
             className={`${inputClass} min-h-20 py-3`}
             value={clip}
@@ -154,11 +154,11 @@ export default function RepairOrderPage() {
           </Button>
         </form>
       ) : !closed ? (
-        <p className="text-sm text-[#4F6B5C]">Ask an admin or sub-admin to upload work photos and videos.</p>
+        <p className="text-sm text-gt-muted">Ask an admin or sub-admin to upload work photos and videos.</p>
       ) : null}
       <div className="mt-4 grid gap-4">
         {order.media.map((item) => (
-          <div key={item.id} className="rounded-xl bg-[#F4F9F6] p-3">
+          <div key={item.id} className="rounded-xl bg-gt-card-alt p-3">
             {item.uri && item.kind === "photo" ? (
               <img src={item.uri} alt={item.caption || "Work photo"} className="mb-2 w-full rounded-xl" />
             ) : null}
@@ -166,7 +166,7 @@ export default function RepairOrderPage() {
               <video src={item.uri} controls className="mb-2 w-full rounded-xl bg-black" />
             ) : null}
             <p className="text-sm">{item.caption || (item.kind === "photo" ? "Work photo" : "Work video")}</p>
-            <p className="mt-1 text-xs text-[#4F6B5C]">{formatDateTime(item.createdAt)}</p>
+            <p className="mt-1 text-xs text-gt-muted">{formatDateTime(item.createdAt)}</p>
           </div>
         ))}
       </div>
@@ -177,7 +177,7 @@ export default function RepairOrderPage() {
     closed && admin ? (
       <Card>
         <h2 className="mb-2 font-bold">History correction</h2>
-        <p className="mb-4 text-sm text-[#4F6B5C]">
+        <p className="mb-4 text-sm text-gt-muted">
           Closed repairs are locked. Admin can correct them only with a reason so every change stays in the audit trail.
         </p>
         <form
@@ -259,18 +259,18 @@ export default function RepairOrderPage() {
     <Card>
       <h2 className="mb-4 font-bold">Audit trail</h2>
       {auditEntries.length === 0 ? (
-        <p className="text-sm text-[#4F6B5C]">No history corrections recorded for this repair yet.</p>
+        <p className="text-sm text-gt-muted">No history corrections recorded for this repair yet.</p>
       ) : (
         <div className="grid gap-3">
           {auditEntries.map((entry) => (
-            <div key={entry.id} className="rounded-xl bg-[#F4F9F6] p-3 text-sm">
+            <div key={entry.id} className="rounded-xl bg-gt-card-alt p-3 text-sm">
               <p className="font-bold">{entry.summary}</p>
-              <p className="mt-1 text-[#4F6B5C]">
+              <p className="mt-1 text-gt-muted">
                 {entry.actorName} ({entry.actorRole}) · {formatDateTime(entry.createdAt)}
               </p>
               <p className="mt-2">Reason: {entry.reason}</p>
-              <p className="mt-1 text-xs text-[#4F6B5C]">Before: {entry.before}</p>
-              <p className="text-xs text-[#4F6B5C]">After: {entry.after}</p>
+              <p className="mt-1 text-xs text-gt-muted">Before: {entry.before}</p>
+              <p className="text-xs text-gt-muted">After: {entry.after}</p>
             </div>
           ))}
         </div>
@@ -282,38 +282,38 @@ export default function RepairOrderPage() {
     <div className="grid gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-extrabold tracking-[0.16em] text-[#4F6B5C]">REPAIR ORDER</p>
+          <p className="text-xs font-extrabold tracking-[0.16em] text-gt-muted">REPAIR ORDER</p>
           <h1 className="text-3xl font-extrabold">#{order.number} · {order.serviceSummary}</h1>
-          <p className="text-[#4F6B5C]">
+          <p className="text-gt-muted">
             {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · opened {formatDateTime(order.openedAt)}
           </p>
           {vehicle ? (
-            <Link href={`/vehicles/${vehicle.id}`} className="mt-2 inline-block text-sm font-semibold text-[#15803D]">
+            <Link href={`/vehicles/${vehicle.id}`} className="mt-2 inline-block text-sm font-semibold text-gt-primary-deep">
               Open full vehicle service history
             </Link>
           ) : null}
           {closed ? (
-            <p className="mt-2 text-sm font-semibold text-[#C2410C]">
+            <p className="mt-2 text-sm font-semibold text-gt-warning">
               Closed history — customers cannot edit. Admin corrections are audited.
             </p>
           ) : null}
         </div>
         <StatusBadge status={order.status} />
       </div>
-      {error ? <p className="text-[#DC2626]">{error}</p> : null}
+      {error ? <p className="text-gt-danger">{error}</p> : null}
 
       <Card>
         <h2 className="mb-2 font-bold">Customer pickup acknowledgment</h2>
         {order.pickupAcknowledgment ? (
-          <div className="rounded-xl bg-[#F4F9F6] p-4">
-            <p className="text-sm text-[#4F6B5C]">Customer note (locked for customer; admin edits are audited)</p>
+          <div className="rounded-xl bg-gt-card-alt p-4">
+            <p className="text-sm text-gt-muted">Customer note (locked for customer; admin edits are audited)</p>
             <p className="mt-2">{order.pickupAcknowledgment.note}</p>
-            <p className="mt-4 text-sm text-[#4F6B5C]">Signature</p>
+            <p className="mt-4 text-sm text-gt-muted">Signature</p>
             <p className="text-xl font-bold italic">{order.pickupAcknowledgment.signatureFullName}</p>
-            <p className="mt-2 text-xs text-[#4F6B5C]">Signed {formatDateTime(order.pickupAcknowledgment.signedAt)}</p>
+            <p className="mt-2 text-xs text-gt-muted">Signed {formatDateTime(order.pickupAcknowledgment.signedAt)}</p>
           </div>
         ) : (
-          <p className="text-sm text-[#C2410C]">
+          <p className="text-sm text-gt-warning">
             {order.status === "ready" || order.status === "picked_up"
               ? "Waiting for the customer to submit a pickup note and full-name signature in the app."
               : "When the vehicle is ready, the customer must sign a pickup acknowledgment before history is complete."}
@@ -334,7 +334,7 @@ export default function RepairOrderPage() {
             <Card>
               <h2 className="mb-4 font-bold">Status and assignment</h2>
               {closed ? (
-                <p className="mb-4 text-sm text-[#4F6B5C]">
+                <p className="mb-4 text-sm text-gt-muted">
                   Status is locked. Use History correction above to change closed records.
                 </p>
               ) : (
@@ -343,7 +343,7 @@ export default function RepairOrderPage() {
                     <button
                       key={step}
                       onClick={() => run({ type: "update_repair_order", payload: { id: order.id, status: step } })}
-                      className={`rounded-full px-3 py-1 text-sm ${index === currentIndex ? "bg-[#C2410C] text-white font-bold" : index < currentIndex ? "bg-[rgba(22,163,74,0.12)] text-[#15803D]" : "bg-[#EEF5F0] text-[#4F6B5C]"}`}
+                      className={`rounded-full px-3 py-1 text-sm ${index === currentIndex ? "bg-gt-warning text-white font-bold" : index < currentIndex ? "bg-[var(--gt-primary-muted)] text-gt-primary-deep" : "bg-gt-elevated text-gt-muted"}`}
                     >
                       {repairStatusCopy[step as RepairStatus]}
                     </button>
@@ -398,17 +398,17 @@ export default function RepairOrderPage() {
 
             <Card>
               <h2 className="mb-4 font-bold">Diagnosis charge</h2>
-              <p className="mb-4 text-sm text-[#4F6B5C]">
+              <p className="mb-4 text-sm text-gt-muted">
                 After check-in, diagnosis has a fee. Send it to the customer. If more work is needed, send a separate further-service estimate they can accept or decline.
               </p>
               {order.diagnosisCharge?.status === "sent" ? (
-                <div className="mb-4 rounded-xl border border-[rgba(22,163,74,0.35)] bg-[rgba(22,163,74,0.1)] p-4">
-                  <p className="font-bold text-[#15803D]">Diagnosis sent to customer</p>
+                <div className="mb-4 rounded-xl border border-gt-primary/40 bg-[var(--gt-primary-muted)] p-4">
+                  <p className="font-bold text-gt-primary-deep">Diagnosis sent to customer</p>
                   <p className="mt-1 text-2xl font-extrabold">{formatMoney(order.diagnosisCharge.amount)}</p>
-                  <p className="mt-1 text-sm text-[#4F6B5C]">{order.diagnosisCharge.description}</p>
+                  <p className="mt-1 text-sm text-gt-muted">{order.diagnosisCharge.description}</p>
                 </div>
               ) : (
-                <p className="mb-4 text-sm text-[#C2410C]">No diagnosis charge has been sent yet.</p>
+                <p className="mb-4 text-sm text-gt-warning">No diagnosis charge has been sent yet.</p>
               )}
               {admin && !closed ? (
                 <form
@@ -438,9 +438,9 @@ export default function RepairOrderPage() {
               <h2 className="mb-4 font-bold">Diagnosis notes</h2>
               <div className="grid gap-3">
                 {order.notes.map((item) => (
-                  <div key={item.id} className="rounded-xl bg-[#F4F9F6] p-3">
+                  <div key={item.id} className="rounded-xl bg-gt-card-alt p-3">
                     <p>{item.body}</p>
-                    <p className="mt-1 text-xs text-[#4F6B5C]">
+                    <p className="mt-1 text-xs text-gt-muted">
                       {item.visibleToCustomer ? "Visible to customer" : "Internal"} · {formatDateTime(item.createdAt)}
                     </p>
                   </div>
@@ -456,7 +456,7 @@ export default function RepairOrderPage() {
                   }}
                 >
                   <textarea className={`${inputClass} min-h-24 py-3`} value={note} onChange={(event) => setNote(event.target.value)} placeholder="What did you find?" />
-                  <label className="flex items-center gap-2 text-sm text-[#4F6B5C]">
+                  <label className="flex items-center gap-2 text-sm text-gt-muted">
                     <input type="checkbox" checked={visibleToCustomer} onChange={(event) => setVisibleToCustomer(event.target.checked)} />
                     Visible to customer
                   </label>
@@ -541,20 +541,20 @@ export default function RepairOrderPage() {
                   <StatusBadge status={order.estimate.status} />
                   <p className="text-2xl font-extrabold">{formatMoney(order.estimate.amount)}</p>
                   {order.estimate.status === "sent" ? (
-                    <div className="rounded-xl border border-[#C2410C] bg-[rgba(194,65,12,0.1)] p-4">
-                      <p className="font-bold text-[#C2410C]">Waiting for customer decision</p>
+                    <div className="rounded-xl border border-gt-warning bg-[var(--gt-warning-muted)] p-4">
+                      <p className="font-bold text-gt-warning">Waiting for customer decision</p>
                       <p className="mt-1 text-sm">The customer can approve or decline this further-service estimate in the app.</p>
                     </div>
                   ) : null}
                   {order.estimate.status === "approved" ? (
-                    <div className="rounded-xl border border-[#16A34A] bg-[rgba(22,163,74,0.12)] p-4">
-                      <p className="font-bold text-[#15803D]">Customer approved</p>
+                    <div className="rounded-xl border border-gt-primary bg-[var(--gt-primary-muted)] p-4">
+                      <p className="font-bold text-gt-primary-deep">Customer approved</p>
                       <p className="mt-1 text-sm">The customer accepted this further-service estimate. Continue the additional repair.</p>
                     </div>
                   ) : null}
                   {order.estimate.status === "declined" ? (
-                    <div className="rounded-xl border border-[#DC2626] bg-[rgba(220,38,38,0.1)] p-4">
-                      <p className="font-bold text-[#DC2626]">Customer declined</p>
+                    <div className="rounded-xl border border-gt-danger bg-[var(--gt-danger-muted)] p-4">
+                      <p className="font-bold text-gt-danger">Customer declined</p>
                       <p className="mt-1 text-sm">The customer declined this further-service estimate. The diagnosis charge still applies. Do not continue this extra work unless you send a new estimate.</p>
                     </div>
                   ) : null}
@@ -571,29 +571,29 @@ export default function RepairOrderPage() {
 
             <Card>
               <h2 className="mb-4 font-bold">New problem found during work</h2>
-              <p className="mb-4 text-sm text-[#4F6B5C]">
+              <p className="mb-4 text-sm text-gt-muted">
                 {closed
                   ? "Closed history is view-only for found problems."
                   : "If another issue appears while the vehicle is in the shop, only admin can review it, send a new cost estimate, and notify the customer. They can approve or decline that extra work."}
               </p>
               {(order.foundProblems ?? []).map((problem) => (
-                <div key={problem.id} className="mb-4 rounded-xl bg-[#F4F9F6] p-4">
+                <div key={problem.id} className="mb-4 rounded-xl bg-gt-card-alt p-4">
                   <p className="font-bold">{problem.summary}</p>
                   <p className="mt-1 text-2xl font-extrabold">{formatMoney(problem.estimate.amount)}</p>
                   {problem.estimate.lines.map((line) => (
-                    <p key={line.id} className="text-sm text-[#4F6B5C]">{line.name} · {formatMoney(line.amount)}</p>
+                    <p key={line.id} className="text-sm text-gt-muted">{line.name} · {formatMoney(line.amount)}</p>
                   ))}
                   <div className="mt-3">
                     <StatusBadge status={problem.estimate.status} />
                   </div>
                   {problem.estimate.status === "sent" ? (
-                    <p className="mt-2 text-sm text-[#C2410C]">Customer notified. Waiting for approve or decline.</p>
+                    <p className="mt-2 text-sm text-gt-warning">Customer notified. Waiting for approve or decline.</p>
                   ) : null}
                   {problem.estimate.status === "approved" ? (
-                    <p className="mt-2 text-sm text-[#15803D]">Customer approved this extra repair.</p>
+                    <p className="mt-2 text-sm text-gt-primary-deep">Customer approved this extra repair.</p>
                   ) : null}
                   {problem.estimate.status === "declined" ? (
-                    <p className="mt-2 text-sm text-[#DC2626]">Customer declined this extra repair. Do not continue it unless you send a new estimate.</p>
+                    <p className="mt-2 text-sm text-gt-danger">Customer declined this extra repair. Do not continue it unless you send a new estimate.</p>
                   ) : null}
                 </div>
               ))}
@@ -643,25 +643,25 @@ export default function RepairOrderPage() {
                   <Button type="submit">Notify customer and send estimate</Button>
                 </form>
               ) : !closed ? (
-                <p className="text-sm text-[#4F6B5C]">Ask an admin to review a newly found problem and send the customer an estimate.</p>
+                <p className="text-sm text-gt-muted">Ask an admin to review a newly found problem and send the customer an estimate.</p>
               ) : null}
             </Card>
 
             <Card>
               <h2 className="mb-4 font-bold">Customer payment</h2>
-              <p className="mb-3 text-sm text-[#4F6B5C]">
+              <p className="mb-3 text-sm text-gt-muted">
                 {customerCard ? paymentMethodLabel(customerCard) : "No payment method on file. The customer adds a card in the app."}
               </p>
               {due.map((item) => (
                 <p key={item.sourceId} className="text-sm">Due · {item.description} · {formatMoney(item.amount)}</p>
               ))}
               {orderPayments.map((item) => (
-                <p key={item.id} className="mt-2 text-sm text-[#15803D]">
+                <p key={item.id} className="mt-2 text-sm text-gt-primary-deep">
                   Paid {formatMoney(item.amount)} · {item.methodBrand} •••• {item.methodLast4} · {item.description}
                 </p>
               ))}
               {!due.length && !orderPayments.length ? (
-                <p className="text-sm text-[#4F6B5C]">No charges due yet. Diagnosis and approved extra work appear here after the customer can pay.</p>
+                <p className="text-sm text-gt-muted">No charges due yet. Diagnosis and approved extra work appear here after the customer can pay.</p>
               ) : null}
             </Card>
 
@@ -670,7 +670,7 @@ export default function RepairOrderPage() {
                 <h2 className="mb-4 font-bold">Message customer</h2>
                 <div className="mb-3 grid max-h-48 gap-2 overflow-auto">
                   {(state.conversations.find((item) => item.customerId === order.customerId)?.messages ?? []).map((item) => (
-                    <p key={item.id} className={`rounded-xl px-3 py-2 text-sm ${item.sender === "shop" ? "bg-[rgba(22,163,74,0.1)]" : "bg-[#F4F9F6]"}`}>
+                    <p key={item.id} className={`rounded-xl px-3 py-2 text-sm ${item.sender === "shop" ? "bg-[var(--gt-primary-muted)]" : "bg-gt-card-alt"}`}>
                       <span className="font-bold">{item.sender === "shop" ? "Shop" : customer?.fullName}: </span>
                       {item.body}
                     </p>

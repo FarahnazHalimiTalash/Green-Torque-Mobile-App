@@ -13,7 +13,7 @@ export default function VehiclesPage() {
   return (
     <div className="grid gap-5">
       <h1 className="text-3xl font-extrabold">Vehicles</h1>
-      <p className="text-sm text-[#4F6B5C]">
+      <p className="text-sm text-gt-muted">
         Open a vehicle to review every service, repair order, and customer pickup acknowledgment.
       </p>
       {state.vehicles.map((vehicle) => {
@@ -23,7 +23,7 @@ export default function VehiclesPage() {
           <Link key={vehicle.id} href={`/vehicles/${vehicle.id}`}>
             <Card>
               <p className="font-bold">{vehicleLabel(vehicle)}</p>
-              <p className="text-sm text-[#4F6B5C]">
+              <p className="text-sm text-gt-muted">
                 {customer?.fullName} · {vehicle.vin || "No VIN"} · {vehicle.mileage.toLocaleString()} mi ·{" "}
                 {vehicle.evType.toUpperCase()} · {services} service{services === 1 ? "" : "s"}
               </p>

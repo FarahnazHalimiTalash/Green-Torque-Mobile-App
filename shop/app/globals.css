@@ -1,38 +1,65 @@
 @import "tailwindcss";
 
+/* Exact same codes as customer mobile `constants/theme.ts` */
 :root {
-  --background: #f7faf8;
-  --foreground: #0c1f16;
-  --bg-elevated: #eef5f0;
-  --bg-soft: #e4f0e8;
-  --card: #ffffff;
-  --card-alt: #f4f9f6;
-  --border: #d7e5dc;
-  --border-strong: #b7cfc0;
-  --primary: #16a34a;
-  --primary-deep: #15803d;
-  --primary-dark: #0b1c14;
-  --header: #07140f;
-  --muted: #4f6b5c;
-  --dim: #7f9a8b;
-  --warning: #c2410c;
-  --danger: #dc2626;
-  --info: #0369a1;
-  --on-dark: #f3fbf6;
+  --gt-bg: #f7faf8;
+  --gt-bg-elevated: #eef5f0;
+  --gt-bg-soft: #e4f0e8;
+  --gt-header: #07140f;
+  --gt-header-soft: #0f241a;
+  --gt-card: #ffffff;
+  --gt-card-alt: #f4f9f6;
+  --gt-border: #d7e5dc;
+  --gt-border-strong: #b7cfc0;
+  --gt-primary: #16a34a;
+  --gt-primary-dark: #0b1c14;
+  --gt-primary-deep: #15803d;
+  --gt-primary-muted: rgba(22, 163, 74, 0.1);
+  --gt-primary-glow: rgba(22, 163, 74, 0.18);
+  --gt-text: #0c1f16;
+  --gt-muted: #4f6b5c;
+  --gt-dim: #7f9a8b;
+  --gt-on-dark: #f3fbf6;
+  --gt-warning: #c2410c;
+  --gt-warning-muted: rgba(194, 65, 12, 0.1);
+  --gt-danger: #dc2626;
+  --gt-danger-muted: rgba(220, 38, 38, 0.1);
+  --gt-info: #0369a1;
+  --gt-info-muted: rgba(3, 105, 161, 0.1);
+  --background: var(--gt-bg);
+  --foreground: var(--gt-text);
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  --color-background: var(--gt-bg);
+  --color-foreground: var(--gt-text);
+  --color-gt-bg: var(--gt-bg);
+  --color-gt-elevated: var(--gt-bg-elevated);
+  --color-gt-soft: var(--gt-bg-soft);
+  --color-gt-header: var(--gt-header);
+  --color-gt-header-soft: var(--gt-header-soft);
+  --color-gt-card: var(--gt-card);
+  --color-gt-card-alt: var(--gt-card-alt);
+  --color-gt-border: var(--gt-border);
+  --color-gt-border-strong: var(--gt-border-strong);
+  --color-gt-primary: var(--gt-primary);
+  --color-gt-primary-dark: var(--gt-primary-dark);
+  --color-gt-primary-deep: var(--gt-primary-deep);
+  --color-gt-text: var(--gt-text);
+  --color-gt-muted: var(--gt-muted);
+  --color-gt-dim: var(--gt-dim);
+  --color-gt-on-dark: var(--gt-on-dark);
+  --color-gt-warning: var(--gt-warning);
+  --color-gt-danger: var(--gt-danger);
+  --color-gt-info: var(--gt-info);
   --font-sans: var(--font-outfit), var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-geist-mono);
 }
 
 body {
   background:
-    radial-gradient(circle at top right, rgba(22, 163, 74, 0.12), transparent 28%),
+    radial-gradient(circle at top right, var(--gt-primary-glow), transparent 28%),
     linear-gradient(180deg, #f7faf8 0%, #eef6f1 55%, #e7f2eb 100%);
-  color: var(--foreground);
+  color: var(--gt-text);
   font-family: var(--font-sans);
   min-height: 100%;
 }
@@ -47,4 +74,5 @@ h1,
 h2,
 h3 {
   letter-spacing: -0.03em;
+  color: var(--gt-text);
 }

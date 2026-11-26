@@ -26,7 +26,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   if (!ready || !staff) {
     return (
-      <div className="grid min-h-screen place-items-center text-[#15803D]">Loading shop…</div>
+      <div className="grid min-h-screen place-items-center text-gt-primary-deep">Loading shop…</div>
     );
   }
 
@@ -35,8 +35,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
-      <aside className="border-b border-[#D7E5DC] bg-[#07140F] text-[#F3FBF6] lg:border-r lg:border-b-0 lg:border-[#0F241A]">
-        <Link href={home} className="block border-b border-[#14532D] bg-black px-4 py-3">
+      <aside className="border-b border-gt-border bg-gt-header text-gt-on-dark lg:border-r lg:border-b-0 lg:border-gt-header-soft">
+        <Link href={home} className="block border-b border-gt-header-soft bg-gt-primary-dark px-4 py-3">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -46,7 +46,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           />
         </Link>
         <div className="p-5">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#7F9A8B]">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-gt-dim">
             Shop console
           </p>
           <nav className="grid gap-1">
@@ -59,8 +59,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   href={link.href}
                   className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
                     active
-                      ? "bg-[rgba(34,197,94,0.16)] text-[#86EFAC]"
-                      : "text-[#F3FBF6] hover:bg-white/5"
+                      ? "bg-[var(--gt-primary-muted)] text-gt-primary"
+                      : "text-gt-on-dark hover:bg-white/5"
                   }`}
                 >
                   {link.label}
@@ -69,9 +69,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
           <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm">
-            <p className="font-bold">{staff.fullName}</p>
-            <p className="text-[#7F9A8B]">{staff.title}</p>
-            <button onClick={signOut} className="mt-3 text-[#7F9A8B] hover:text-[#86EFAC]">
+            <p className="font-bold text-gt-on-dark">{staff.fullName}</p>
+            <p className="text-gt-dim">{staff.title}</p>
+            <button onClick={signOut} className="mt-3 text-gt-dim hover:text-gt-primary">
               Sign out
             </button>
           </div>

@@ -3,24 +3,24 @@ import { repairStatusCopy } from "@/lib/format";
 
 export function StatusBadge({ status }: { status: string }) {
   const tones: Record<string, string> = {
-    requested: "bg-[rgba(3,105,161,0.1)] text-[#0369A1]",
-    confirmed: "bg-[rgba(22,163,74,0.1)] text-[#15803D]",
-    checked_in: "bg-[rgba(3,105,161,0.1)] text-[#0369A1]",
-    diagnosis: "bg-[rgba(194,65,12,0.1)] text-[#C2410C]",
-    in_progress: "bg-[rgba(194,65,12,0.1)] text-[#C2410C]",
-    inspection: "bg-[rgba(3,105,161,0.1)] text-[#0369A1]",
-    ready: "bg-[rgba(22,163,74,0.1)] text-[#15803D]",
-    picked_up: "bg-[rgba(22,163,74,0.1)] text-[#15803D]",
-    cancelled: "bg-[rgba(220,38,38,0.1)] text-[#DC2626]",
-    sent: "bg-[rgba(194,65,12,0.1)] text-[#C2410C]",
-    approved: "bg-[rgba(22,163,74,0.1)] text-[#15803D]",
-    declined: "bg-[rgba(220,38,38,0.1)] text-[#DC2626]",
-    draft: "bg-[#EEF5F0] text-[#4F6B5C]",
+    requested: "bg-[var(--gt-info-muted)] text-gt-info",
+    confirmed: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
+    checked_in: "bg-[var(--gt-info-muted)] text-gt-info",
+    diagnosis: "bg-[var(--gt-warning-muted)] text-gt-warning",
+    in_progress: "bg-[var(--gt-warning-muted)] text-gt-warning",
+    inspection: "bg-[var(--gt-info-muted)] text-gt-info",
+    ready: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
+    picked_up: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
+    cancelled: "bg-[var(--gt-danger-muted)] text-gt-danger",
+    sent: "bg-[var(--gt-warning-muted)] text-gt-warning",
+    approved: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
+    declined: "bg-[var(--gt-danger-muted)] text-gt-danger",
+    draft: "bg-gt-elevated text-gt-muted",
   };
   const label = repairStatusCopy[status as RepairStatus] ?? status.replaceAll("_", " ");
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold capitalize ${tones[status] ?? "bg-[#EEF5F0] text-[#4F6B5C]"}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold capitalize ${tones[status] ?? "bg-gt-elevated text-gt-muted"}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {label}
@@ -31,7 +31,7 @@ export function StatusBadge({ status }: { status: string }) {
 export function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
   return (
     <section
-      className={`rounded-[26px] border border-[#D7E5DC] bg-white p-5 shadow-[0_8px_24px_rgba(7,20,15,0.06)] ${className}`}
+      className={`rounded-[26px] border border-gt-border bg-gt-card p-5 shadow-[0_8px_24px_rgba(7,20,15,0.06)] ${className}`}
     >
       {children}
     </section>
@@ -47,14 +47,14 @@ export function Field({
 }) {
   return (
     <label className="grid gap-2 text-sm">
-      <span className="font-semibold text-[#4F6B5C]">{label}</span>
+      <span className="font-semibold text-gt-muted">{label}</span>
       {children}
     </label>
   );
 }
 
 export const inputClass =
-  "min-h-11 rounded-xl border border-[#D7E5DC] bg-white px-3 text-sm text-[#0C1F16] outline-none transition focus:border-[#16A34A] focus:ring-2 focus:ring-[rgba(22,163,74,0.15)]";
+  "min-h-11 rounded-xl border border-gt-border bg-gt-card px-3 text-sm text-gt-text outline-none transition focus:border-gt-primary focus:ring-2 focus:ring-[var(--gt-primary-glow)]";
 
 export function Button({
   children,
@@ -71,10 +71,10 @@ export function Button({
 }) {
   const styles = {
     primary:
-      "bg-gradient-to-br from-[#22C55E] to-[#16A34A] text-white shadow-[0_8px_18px_rgba(21,128,61,0.22)]",
-    secondary: "border border-[#B7CFC0] bg-white text-[#0C1F16]",
-    danger: "border border-[#DC2626] bg-[rgba(220,38,38,0.08)] text-[#DC2626]",
-    ghost: "text-[#15803D]",
+      "bg-gradient-to-br from-[#22C55E] to-gt-primary text-white shadow-[0_8px_18px_rgba(21,128,61,0.22)]",
+    secondary: "border border-gt-border-strong bg-gt-card text-gt-text",
+    danger: "border border-gt-danger bg-[var(--gt-danger-muted)] text-gt-danger",
+    ghost: "text-gt-primary-deep",
   };
   return (
     <button
