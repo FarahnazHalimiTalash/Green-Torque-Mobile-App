@@ -35,8 +35,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
-      <aside className="border-b border-gt-border bg-gt-header text-gt-on-dark lg:border-r lg:border-b-0 lg:border-gt-header-soft">
-        <Link href={home} className="block border-b border-gt-header-soft bg-gt-primary-dark px-4 py-3">
+      <aside className="border-b border-gt-border bg-gt-card text-gt-text lg:border-r lg:border-b-0">
+        <Link href={home} className="block border-b border-gt-border bg-gt-header px-4 py-3">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -46,7 +46,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
           />
         </Link>
         <div className="p-5">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-gt-dim">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">
             Shop console
           </p>
           <nav className="grid gap-1">
@@ -59,8 +59,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   href={link.href}
                   className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
                     active
-                      ? "bg-[var(--gt-primary-muted)] text-gt-primary"
-                      : "text-gt-on-dark hover:bg-white/5"
+                      ? "bg-[var(--gt-primary-muted)] text-gt-primary-deep"
+                      : "text-gt-text hover:bg-gt-elevated"
                   }`}
                 >
                   {link.label}
@@ -68,10 +68,10 @@ export function Shell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm">
-            <p className="font-bold text-gt-on-dark">{staff.fullName}</p>
-            <p className="text-gt-dim">{staff.title}</p>
-            <button onClick={signOut} className="mt-3 text-gt-dim hover:text-gt-primary">
+          <div className="mt-8 rounded-2xl border border-gt-border bg-gt-card-alt p-4 text-sm">
+            <p className="font-bold text-gt-text">{staff.fullName}</p>
+            <p className="text-gt-muted">{staff.title}</p>
+            <button onClick={signOut} className="mt-3 text-gt-dim hover:text-gt-primary-deep">
               Sign out
             </button>
           </div>
