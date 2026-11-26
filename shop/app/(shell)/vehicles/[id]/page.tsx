@@ -35,24 +35,24 @@ export default function VehicleHistoryPage() {
   return (
     <div className="grid gap-6">
       <div>
-        <Link href="/vehicles" className="text-sm font-semibold text-[#3DDC84]">
+        <Link href="/vehicles" className="text-sm font-semibold text-[#15803D]">
           All vehicles
         </Link>
         <h1 className="mt-2 text-3xl font-extrabold">{vehicleLabel(vehicle)}</h1>
-        <p className="text-[#8AA99A]">
+        <p className="text-[#4F6B5C]">
           {customer?.fullName} · {vehicle.vin || "No VIN"} · {vehicle.mileage.toLocaleString()} mi ·{" "}
           {vehicle.evType.toUpperCase()}
         </p>
-        <p className="mt-2 text-sm text-[#8AA99A]">
+        <p className="mt-2 text-sm text-[#4F6B5C]">
           Full service history for this vehicle, including parts, labor, estimates, and locked customer pickup
           acknowledgments. Admin can edit customer pickup notes with a required audit reason.
         </p>
       </div>
-      {error ? <p className="text-[#E85D4C]">{error}</p> : null}
+      {error ? <p className="text-[#DC2626]">{error}</p> : null}
 
       {history.length === 0 ? (
         <Card>
-          <p className="text-sm text-[#8AA99A]">No repair history for this vehicle yet.</p>
+          <p className="text-sm text-[#4F6B5C]">No repair history for this vehicle yet.</p>
         </Card>
       ) : null}
 
@@ -64,11 +64,11 @@ export default function VehicleHistoryPage() {
           <Card key={order.id}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-extrabold tracking-[0.14em] text-[#8AA99A]">REPAIR ORDER</p>
-                <Link href={`/repair-orders/${order.id}`} className="text-xl font-extrabold text-[#3DDC84]">
+                <p className="text-xs font-extrabold tracking-[0.14em] text-[#4F6B5C]">REPAIR ORDER</p>
+                <Link href={`/repair-orders/${order.id}`} className="text-xl font-extrabold text-[#15803D]">
                   #{order.number} · {order.serviceSummary}
                 </Link>
-                <p className="mt-1 text-sm text-[#8AA99A]">
+                <p className="mt-1 text-sm text-[#4F6B5C]">
                   Opened {formatDateTime(order.openedAt)}
                   {order.pickedUpAt ? ` · Picked up ${formatDateTime(order.pickedUpAt)}` : ""}
                   {order.bayName ? ` · ${order.bayName}` : ""}
@@ -107,30 +107,30 @@ export default function VehicleHistoryPage() {
               {order.notes
                 .filter((note) => note.visibleToCustomer)
                 .map((note) => (
-                  <p key={note.id} className="text-[#8AA99A]">
+                  <p key={note.id} className="text-[#4F6B5C]">
                     Shop note · {note.body}
                   </p>
                 ))}
             </div>
 
-            <div className="mt-4 rounded-xl bg-[#0B1C14] p-4">
+            <div className="mt-4 rounded-xl bg-[#F4F9F6] p-4">
               <p className="text-sm font-bold">Customer pickup acknowledgment</p>
               {order.pickupAcknowledgment ? (
                 <>
                   <p className="mt-2">{order.pickupAcknowledgment.note}</p>
                   <p className="mt-3 text-lg font-bold italic">{order.pickupAcknowledgment.signatureFullName}</p>
-                  <p className="mt-1 text-xs text-[#8AA99A]">
+                  <p className="mt-1 text-xs text-[#4F6B5C]">
                     Signed {formatDateTime(order.pickupAcknowledgment.signedAt)} · Customer cannot edit
                   </p>
                 </>
               ) : (
-                <p className="mt-2 text-sm text-[#F5A524]">No customer pickup signature on file yet.</p>
+                <p className="mt-2 text-sm text-[#C2410C]">No customer pickup signature on file yet.</p>
               )}
             </div>
 
             {admin && isClosedRepair(order) ? (
               <form
-                className="mt-4 grid gap-3 border-t border-white/10 pt-4"
+                className="mt-4 grid gap-3 border-t border-[#D7E5DC] pt-4"
                 onSubmit={async (event) => {
                   event.preventDefault();
                   setError("");
@@ -186,23 +186,23 @@ export default function VehicleHistoryPage() {
             ) : null}
 
             {audits.length ? (
-              <div className="mt-4 grid gap-2 border-t border-white/10 pt-4">
+              <div className="mt-4 grid gap-2 border-t border-[#D7E5DC] pt-4">
                 <p className="text-sm font-bold">Audit trail</p>
                 {audits.map((entry) => (
-                  <div key={entry.id} className="rounded-xl bg-[#0B1C14] p-3 text-sm">
+                  <div key={entry.id} className="rounded-xl bg-[#F4F9F6] p-3 text-sm">
                     <p className="font-bold">{entry.summary}</p>
-                    <p className="text-[#8AA99A]">
+                    <p className="text-[#4F6B5C]">
                       {entry.actorName} · {formatDateTime(entry.createdAt)}
                     </p>
                     <p className="mt-1">Reason: {entry.reason}</p>
-                    <p className="mt-1 text-xs text-[#8AA99A]">Before: {entry.before}</p>
-                    <p className="text-xs text-[#8AA99A]">After: {entry.after}</p>
+                    <p className="mt-1 text-xs text-[#4F6B5C]">Before: {entry.before}</p>
+                    <p className="text-xs text-[#4F6B5C]">After: {entry.after}</p>
                   </div>
                 ))}
               </div>
             ) : null}
 
-            <p className="mt-3 text-xs text-[#8AA99A]">Status label: {repairStatusCopy[order.status]}</p>
+            <p className="mt-3 text-xs text-[#4F6B5C]">Status label: {repairStatusCopy[order.status]}</p>
           </Card>
         );
       })}

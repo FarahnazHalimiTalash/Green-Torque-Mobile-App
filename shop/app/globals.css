@@ -1,25 +1,50 @@
 @import "tailwindcss";
 
 :root {
-  --background: #07140f;
-  --foreground: #f2fbf6;
+  --background: #f7faf8;
+  --foreground: #0c1f16;
+  --bg-elevated: #eef5f0;
+  --bg-soft: #e4f0e8;
+  --card: #ffffff;
+  --card-alt: #f4f9f6;
+  --border: #d7e5dc;
+  --border-strong: #b7cfc0;
+  --primary: #16a34a;
+  --primary-deep: #15803d;
+  --primary-dark: #0b1c14;
+  --header: #07140f;
+  --muted: #4f6b5c;
+  --dim: #7f9a8b;
+  --warning: #c2410c;
+  --danger: #dc2626;
+  --info: #0369a1;
+  --on-dark: #f3fbf6;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-outfit), var(--font-dm-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono);
 }
 
 body {
-  background: var(--background);
+  background:
+    radial-gradient(circle at top right, rgba(22, 163, 74, 0.12), transparent 28%),
+    linear-gradient(180deg, #f7faf8 0%, #eef6f1 55%, #e7f2eb 100%);
   color: var(--foreground);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  min-height: 100%;
 }
 
 input,
 select,
 textarea {
-  color-scheme: dark;
+  color-scheme: light;
+}
+
+h1,
+h2,
+h3 {
+  letter-spacing: -0.03em;
 }

@@ -39,32 +39,45 @@ function LoginForm() {
 
   return (
     <main className="flex min-h-screen items-center justify-center p-6">
-      <form onSubmit={onSubmit} className="w-full max-w-md rounded-3xl border border-[#1E3D2E] bg-[#12261C] p-8">
-        <img
-          src="/logo.png"
-          alt="Green Torque Hybrid/EV Repair"
-          width={220}
-          height={58}
-          className="mb-5 h-14 w-auto"
-        />
-        <h1 className="text-3xl font-extrabold">Shop dashboard</h1>
-        <p className="mt-2 mb-6 text-[#8AA99A]">
-          Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the mobile app.
+      <form
+        onSubmit={onSubmit}
+        className="w-full max-w-md rounded-[28px] border border-[#D7E5DC] bg-white p-8 shadow-[0_16px_40px_rgba(7,20,15,0.08)]"
+      >
+        <div className="mb-5 inline-flex rounded-2xl bg-[#07140F] px-3 py-2">
+          <img
+            src="/logo.png"
+            alt="Green Torque Hybrid/EV Repair"
+            width={220}
+            height={58}
+            className="h-12 w-auto"
+          />
+        </div>
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#15803D]">Shop access</p>
+        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-[#0C1F16]">Shop dashboard</h1>
+        <p className="mt-2 mb-6 text-[#4F6B5C]">
+          Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the
+          mobile app.
         </p>
         <div className="grid gap-4">
           <Field label="Email">
             <input className={inputClass} value={email} onChange={(event) => setEmail(event.target.value)} />
           </Field>
           <Field label="Password">
-            <input className={inputClass} type="password" value={password} onChange={(event) => setPassword(event.target.value)} />
+            <input
+              className={inputClass}
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
           </Field>
-          {error ? <p className="text-sm text-[#E85D4C]">{error}</p> : null}
+          {error ? <p className="text-sm text-[#DC2626]">{error}</p> : null}
           <Button type="submit" disabled={loading}>
             {loading ? "Signing in…" : "Sign in"}
           </Button>
         </div>
-        <p className="mt-6 text-sm text-[#8AA99A]">
-          Demo: advisor@greentorque.demo (admin), subadmin@greentorque.demo, or tech@greentorque.demo / shop123
+        <p className="mt-6 text-sm text-[#7F9A8B]">
+          Demo: advisor@greentorque.demo (admin), subadmin@greentorque.demo, or tech@greentorque.demo /
+          shop123
         </p>
       </form>
     </main>

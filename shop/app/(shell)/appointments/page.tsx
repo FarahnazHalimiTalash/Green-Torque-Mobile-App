@@ -30,10 +30,10 @@ export default function AppointmentsPage() {
   return (
     <div className="grid gap-5">
       <h1 className="text-3xl font-extrabold">Appointments</h1>
-      <p className="text-sm text-[#8AA99A]">
+      <p className="text-sm text-[#4F6B5C]">
         Customers can cancel only open bookings. Closed appointment history is locked; admin corrections are audited.
       </p>
-      {error ? <p className="text-[#E85D4C]">{error}</p> : null}
+      {error ? <p className="text-[#DC2626]">{error}</p> : null}
       {state.appointments.map((appointment) => {
         const customer = state.customers.find((item) => item.id === appointment.customerId);
         const vehicle = state.vehicles.find((item) => item.id === appointment.vehicleId);
@@ -45,8 +45,8 @@ export default function AppointmentsPage() {
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <p className="font-bold">{customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"}</p>
-                <p className="text-sm text-[#8AA99A]">{service?.name} · {formatDateTime(appointment.scheduledAt)}</p>
-                {appointment.notes ? <p className="mt-2 text-sm text-[#8AA99A]">{appointment.notes}</p> : null}
+                <p className="text-sm text-[#4F6B5C]">{service?.name} · {formatDateTime(appointment.scheduledAt)}</p>
+                {appointment.notes ? <p className="mt-2 text-sm text-[#4F6B5C]">{appointment.notes}</p> : null}
                 {(appointment.photoUris?.length || appointment.videoUris?.length) ? (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {(appointment.photoUris ?? []).map((uri) => (
@@ -58,7 +58,7 @@ export default function AppointmentsPage() {
                   </div>
                 ) : null}
                 {closed ? (
-                  <p className="mt-2 text-sm font-semibold text-[#F5A524]">Closed history</p>
+                  <p className="mt-2 text-sm font-semibold text-[#C2410C]">Closed history</p>
                 ) : null}
               </div>
               <StatusBadge status={appointment.status} />
@@ -81,7 +81,7 @@ export default function AppointmentsPage() {
             ) : null}
             {closed && admin ? (
               <form
-                className="mt-4 grid gap-3 border-t border-white/10 pt-4"
+                className="mt-4 grid gap-3 border-t border-[#D7E5DC] pt-4"
                 onSubmit={async (event) => {
                   event.preventDefault();
                   setError("");
@@ -147,12 +147,12 @@ export default function AppointmentsPage() {
               </form>
             ) : null}
             {audits.length ? (
-              <div className="mt-4 grid gap-2 border-t border-white/10 pt-4">
+              <div className="mt-4 grid gap-2 border-t border-[#D7E5DC] pt-4">
                 <p className="text-sm font-bold">Audit trail</p>
                 {audits.map((entry) => (
-                  <div key={entry.id} className="rounded-xl bg-[#0B1C14] p-3 text-sm">
+                  <div key={entry.id} className="rounded-xl bg-[#F4F9F6] p-3 text-sm">
                     <p className="font-bold">{entry.summary}</p>
-                    <p className="text-[#8AA99A]">
+                    <p className="text-[#4F6B5C]">
                       {entry.actorName} · {formatDateTime(entry.createdAt)}
                     </p>
                     <p className="mt-1">Reason: {entry.reason}</p>

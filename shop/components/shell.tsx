@@ -26,7 +26,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   if (!ready || !staff) {
     return (
-      <div className="grid min-h-screen place-items-center text-[#3DDC84]">Loading shop…</div>
+      <div className="grid min-h-screen place-items-center text-[#15803D]">Loading shop…</div>
     );
   }
 
@@ -34,9 +34,9 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const home = staff.role === "sub_admin" ? subAdminHome() : "/";
 
   return (
-    <div className="min-h-screen lg:grid lg:grid-cols-[240px_1fr]">
-      <aside className="border-b border-[#1E3D2E] bg-[#0B1C14] lg:border-r lg:border-b-0">
-        <Link href={home} className="block border-b-[3px] border-[#00b000] bg-black px-4 py-3">
+    <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
+      <aside className="border-b border-[#D7E5DC] bg-[#07140F] text-[#F3FBF6] lg:border-r lg:border-b-0 lg:border-[#0F241A]">
+        <Link href={home} className="block border-b border-[#14532D] bg-black px-4 py-3">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -46,24 +46,32 @@ export function Shell({ children }: { children: React.ReactNode }) {
           />
         </Link>
         <div className="p-5">
+          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-[#7F9A8B]">
+            Shop console
+          </p>
           <nav className="grid gap-1">
             {links.map((link) => {
-              const active = pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`));
+              const active =
+                pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`));
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`rounded-xl px-3 py-2 text-sm font-semibold ${active ? "bg-[#3DDC84]/15 text-[#3DDC84]" : "text-[#F2FBF6] hover:bg-white/5"}`}
+                  className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
+                    active
+                      ? "bg-[rgba(34,197,94,0.16)] text-[#86EFAC]"
+                      : "text-[#F3FBF6] hover:bg-white/5"
+                  }`}
                 >
                   {link.label}
                 </Link>
               );
             })}
           </nav>
-          <div className="mt-8 text-sm">
+          <div className="mt-8 rounded-2xl border border-white/10 bg-white/5 p-4 text-sm">
             <p className="font-bold">{staff.fullName}</p>
-            <p className="text-[#8AA99A]">{staff.title}</p>
-            <button onClick={signOut} className="mt-3 text-[#8AA99A] hover:text-[#3DDC84]">
+            <p className="text-[#7F9A8B]">{staff.title}</p>
+            <button onClick={signOut} className="mt-3 text-[#7F9A8B] hover:text-[#86EFAC]">
               Sign out
             </button>
           </div>

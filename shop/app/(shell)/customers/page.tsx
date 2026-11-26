@@ -19,8 +19,8 @@ export default function CustomersPage() {
         return (
           <Card key={customer.id}>
             <p className="font-bold">{customer.fullName}</p>
-            <p className="text-sm text-[#8AA99A]">{customer.email} · {customer.phone}</p>
-            <p className="mt-2 text-sm text-[#8AA99A]">
+            <p className="text-sm text-[#4F6B5C]">{customer.email} · {customer.phone}</p>
+            <p className="mt-2 text-sm text-[#4F6B5C]">
               {vehicles.length} vehicle{vehicles.length === 1 ? "" : "s"} · {open.length} open repair order{open.length === 1 ? "" : "s"}
               {" · "}
               {customer.paymentMethods?.[0] ? paymentMethodLabel(customer.paymentMethods[0]) : "No card on file"}

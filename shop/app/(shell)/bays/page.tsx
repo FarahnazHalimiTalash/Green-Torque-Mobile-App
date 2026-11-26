@@ -10,7 +10,7 @@ export default function BaysPage() {
   return (
     <div className="grid gap-5">
       <h1 className="text-3xl font-extrabold">Bays</h1>
-      <p className="text-[#8AA99A]">
+      <p className="text-[#4F6B5C]">
         Assign a bay when a vehicle is checked in. Customers see work videos uploaded by admin or sub-admin, not a live camera.
       </p>
       {state.bays.map((bay) => {
@@ -20,7 +20,7 @@ export default function BaysPage() {
         return (
           <Card key={bay.id}>
             <p className="font-bold">{bay.name}</p>
-            <p className="text-sm text-[#8AA99A]">{current ? `RO #${current.number}` : "Empty"}</p>
+            <p className="text-sm text-[#4F6B5C]">{current ? `RO #${current.number}` : "Empty"}</p>
           </Card>
         );
       })}

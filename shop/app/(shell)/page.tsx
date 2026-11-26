@@ -46,10 +46,10 @@ export default function TodayPage() {
   return (
     <div className="grid gap-6">
       <div>
-        <p className="text-xs font-extrabold tracking-[0.16em] text-[#8AA99A]">SHOP FLOOR</p>
+        <p className="text-xs font-extrabold tracking-[0.16em] text-[#4F6B5C]">SHOP FLOOR</p>
         <h1 className="text-3xl font-extrabold">Today</h1>
       </div>
-      {error ? <p className="text-[#E85D4C]">{error}</p> : null}
+      {error ? <p className="text-[#DC2626]">{error}</p> : null}
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
           <div className="mb-4 flex items-center justify-between gap-3">
@@ -68,21 +68,21 @@ export default function TodayPage() {
             </div>
           </div>
           <div className="grid gap-3">
-            {todayAppointments.length === 0 ? <p className="text-[#8AA99A]">No appointments on the board.</p> : null}
+            {todayAppointments.length === 0 ? <p className="text-[#4F6B5C]">No appointments on the board.</p> : null}
             {todayAppointments.map((appointment) => {
               const customer = state.customers.find((item) => item.id === appointment.customerId);
               const vehicle = state.vehicles.find((item) => item.id === appointment.vehicleId);
               const service = serviceTypes.find((item) => item.id === appointment.serviceTypeId);
               return (
-                <div key={appointment.id} className="rounded-2xl border border-[#1E3D2E] bg-[#0B1C14] p-4">
+                <div key={appointment.id} className="rounded-2xl border border-[#D7E5DC] bg-[#F4F9F6] p-4">
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
                       <p className="font-bold">{customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"}</p>
-                      <p className="text-sm text-[#8AA99A]">{service?.name} · {formatDateTime(appointment.scheduledAt)}</p>
+                      <p className="text-sm text-[#4F6B5C]">{service?.name} · {formatDateTime(appointment.scheduledAt)}</p>
                     </div>
                     <StatusBadge status={appointment.status} />
                   </div>
-                  {appointment.notes ? <p className="mt-2 text-sm text-[#8AA99A]">{appointment.notes}</p> : null}
+                  {appointment.notes ? <p className="mt-2 text-sm text-[#4F6B5C]">{appointment.notes}</p> : null}
                   {appointment.status === "requested" || appointment.status === "confirmed" ? (
                     <div className="mt-3 flex gap-2">
                       {appointment.status === "requested" ? (
@@ -93,7 +93,7 @@ export default function TodayPage() {
                       <Button onClick={() => checkIn(appointment.id)}>Check in & create RO</Button>
                     </div>
                   ) : (
-                    <p className="mt-3 text-sm text-[#3DDC84]">Already on a repair order</p>
+                    <p className="mt-3 text-sm text-[#15803D]">Already on a repair order</p>
                   )}
                 </div>
               );
@@ -109,12 +109,12 @@ export default function TodayPage() {
               const tech = state.staff.find((item) => item.id === order.assignedTechnicianId);
               const subAdmin = state.staff.find((item) => item.id === order.assignedSubAdminId);
               return (
-                <Link key={order.id} href={`/repair-orders/${order.id}`} className="rounded-2xl border border-[#1E3D2E] bg-[#0B1C14] p-4 hover:border-[#3DDC84]">
+                <Link key={order.id} href={`/repair-orders/${order.id}`} className="rounded-2xl border border-[#D7E5DC] bg-[#F4F9F6] p-4 hover:border-[#16A34A]">
                   <div className="flex items-center justify-between gap-2">
                     <p className="font-bold">#{order.number} · {order.serviceSummary}</p>
                     <StatusBadge status={order.status} />
                   </div>
-                  <p className="mt-1 text-sm text-[#8AA99A]">
+                  <p className="mt-1 text-sm text-[#4F6B5C]">
                     {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {order.bayName ?? "Unassigned bay"} · {tech?.fullName ?? "No technician"} · {subAdmin?.fullName ?? "No sub-admin"}
                   </p>
                 </Link>
