@@ -10,7 +10,7 @@ import { colors, fonts, radius, spacing, type } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { paymentMethodLabel } from '@/lib/card';
-import { formatMileage, formatMoney, vehicleLabel } from '@/lib/format';
+import { formatMoney, formatVehicleIdentity, vehicleLabel } from '@/lib/format';
 import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -51,7 +51,7 @@ export default function HomeScreen() {
             />
             <Text style={styles.vehicleKicker}>Your vehicle</Text>
             <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
-            <Text style={styles.muted}>{formatMileage(selectedVehicle.mileage)}</Text>
+            <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
           </Card>
         ) : (
           <Card tone="emphasis">

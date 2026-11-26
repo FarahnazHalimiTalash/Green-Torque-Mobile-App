@@ -5,7 +5,7 @@ import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
 import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
-import { formatMileage, vehicleLabel } from '@/lib/format';
+import { formatVehicleIdentity, vehicleLabel } from '@/lib/format';
 import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import { router } from 'expo-router';
 import { Image, StyleSheet, Text, View } from 'react-native';
@@ -45,9 +45,7 @@ export default function VehiclesScreen() {
                     style={styles.hero}
                   />
                   <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
-                  <Text style={styles.meta}>
-                    {vehicle.vin || 'VIN not added'} · {formatMileage(vehicle.mileage)}
-                  </Text>
+                  <Text style={styles.meta}>{formatVehicleIdentity(vehicle)}</Text>
                   <Button
                     label={selected ? 'Selected' : 'Use on home'}
                     variant={selected ? 'secondary' : 'ghost'}

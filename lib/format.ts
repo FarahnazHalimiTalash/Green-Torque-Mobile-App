@@ -4,6 +4,12 @@ export function formatMileage(value: number) {
   return `${value.toLocaleString()} mi`;
 }
 
+/** VIN + mileage for the given vehicle only (never mixed across cars). */
+export function formatVehicleIdentity(vehicle: { vin?: string; mileage: number }) {
+  const vin = vehicle.vin?.trim() ? vehicle.vin.trim() : 'VIN not added';
+  return `${vin} · ${formatMileage(vehicle.mileage)}`;
+}
+
 export function formatMoney(value: number) {
   return new Intl.NumberFormat('en-US', {
     style: 'currency',

@@ -16,7 +16,7 @@ const MODEL_PHOTOS: Record<string, string> = {
   "cadillac|optiq": commons("25 Cadillac Optiq Luxury 2.jpg"),
   "cadillac|xt5": commons("23 Cadillac XT5 Premium Luxury.jpg"),
   "genesis|gv60": commons("24 Genesis GV60 Standard.jpg"),
-  "acura|integra": commons("Acura Integra (DE4) WGI22.jpg"),
+  "acura|integra": commons("2023 Acura Integra A-Spec, front 12.29.22.jpg"),
   "toyota|prius": commons("2023 Toyota Prius HEV front view.jpg"),
   "toyota|prius prime": commons("Toyota Prius Plug-in Hybrid (MSP17).jpg"),
   "ford|mustang mach-e": commons("21 Ford Mustang Mach-E Premium.jpg"),
