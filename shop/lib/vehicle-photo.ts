@@ -1,36 +1,33 @@
 import type { EvType, Vehicle } from "./types";
 
-/**
- * Prefer dealer/studio Commons files with clean showroom backgrounds.
- * Verified Special:FilePath names only.
- */
-function commons(fileName: string) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1400`;
+/** Local studio-plate photos (same set as the customer app). */
+function local(fileName: string) {
+  return `/vehicles/${fileName}`;
 }
 
 const MODEL_PHOTOS: Record<string, string> = {
-  "tesla|model 3": commons("24 Tesla Model 3 Base.jpg"),
-  "tesla|model y": commons("23 Tesla Model Y Long Range.jpg"),
-  "tesla|model s": commons("Tesla Model S 2024 Blue.jpg"),
-  "tesla|model x": commons("23 Tesla Model X Plaid.jpg"),
-  "cadillac|escalade": commons("25 Cadillac Escalade Sport Platinum.jpg"),
-  "cadillac|escalade iq": commons("25 Cadillac Escalade IQ Luxury 1.jpg"),
-  "cadillac|lyriq": commons("2023 Cadillac Lyriq in Satin Steel Metallic, front left.jpg"),
-  "cadillac|optiq": commons("25 Cadillac Optiq Luxury 2.jpg"),
-  "cadillac|xt5": commons("23 Cadillac XT5 Premium Luxury.jpg"),
-  "genesis|gv60": commons("24 Genesis GV60 Standard.jpg"),
-  "acura|integra": commons("2023 Acura Integra A-Spec, front 12.29.22.jpg"),
-  "toyota|prius": commons("2023 Toyota Prius HEV front view.jpg"),
-  "toyota|prius prime": commons("Toyota Prius Plug-in Hybrid (MSP17).jpg"),
-  "ford|mustang mach-e": commons("21 Ford Mustang Mach-E Premium.jpg"),
-  "chevrolet|bolt ev": commons("21 Chevrolet Bolt EV LT.jpg"),
-  "chevrolet|bolt euv": commons("23 Chevrolet Bolt EUV Premier.jpg"),
-  "bmw|i4": commons("23 BMW i4 eDrive40.jpg"),
-  "hyundai|ioniq 5": commons("26 Hyundai Ioniq 5 Limited.jpg"),
-  "kia|ev6": commons("22 Kia EV6 Wind.jpg"),
-  "porsche|taycan": commons("22 Porsche Taycan Base.jpg"),
-  "rivian|r1t": commons("22 Rivian R1T Adventure.jpg"),
-  "rivian|r1s": commons("23 Rivian R1S Launch Edition.jpg"),
+  "tesla|model 3": local("model3.jpg"),
+  "tesla|model y": local("model-y.jpg"),
+  "tesla|model s": local("model-s.jpg"),
+  "tesla|model x": local("model-x.jpg"),
+  "cadillac|escalade": local("escalade.jpg"),
+  "cadillac|escalade iq": local("escalade-iq.jpg"),
+  "cadillac|lyriq": local("lyriq.jpg"),
+  "cadillac|optiq": local("optiq.jpg"),
+  "cadillac|xt5": local("xt5.jpg"),
+  "genesis|gv60": local("gv60.jpg"),
+  "acura|integra": local("integra.jpg"),
+  "toyota|prius": local("prius.jpg"),
+  "toyota|prius prime": local("prius-prime.jpg"),
+  "ford|mustang mach-e": local("mach-e.jpg"),
+  "chevrolet|bolt ev": local("bolt-ev.jpg"),
+  "chevrolet|bolt euv": local("bolt-euv.jpg"),
+  "bmw|i4": local("i4.jpg"),
+  "hyundai|ioniq 5": local("ioniq5.jpg"),
+  "kia|ev6": local("ev6.jpg"),
+  "porsche|taycan": local("taycan.jpg"),
+  "rivian|r1t": local("r1t.jpg"),
+  "rivian|r1s": local("r1s.jpg"),
 };
 
 const MAKE_PHOTOS: Record<string, string> = {
