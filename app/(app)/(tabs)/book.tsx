@@ -2,10 +2,12 @@ import { Button } from '@/components/ui/Button';
 import { CalendarPicker } from '@/components/ui/CalendarPicker';
 import { Card } from '@/components/ui/Card';
 import { FadeIn } from '@/components/ui/FadeIn';
+import { Icon } from '@/components/ui/Icon';
 import { Input } from '@/components/ui/Input';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
 import { Select } from '@/components/ui/Select';
+import { VehiclePhoto } from '@/components/ui/VehiclePhoto';
 import { colors, fonts, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import {
@@ -20,7 +22,6 @@ import {
   modelsForMake,
   yearsForModel,
 } from '@/lib/vehicle-catalog';
-import { Icon } from '@/components/ui/Icon';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { createElement, useEffect, useState } from 'react';
@@ -226,6 +227,26 @@ export default function BookScreen() {
           placeholder={model ? 'Select year' : 'Select model first'}
           disabled={!model}
         />
+        {make && model ? (
+          <Card
+            tone="quiet"
+            style={styles.previewCard}
+            media={
+              <VehiclePhoto
+                vehicle={{
+                  make,
+                  model,
+                  evType: evTypeForModel(make, model) ?? 'ice',
+                }}
+                height={168}
+              />
+            }>
+            <Text style={styles.previewLabel}>
+              {year ? `${year} ` : ''}
+              {make} {model}
+            </Text>
+          </Card>
+        ) : null}
         <Select
           label="Service type"
           value={serviceGroup}
@@ -300,6 +321,14 @@ export default function BookScreen() {
 const styles = StyleSheet.create({
   form: {
     gap: 14,
+  },
+  previewCard: {
+    overflow: 'hidden',
+  },
+  previewLabel: {
+    color: colors.text,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
   },
   label: {
     color: colors.textMuted,

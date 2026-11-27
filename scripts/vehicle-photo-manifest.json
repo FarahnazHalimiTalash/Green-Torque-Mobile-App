@@ -1,0 +1,1052 @@
+{
+  "acura|integra": {
+    "slug": "acura-integra",
+    "source": "integra.jpg",
+    "via": "legacy"
+  },
+  "acura|mdx": {
+    "slug": "acura-mdx",
+    "source": "23 Acura MDX SH-AWD Type S Advance.jpg",
+    "via": "studio-native"
+  },
+  "acura|rdx": {
+    "slug": "acura-rdx",
+    "source": "25 Acura RDX SH-AWD w Advance.jpg",
+    "via": "studio-native"
+  },
+  "acura|tlx": {
+    "slug": "acura-tlx",
+    "source": "23 Acura TLX SH-AWD Type S.jpg",
+    "via": "studio-native"
+  },
+  "audi|a4": {
+    "slug": "audi-a4",
+    "source": "23 Audi A4 quattro S Line Premium Plus 45 TFSI.jpg",
+    "via": "studio-native"
+  },
+  "audi|a6": {
+    "slug": "audi-a6",
+    "source": "19 Audi A6 2.0T quattro Premium Plus.jpg",
+    "via": "studio-native"
+  },
+  "audi|e-tron / q8 e-tron": {
+    "slug": "audi-e-tron-q8-e-tron",
+    "source": "Audi Q8 e-tron edition Dakar DSC 7487.jpg",
+    "via": "studio-cutout"
+  },
+  "audi|e-tron gt": {
+    "slug": "audi-e-tron-gt",
+    "source": "Audi e-tron GT Washington DC Metro Area, USA.jpg",
+    "via": "studio-cutout"
+  },
+  "audi|q4 e-tron": {
+    "slug": "audi-q4-e-tron",
+    "source": "22 Audi Q4 e-Tron quattro Premium Plus 50.jpg",
+    "via": "studio-native"
+  },
+  "audi|q5": {
+    "slug": "audi-q5",
+    "source": "22 Audi Q5 quattro S Line Premium.jpg",
+    "via": "studio-native"
+  },
+  "bmw|i4": {
+    "slug": "bmw-i4",
+    "source": "i4.jpg",
+    "via": "legacy"
+  },
+  "cadillac|escalade": {
+    "slug": "cadillac-escalade",
+    "source": "escalade.jpg",
+    "via": "legacy"
+  },
+  "cadillac|escalade iq": {
+    "slug": "cadillac-escalade-iq",
+    "source": "escalade-iq.jpg",
+    "via": "legacy"
+  },
+  "cadillac|lyriq": {
+    "slug": "cadillac-lyriq",
+    "source": "lyriq.jpg",
+    "via": "legacy"
+  },
+  "cadillac|optiq": {
+    "slug": "cadillac-optiq",
+    "source": "optiq.jpg",
+    "via": "legacy"
+  },
+  "cadillac|xt5": {
+    "slug": "cadillac-xt5",
+    "source": "xt5.jpg",
+    "via": "legacy"
+  },
+  "chevrolet|blazer ev": {
+    "slug": "chevrolet-blazer-ev",
+    "source": "24 Chevrolet Blazer EV RS.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|bolt ev": {
+    "slug": "chevrolet-bolt-ev",
+    "source": "bolt-ev.jpg",
+    "via": "legacy"
+  },
+  "chevrolet|bolt euv": {
+    "slug": "chevrolet-bolt-euv",
+    "source": "chevrolet|bolt ev",
+    "via": "alias"
+  },
+  "ford|mustang mach-e": {
+    "slug": "ford-mustang-mach-e",
+    "source": "mach-e.jpg",
+    "via": "legacy"
+  },
+  "genesis|gv60": {
+    "slug": "genesis-gv60",
+    "source": "gv60.jpg",
+    "via": "legacy"
+  },
+  "hyundai|ioniq 5": {
+    "slug": "hyundai-ioniq-5",
+    "source": "ioniq5.jpg",
+    "via": "legacy"
+  },
+  "kia|ev6": {
+    "slug": "kia-ev6",
+    "source": "ev6.jpg",
+    "via": "legacy"
+  },
+  "porsche|taycan": {
+    "slug": "porsche-taycan",
+    "source": "taycan.jpg",
+    "via": "legacy"
+  },
+  "rivian|r1s": {
+    "slug": "rivian-r1s",
+    "source": "r1s.jpg",
+    "via": "legacy"
+  },
+  "rivian|r1t": {
+    "slug": "rivian-r1t",
+    "source": "r1t.jpg",
+    "via": "legacy"
+  },
+  "tesla|model 3": {
+    "slug": "tesla-model-3",
+    "source": "model3.jpg",
+    "via": "legacy"
+  },
+  "tesla|model s": {
+    "slug": "tesla-model-s",
+    "source": "model-s.jpg",
+    "via": "legacy"
+  },
+  "tesla|model x": {
+    "slug": "tesla-model-x",
+    "source": "model-x.jpg",
+    "via": "legacy"
+  },
+  "tesla|model y": {
+    "slug": "tesla-model-y",
+    "source": "model-y.jpg",
+    "via": "legacy"
+  },
+  "toyota|prius": {
+    "slug": "toyota-prius",
+    "source": "prius.jpg",
+    "via": "legacy"
+  },
+  "toyota|prius prime": {
+    "slug": "toyota-prius-prime",
+    "source": "prius-prime.jpg",
+    "via": "legacy"
+  },
+  "audi|q6 e-tron": {
+    "slug": "audi-q6-e-tron",
+    "source": "Audi SQ6 e-tron Myth Black Metallic.jpg",
+    "via": "studio-cutout"
+  },
+  "audi|q7": {
+    "slug": "audi-q7",
+    "source": "25 Audi Q7 quattro Premium Plus 45 TFSI.jpg",
+    "via": "studio-native"
+  },
+  "bmw|3 series": {
+    "slug": "bmw-3-series",
+    "source": "BMW 3-Series E36-2C 02 China 2015-04-18.jpg",
+    "via": "studio-cutout"
+  },
+  "bmw|330e": {
+    "slug": "bmw-330e",
+    "source": "bmw|3 series",
+    "via": "alias"
+  },
+  "bmw|5 series": {
+    "slug": "bmw-5-series",
+    "source": "BMW 5 Series Touring (2024) Rear.jpg",
+    "via": "studio-cutout"
+  },
+  "bmw|i3": {
+    "slug": "bmw-i3",
+    "source": "18 BMW i3 s.jpg",
+    "via": "studio-native"
+  },
+  "bmw|i5": {
+    "slug": "bmw-i5",
+    "source": "BMW G60 520i 1X7A2443.jpg",
+    "via": "studio-cutout"
+  },
+  "bmw|i7": {
+    "slug": "bmw-i7",
+    "source": "BMW 7-Series (G70) 750e 1X7A1899.jpg",
+    "via": "studio-cutout"
+  },
+  "bmw|ix": {
+    "slug": "bmw-ix",
+    "source": "22 BMW iX xDrive50.jpg",
+    "via": "studio-native"
+  },
+  "bmw|x3": {
+    "slug": "bmw-x3",
+    "source": "22 BMW X3 M Competition.jpg",
+    "via": "studio-native"
+  },
+  "bmw|x5": {
+    "slug": "bmw-x5",
+    "source": "25 BMW X5 M60i.jpg",
+    "via": "studio-native"
+  },
+  "bmw|x5 phev": {
+    "slug": "bmw-x5-phev",
+    "source": "bmw|x5",
+    "via": "alias"
+  },
+  "chevrolet|blazer": {
+    "slug": "chevrolet-blazer",
+    "source": "1988 Chevrolet Blazer C10 Hardtop.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|colorado": {
+    "slug": "chevrolet-colorado",
+    "source": "Chevrolet Colorado High Country 2018 (46414614972).jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|equinox": {
+    "slug": "chevrolet-equinox",
+    "source": "24 Chevrolet Equinox LT.jpg",
+    "via": "studio-native"
+  },
+  "chevrolet|equinox ev": {
+    "slug": "chevrolet-equinox-ev",
+    "source": "Chevrolet Equinox EV in City of Windsor livery, Windsor, Ontario, 2026-05-09.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|malibu": {
+    "slug": "chevrolet-malibu",
+    "source": "Chevrolet Malibu (2008-2011) 1X7A7375.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|silverado": {
+    "slug": "chevrolet-silverado",
+    "source": "Chevrolet C-10 Silverado in Lower Saxony.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|silverado ev": {
+    "slug": "chevrolet-silverado-ev",
+    "source": "Chevrolet Silverado EV right rear quarter view.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|tahoe": {
+    "slug": "chevrolet-tahoe",
+    "source": "Chevrolet tahoe taxi.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|traverse": {
+    "slug": "chevrolet-traverse",
+    "source": "2017 Chevrolet Traverse LS AWD, 08-14-2022.jpg",
+    "via": "studio-cutout"
+  },
+  "chevrolet|volt": {
+    "slug": "chevrolet-volt",
+    "source": "Chevrolet Volt (first generation) DSC 8229.jpg",
+    "via": "studio-cutout"
+  },
+  "chrysler|pacifica": {
+    "slug": "chrysler-pacifica",
+    "source": "Chrysler Pacifica red.jpg",
+    "via": "studio-cutout"
+  },
+  "chrysler|pacifica hybrid": {
+    "slug": "chrysler-pacifica-hybrid",
+    "source": "chrysler|pacifica",
+    "via": "alias"
+  },
+  "dodge|charger": {
+    "slug": "dodge-charger",
+    "source": "Dodge Charger 1971 left view.jpg",
+    "via": "studio-cutout"
+  },
+  "dodge|durango": {
+    "slug": "dodge-durango",
+    "source": "Dodge Durango SRT Hellcat MYLE Festival 2025 DSC 9644.jpg",
+    "via": "studio-cutout"
+  },
+  "dodge|hornet": {
+    "slug": "dodge-hornet",
+    "source": "2006 Dodge Hornet Concept.JPG",
+    "via": "studio-cutout"
+  },
+  "ford|bronco": {
+    "slug": "ford-bronco",
+    "source": "25 Ford Bronco Raptor Custom.jpg",
+    "via": "studio-cutout"
+  },
+  "ford|escape": {
+    "slug": "ford-escape",
+    "source": "24 Ford Escape ST-Line.jpg",
+    "via": "studio-native"
+  },
+  "ford|escape hybrid": {
+    "slug": "ford-escape-hybrid",
+    "source": "ford|escape",
+    "via": "alias"
+  },
+  "ford|escape plug-in hybrid": {
+    "slug": "ford-escape-plug-in-hybrid",
+    "source": "ford|escape",
+    "via": "alias"
+  },
+  "ford|explorer": {
+    "slug": "ford-explorer",
+    "source": "25 Ford Explorer ST.jpg",
+    "via": "studio-cutout"
+  },
+  "ford|explorer hybrid": {
+    "slug": "ford-explorer-hybrid",
+    "source": "ford|explorer",
+    "via": "alias"
+  },
+  "ford|f-150": {
+    "slug": "ford-f-150",
+    "source": "24 Ford F-150 Tremor.jpg",
+    "via": "studio-native"
+  },
+  "ford|f-150 lightning": {
+    "slug": "ford-f-150-lightning",
+    "source": "23 Ford F-150 Lightning Lariat.jpg",
+    "via": "studio-cutout"
+  },
+  "ford|maverick": {
+    "slug": "ford-maverick",
+    "source": "25 Ford Maverick XLT.jpg",
+    "via": "studio-native"
+  },
+  "ford|maverick hybrid": {
+    "slug": "ford-maverick-hybrid",
+    "source": "ford|maverick",
+    "via": "alias"
+  },
+  "ford|mustang": {
+    "slug": "ford-mustang",
+    "source": "25 Ford Mustang EcoBoost Premium.jpg",
+    "via": "studio-native"
+  },
+  "ford|ranger": {
+    "slug": "ford-ranger",
+    "source": "24 Ford Ranger Lariat.jpg",
+    "via": "studio-native"
+  },
+  "genesis|electrified g80": {
+    "slug": "genesis-electrified-g80",
+    "source": "23 Genesis Electrified G80 Base (2).jpg",
+    "via": "studio-native"
+  },
+  "genesis|electrified gv70": {
+    "slug": "genesis-electrified-gv70",
+    "source": "23 Genesis Electrified GV70 Advanced (4).jpg",
+    "via": "studio-native"
+  },
+  "genesis|g70": {
+    "slug": "genesis-g70",
+    "source": "26 Genesis G70 2.5T Prestige.jpg",
+    "via": "studio-native"
+  },
+  "genesis|gv70": {
+    "slug": "genesis-gv70",
+    "source": "26 Genesis GV70 3.5T Sport Prestige.jpg",
+    "via": "studio-native"
+  },
+  "genesis|gv80": {
+    "slug": "genesis-gv80",
+    "source": "26 Genesis GV80 3.5T Prestige Black.jpg",
+    "via": "studio-native"
+  },
+  "gmc|acadia": {
+    "slug": "gmc-acadia",
+    "source": "24 GMC Acadia Elevation.jpg",
+    "via": "studio-native"
+  },
+  "gmc|hummer ev": {
+    "slug": "gmc-hummer-ev",
+    "source": "GMC Hummer EV.jpg",
+    "via": "studio-native"
+  },
+  "gmc|sierra": {
+    "slug": "gmc-sierra",
+    "source": "08 GMC Sierra 1500 Denali.jpg",
+    "via": "studio-native"
+  },
+  "gmc|sierra ev": {
+    "slug": "gmc-sierra-ev",
+    "source": "26 GMC Sierra EV Elevation.jpg",
+    "via": "studio-cutout"
+  },
+  "gmc|terrain": {
+    "slug": "gmc-terrain",
+    "source": "15 GMC Terrain Denali.jpg",
+    "via": "studio-cutout"
+  },
+  "gmc|yukon": {
+    "slug": "gmc-yukon",
+    "source": "25 GMC Yukon Elevation.jpg",
+    "via": "studio-native"
+  },
+  "honda|accord": {
+    "slug": "honda-accord",
+    "source": "12 Honda Accord LX.jpg",
+    "via": "studio-cutout"
+  },
+  "honda|accord hybrid": {
+    "slug": "honda-accord-hybrid",
+    "source": "honda|accord",
+    "via": "alias"
+  },
+  "honda|civic": {
+    "slug": "honda-civic",
+    "source": "22 Honda Civic Si.jpg",
+    "via": "studio-native"
+  },
+  "honda|civic hybrid": {
+    "slug": "honda-civic-hybrid",
+    "source": "honda|civic",
+    "via": "alias"
+  },
+  "honda|cr-v": {
+    "slug": "honda-cr-v",
+    "source": "24 Honda CR-V EX-L.jpg",
+    "via": "studio-native"
+  },
+  "honda|cr-v hybrid": {
+    "slug": "honda-cr-v-hybrid",
+    "source": "honda|cr-v",
+    "via": "alias"
+  },
+  "honda|hr-v": {
+    "slug": "honda-hr-v",
+    "source": "21 Honda HR-V LX.jpg",
+    "via": "studio-cutout"
+  },
+  "honda|odyssey": {
+    "slug": "honda-odyssey",
+    "source": "19 Honda Odyssey EX-L.jpg",
+    "via": "studio-cutout"
+  },
+  "honda|pilot": {
+    "slug": "honda-pilot",
+    "source": "Honda Pilot (second generation) IMG 4032.jpg",
+    "via": "studio-cutout"
+  },
+  "honda|prologue": {
+    "slug": "honda-prologue",
+    "source": "2024 Honda Prologue Elite AWD (United States) front view.png",
+    "via": "studio-cutout"
+  },
+  "hyundai|elantra": {
+    "slug": "hyundai-elantra",
+    "source": "24 Hyundai Elantra SEL.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|ioniq 6": {
+    "slug": "hyundai-ioniq-6",
+    "source": "23 Hyundai Ioniq 6 Limited.jpg",
+    "via": "studio-cutout"
+  },
+  "hyundai|ioniq 9": {
+    "slug": "hyundai-ioniq-9",
+    "source": "26 Hyundai Ioniq 9 Limited.jpg",
+    "via": "studio-cutout"
+  },
+  "hyundai|kona": {
+    "slug": "hyundai-kona",
+    "source": "24 Hyundai Kona N-Line.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|kona electric": {
+    "slug": "hyundai-kona-electric",
+    "source": "hyundai|kona",
+    "via": "alias"
+  },
+  "hyundai|palisade": {
+    "slug": "hyundai-palisade",
+    "source": "26 Hyundai Palisade XRT Pro.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|santa fe": {
+    "slug": "hyundai-santa-fe",
+    "source": "24 Hyundai Santa Fe XRT.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|santa fe hybrid": {
+    "slug": "hyundai-santa-fe-hybrid",
+    "source": "hyundai|santa fe",
+    "via": "alias"
+  },
+  "hyundai|sonata": {
+    "slug": "hyundai-sonata",
+    "source": "24 Hyundai Sonata SEL.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|tucson": {
+    "slug": "hyundai-tucson",
+    "source": "25 Hyundai Tucson SE.jpg",
+    "via": "studio-native"
+  },
+  "hyundai|tucson hybrid": {
+    "slug": "hyundai-tucson-hybrid",
+    "source": "hyundai|tucson",
+    "via": "alias"
+  },
+  "hyundai|tucson plug-in hybrid": {
+    "slug": "hyundai-tucson-plug-in-hybrid",
+    "source": "hyundai|tucson",
+    "via": "alias"
+  },
+  "jeep|cherokee": {
+    "slug": "jeep-cherokee",
+    "source": "27 Jeep Cherokee Overland.jpg",
+    "via": "studio-native"
+  },
+  "jeep|gladiator": {
+    "slug": "jeep-gladiator",
+    "source": "26 Jeep Gladiator Willys.jpg",
+    "via": "studio-native"
+  },
+  "jeep|grand cherokee": {
+    "slug": "jeep-grand-cherokee",
+    "source": "26 Jeep Grand Cherokee Limited.jpg",
+    "via": "studio-native"
+  },
+  "jeep|grand cherokee 4xe": {
+    "slug": "jeep-grand-cherokee-4xe",
+    "source": "jeep|grand cherokee",
+    "via": "alias"
+  },
+  "jeep|wrangler": {
+    "slug": "jeep-wrangler",
+    "source": "24 Jeep Wrangler Unlimited Sport S.jpg",
+    "via": "studio-native"
+  },
+  "jeep|wrangler 4xe": {
+    "slug": "jeep-wrangler-4xe",
+    "source": "jeep|wrangler",
+    "via": "alias"
+  },
+  "kia|carnival": {
+    "slug": "kia-carnival",
+    "source": "22 Kia Carnival SX.jpg",
+    "via": "studio-native"
+  },
+  "kia|carnival hybrid": {
+    "slug": "kia-carnival-hybrid",
+    "source": "kia|carnival",
+    "via": "alias"
+  },
+  "kia|ev9": {
+    "slug": "kia-ev9",
+    "source": "Kia EV9 GT-Line MV1 Snow White Pearl (52).jpg",
+    "via": "studio-cutout"
+  },
+  "kia|forte": {
+    "slug": "kia-forte",
+    "source": "23 Kia Forte GT.jpg",
+    "via": "studio-native"
+  },
+  "kia|niro ev": {
+    "slug": "kia-niro-ev",
+    "source": "22 Kia Niro EV EX Premium.jpg",
+    "via": "studio-native"
+  },
+  "kia|niro hybrid": {
+    "slug": "kia-niro-hybrid",
+    "source": "kia|niro ev",
+    "via": "alias"
+  },
+  "kia|niro plug-in hybrid": {
+    "slug": "kia-niro-plug-in-hybrid",
+    "source": "kia|niro ev",
+    "via": "alias"
+  },
+  "kia|sorento": {
+    "slug": "kia-sorento",
+    "source": "26 Kia Sorento EX X-Line.jpg",
+    "via": "studio-native"
+  },
+  "kia|sorento hybrid": {
+    "slug": "kia-sorento-hybrid",
+    "source": "kia|sorento",
+    "via": "alias"
+  },
+  "kia|sorento plug-in hybrid": {
+    "slug": "kia-sorento-plug-in-hybrid",
+    "source": "kia|sorento",
+    "via": "alias"
+  },
+  "kia|sportage": {
+    "slug": "kia-sportage",
+    "source": "26 Kia Sportage X-Pro.jpg",
+    "via": "studio-native"
+  },
+  "kia|sportage hybrid": {
+    "slug": "kia-sportage-hybrid",
+    "source": "kia|sportage",
+    "via": "alias"
+  },
+  "kia|sportage plug-in hybrid": {
+    "slug": "kia-sportage-plug-in-hybrid",
+    "source": "kia|sportage",
+    "via": "alias"
+  },
+  "kia|telluride": {
+    "slug": "kia-telluride",
+    "source": "24 Kia Telluride SX-Prestige.jpg",
+    "via": "studio-native"
+  },
+  "lexus|es 350": {
+    "slug": "lexus-es-350",
+    "source": "13 Lexus ES 350 Base.jpg",
+    "via": "studio-native"
+  },
+  "lexus|es 300h": {
+    "slug": "lexus-es-300h",
+    "source": "lexus|es 350",
+    "via": "alias"
+  },
+  "lexus|gx": {
+    "slug": "lexus-gx",
+    "source": "24 Lexus GX 550 Luxury.jpg",
+    "via": "studio-native"
+  },
+  "lexus|nx 350": {
+    "slug": "lexus-nx-350",
+    "source": "23 Lexus NX 350 Base.jpg",
+    "via": "studio-native"
+  },
+  "lexus|nx 350h": {
+    "slug": "lexus-nx-350h",
+    "source": "lexus|nx 350",
+    "via": "alias"
+  },
+  "lexus|nx 450h+": {
+    "slug": "lexus-nx-450hplus",
+    "source": "lexus|nx 350",
+    "via": "alias"
+  },
+  "lexus|rx 350": {
+    "slug": "lexus-rx-350",
+    "source": "Lexus RX 350 L FL 1X7A0345.jpg",
+    "via": "studio-cutout"
+  },
+  "lexus|rx 350h": {
+    "slug": "lexus-rx-350h",
+    "source": "lexus|rx 350",
+    "via": "alias"
+  },
+  "lexus|rx 450h+": {
+    "slug": "lexus-rx-450hplus",
+    "source": "lexus|rx 350",
+    "via": "alias"
+  },
+  "lexus|rz": {
+    "slug": "lexus-rz",
+    "source": "Lexus RZ 450e (XEBM15) IMG 0680.jpg",
+    "via": "studio-cutout"
+  },
+  "lexus|tx 550h+": {
+    "slug": "lexus-tx-550hplus",
+    "source": "Lexus TX 550h+ (2024) (53626567768).jpg",
+    "via": "studio-cutout"
+  },
+  "lexus|ux 250h": {
+    "slug": "lexus-ux-250h",
+    "source": "Lexus UX 250h 1X7A0837.jpg",
+    "via": "studio-cutout"
+  },
+  "lucid|air": {
+    "slug": "lucid-air",
+    "source": "Lucid Air IAA 2023 1X7A0548.jpg",
+    "via": "studio-cutout"
+  },
+  "lucid|gravity": {
+    "slug": "lucid-gravity",
+    "source": "Lucid Gravity, GIMS 2024, Le Grand-Saconnex (GIMS0054-3-RR).jpg",
+    "via": "studio-cutout"
+  },
+  "mazda|cx-5": {
+    "slug": "mazda-cx-5",
+    "source": "Mazda CX-5 Newground 1X7A6786.jpg",
+    "via": "studio-cutout"
+  },
+  "mazda|cx-50": {
+    "slug": "mazda-cx-50",
+    "source": "23 Mazda CX-50 2.5 Turbo Premium.jpg",
+    "via": "studio-cutout"
+  },
+  "mazda|cx-70 phev": {
+    "slug": "mazda-cx-70-phev",
+    "source": "mazda|cx-50",
+    "via": "alias"
+  },
+  "mazda|cx-90 phev": {
+    "slug": "mazda-cx-90-phev",
+    "source": "24 Mazda CX-90 3.3 Turbo Premium.jpg",
+    "via": "studio-native"
+  },
+  "mazda|mazda3": {
+    "slug": "mazda-mazda3",
+    "source": "21 Mazda 3 Select.jpg",
+    "via": "studio-native"
+  },
+  "mercedes-benz|c-class": {
+    "slug": "mercedes-benz-c-class",
+    "source": "DTM Mercedes w204 Schneider amk.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|e-class": {
+    "slug": "mercedes-benz-e-class",
+    "source": "200X Mercedes-Benz E-Class Hearse.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|eqb": {
+    "slug": "mercedes-benz-eqb",
+    "source": "MERCEDES-EQ EQB China.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|eqe": {
+    "slug": "mercedes-benz-eqe",
+    "source": "Mercedes-AMG EQE 43 (V295) 1X7A5782.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|eqe suv": {
+    "slug": "mercedes-benz-eqe-suv",
+    "source": "Mercedes-AMG EQE SUV 43 (X294) IAA 2023 1X7A0449.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|eqs": {
+    "slug": "mercedes-benz-eqs",
+    "source": "Mercedes-Benz Vision EQS at IAA 2019 IMG 0753.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|eqs suv": {
+    "slug": "mercedes-benz-eqs-suv",
+    "source": "Mercedes-Benz X296 1X7A6215.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|glc": {
+    "slug": "mercedes-benz-glc",
+    "source": "Mercedes-Benz Concept GLC Coupe IAA 2015.jpg",
+    "via": "studio-cutout"
+  },
+  "mercedes-benz|gle": {
+    "slug": "mercedes-benz-gle",
+    "source": "Mercedes-AMG GLE 63 S 4MATIC IMG 1288.jpg",
+    "via": "studio-cutout"
+  },
+  "mitsubishi|outlander": {
+    "slug": "mitsubishi-outlander",
+    "source": "Mitsubishi Outlander PHEV, Auto 2025, Zurich (20251029-P1074527).jpg",
+    "via": "studio-cutout"
+  },
+  "mitsubishi|outlander phev": {
+    "slug": "mitsubishi-outlander-phev",
+    "source": "mitsubishi|outlander",
+    "via": "alias"
+  },
+  "nissan|altima": {
+    "slug": "nissan-altima",
+    "source": "Nissan Altima at Salton Sea 2013.jpg",
+    "via": "studio-cutout"
+  },
+  "nissan|ariya": {
+    "slug": "nissan-ariya",
+    "source": "Nissan Ariya Automesse Ludwigsburg 2022 1X7A5877.jpg",
+    "via": "studio-cutout"
+  },
+  "nissan|frontier": {
+    "slug": "nissan-frontier",
+    "source": "11 Nissan Frontier SV.jpg",
+    "via": "studio-native"
+  },
+  "nissan|leaf": {
+    "slug": "nissan-leaf",
+    "source": "15 Nissan Leaf S.jpg",
+    "via": "studio-cutout"
+  },
+  "nissan|murano": {
+    "slug": "nissan-murano",
+    "source": "25 Nissan Murano SL.jpg",
+    "via": "studio-cutout"
+  },
+  "nissan|pathfinder": {
+    "slug": "nissan-pathfinder",
+    "source": "24 Nissan Pathfinder Rock Creek.jpg",
+    "via": "studio-native"
+  },
+  "nissan|rogue": {
+    "slug": "nissan-rogue",
+    "source": "24 Nissan Rogue SV.jpg",
+    "via": "studio-native"
+  },
+  "nissan|sentra": {
+    "slug": "nissan-sentra",
+    "source": "15 Nissan Sentra SV.jpg",
+    "via": "studio-cutout"
+  },
+  "polestar|2": {
+    "slug": "polestar-2",
+    "source": "Polestar 2 Genf 2019 1Y7A6000.jpg",
+    "via": "studio-cutout"
+  },
+  "polestar|3": {
+    "slug": "polestar-3",
+    "source": "Polestar 3 IAA 2023 1X7A0703.jpg",
+    "via": "studio-cutout"
+  },
+  "polestar|4": {
+    "slug": "polestar-4",
+    "source": "Polestar 4 Auto Zuerich 2024 DSC 6364.jpg",
+    "via": "studio-cutout"
+  },
+  "porsche|911": {
+    "slug": "porsche-911",
+    "source": "20 Porsche 911 Carrera 4S Cabriolet.jpg",
+    "via": "studio-native"
+  },
+  "porsche|cayenne": {
+    "slug": "porsche-cayenne",
+    "source": "23 Porsche Cayenne Turbo S e-Hybrid.jpg",
+    "via": "studio-native"
+  },
+  "porsche|cayenne e-hybrid": {
+    "slug": "porsche-cayenne-e-hybrid",
+    "source": "porsche|cayenne",
+    "via": "alias"
+  },
+  "porsche|macan": {
+    "slug": "porsche-macan",
+    "source": "22 Porsche Macan S.jpg",
+    "via": "studio-native"
+  },
+  "porsche|panamera e-hybrid": {
+    "slug": "porsche-panamera-e-hybrid",
+    "source": "porsche|macan",
+    "via": "alias"
+  },
+  "ram|1500": {
+    "slug": "ram-1500",
+    "source": "25 Ram 1500 RHO.jpg",
+    "via": "studio-native"
+  },
+  "ram|2500": {
+    "slug": "ram-2500",
+    "source": "27 Ram 2500 Black Express.jpg",
+    "via": "studio-native"
+  },
+  "ram|3500": {
+    "slug": "ram-3500",
+    "source": "25 Ram ProMaster 3500 SLT+ Thor Tellaro.jpg",
+    "via": "studio-native"
+  },
+  "subaru|ascent": {
+    "slug": "subaru-ascent",
+    "source": "23 Subaru Ascent Touring.jpg",
+    "via": "studio-native"
+  },
+  "subaru|crosstrek": {
+    "slug": "subaru-crosstrek",
+    "source": "24 Subaru Crosstrek Sport.jpg",
+    "via": "studio-native"
+  },
+  "subaru|crosstrek hybrid": {
+    "slug": "subaru-crosstrek-hybrid",
+    "source": "subaru|crosstrek",
+    "via": "alias"
+  },
+  "subaru|forester": {
+    "slug": "subaru-forester",
+    "source": "25 Subaru Forester Premium.jpg",
+    "via": "studio-native"
+  },
+  "subaru|outback": {
+    "slug": "subaru-outback",
+    "source": "26 Subaru Outback Wilderness.jpg",
+    "via": "studio-native"
+  },
+  "subaru|solterra": {
+    "slug": "subaru-solterra",
+    "source": "Subaru Solterra ST-E Auto Zuerich 2023 1X7A1257.jpg",
+    "via": "studio-cutout"
+  },
+  "tesla|cybertruck": {
+    "slug": "tesla-cybertruck",
+    "source": "Tesla Cybertruck.jpg",
+    "via": "studio-cutout"
+  },
+  "toyota|4runner": {
+    "slug": "toyota-4runner",
+    "source": "25 Toyota 4Runner TRD Sport LA.jpg",
+    "via": "studio-native"
+  },
+  "toyota|bz4x": {
+    "slug": "toyota-bz4x",
+    "source": "Toyota bz4x Expo 2022 CRI 4888.jpg",
+    "via": "studio-cutout"
+  },
+  "toyota|camry": {
+    "slug": "toyota-camry",
+    "source": "25 Toyota Camry XSE.jpg",
+    "via": "studio-native"
+  },
+  "toyota|camry hybrid": {
+    "slug": "toyota-camry-hybrid",
+    "source": "toyota|camry",
+    "via": "alias"
+  },
+  "toyota|corolla": {
+    "slug": "toyota-corolla",
+    "source": "25 Toyota GR Corolla Core.jpg",
+    "via": "studio-native"
+  },
+  "toyota|crown": {
+    "slug": "toyota-crown",
+    "source": "25 Toyota Crown Signia XLE.jpg",
+    "via": "studio-native"
+  },
+  "toyota|grand highlander hybrid": {
+    "slug": "toyota-grand-highlander-hybrid",
+    "source": "24 Toyota Grand Highlander XLE.jpg",
+    "via": "studio-native"
+  },
+  "toyota|highlander": {
+    "slug": "toyota-highlander",
+    "source": "24 Toyota Grand Highlander XLE.jpg",
+    "via": "studio-native"
+  },
+  "toyota|highlander hybrid": {
+    "slug": "toyota-highlander-hybrid",
+    "source": "toyota|highlander",
+    "via": "alias"
+  },
+  "toyota|rav4": {
+    "slug": "toyota-rav4",
+    "source": "23 Toyota RAV4 TRD Off-Road.jpg",
+    "via": "studio-native"
+  },
+  "toyota|rav4 hybrid": {
+    "slug": "toyota-rav4-hybrid",
+    "source": "toyota|rav4",
+    "via": "alias"
+  },
+  "toyota|rav4 prime": {
+    "slug": "toyota-rav4-prime",
+    "source": "toyota|rav4",
+    "via": "alias"
+  },
+  "toyota|sienna hybrid": {
+    "slug": "toyota-sienna-hybrid",
+    "source": "22 Toyota Sienna LE.jpg",
+    "via": "studio-native"
+  },
+  "toyota|tacoma": {
+    "slug": "toyota-tacoma",
+    "source": "22 Toyota Tacoma SR.jpg",
+    "via": "studio-cutout"
+  },
+  "toyota|tundra": {
+    "slug": "toyota-tundra",
+    "source": "13 Toyota Tundra Grade.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|atlas": {
+    "slug": "volkswagen-atlas",
+    "source": "18 Volkswagen Atlas V6 SE.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|e-golf": {
+    "slug": "volkswagen-e-golf",
+    "source": "Volkswagen Golf VIII GTI Clubsport 45 IMG 4884.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|id. buzz": {
+    "slug": "volkswagen-id-buzz",
+    "source": "Volkswagen ID. Buzz Cargo 1X7A7460.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|id.4": {
+    "slug": "volkswagen-id-4",
+    "source": "Volkswagen ID.5 GTX 1X7A0318.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|jetta": {
+    "slug": "volkswagen-jetta",
+    "source": "Volkswagen Jetta VI GLI IMG 8936.jpg",
+    "via": "studio-cutout"
+  },
+  "volkswagen|tiguan": {
+    "slug": "volkswagen-tiguan",
+    "source": "Volkswagen Tiguan R 1X7A0362.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|c40 recharge": {
+    "slug": "volvo-c40-recharge",
+    "source": "Volvo C40 Leonberg 2022 1X7A0526.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|ex30": {
+    "slug": "volvo-ex30",
+    "source": "Volvo EX30 Auto Zuerich 2023 1X7A0949.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|ex90": {
+    "slug": "volvo-ex90",
+    "source": "Volvo EX90 DSC 7810.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|s60": {
+    "slug": "volvo-s60",
+    "source": "Volvo S60 (3rd generation) IMG 8468.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|xc40 recharge": {
+    "slug": "volvo-xc40-recharge",
+    "source": "Volvo XC40 Recharge Facelift IMG 8127.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|xc60": {
+    "slug": "volvo-xc60",
+    "source": "Volvo XC60 (SPA) FL 1X7A6406.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|xc60 recharge": {
+    "slug": "volvo-xc60-recharge",
+    "source": "volvo|xc60",
+    "via": "alias"
+  },
+  "volvo|xc90": {
+    "slug": "volvo-xc90",
+    "source": "2025 Volvo XC90 II DSC 7420.jpg",
+    "via": "studio-cutout"
+  },
+  "volvo|xc90 recharge": {
+    "slug": "volvo-xc90-recharge",
+    "source": "volvo|xc90",
+    "via": "alias"
+  }
+}

@@ -1,11 +1,58 @@
+import { SHOP_API_URL } from '@/lib/shop-api';
 import type { EvType, Vehicle } from '@/types';
 import type { ImageSourcePropType } from 'react-native';
 
 /**
- * Bundled premium vehicle photos (light-polished, brochure framing).
- * Prefer local studio assets so cards stay sharp offline and consistent.
+ * Exact make|model → studio asset slug.
+ * Never falls back to a different brand (Polestar must never show Tesla).
  */
-const MODEL_PHOTOS: Record<string, ImageSourcePropType> = {
+
+const BODY_ALIASES: Record<string, string> = {
+  'kia|sportage hybrid': 'kia|sportage',
+  'kia|sportage plug-in hybrid': 'kia|sportage',
+  'kia|sorento hybrid': 'kia|sorento',
+  'kia|sorento plug-in hybrid': 'kia|sorento',
+  'kia|niro hybrid': 'kia|niro ev',
+  'kia|niro plug-in hybrid': 'kia|niro ev',
+  'kia|carnival hybrid': 'kia|carnival',
+  'hyundai|tucson hybrid': 'hyundai|tucson',
+  'hyundai|tucson plug-in hybrid': 'hyundai|tucson',
+  'hyundai|santa fe hybrid': 'hyundai|santa fe',
+  'hyundai|kona electric': 'hyundai|kona',
+  'toyota|camry hybrid': 'toyota|camry',
+  'toyota|rav4 hybrid': 'toyota|rav4',
+  'toyota|rav4 prime': 'toyota|rav4',
+  'toyota|highlander hybrid': 'toyota|highlander',
+  'toyota|grand highlander hybrid': 'toyota|highlander',
+  'honda|accord hybrid': 'honda|accord',
+  'honda|civic hybrid': 'honda|civic',
+  'honda|cr-v hybrid': 'honda|cr-v',
+  'ford|escape hybrid': 'ford|escape',
+  'ford|escape plug-in hybrid': 'ford|escape',
+  'ford|explorer hybrid': 'ford|explorer',
+  'ford|maverick hybrid': 'ford|maverick',
+  'jeep|grand cherokee 4xe': 'jeep|grand cherokee',
+  'jeep|wrangler 4xe': 'jeep|wrangler',
+  'chrysler|pacifica hybrid': 'chrysler|pacifica',
+  'bmw|x5 phev': 'bmw|x5',
+  'bmw|330e': 'bmw|3 series',
+  'lexus|es 300h': 'lexus|es 350',
+  'lexus|nx 350h': 'lexus|nx 350',
+  'lexus|nx 450h+': 'lexus|nx 350',
+  'lexus|rx 350h': 'lexus|rx 350',
+  'lexus|rx 450h+': 'lexus|rx 350',
+  'porsche|cayenne e-hybrid': 'porsche|cayenne',
+  'porsche|panamera e-hybrid': 'porsche|macan',
+  'mitsubishi|outlander phev': 'mitsubishi|outlander',
+  'mazda|cx-70 phev': 'mazda|cx-50',
+  'subaru|crosstrek hybrid': 'subaru|crosstrek',
+  'volvo|xc60 recharge': 'volvo|xc60',
+  'volvo|xc90 recharge': 'volvo|xc90',
+  'chevrolet|bolt euv': 'chevrolet|bolt ev',
+};
+
+/** Bundled studio shots kept as instant offline fallbacks for popular models. */
+const BUNDLED: Record<string, ImageSourcePropType> = {
   'tesla|model 3': require('../assets/vehicles/model3.jpg'),
   'tesla|model y': require('../assets/vehicles/model-y.jpg'),
   'tesla|model s': require('../assets/vehicles/model-s.jpg'),
@@ -28,41 +75,47 @@ const MODEL_PHOTOS: Record<string, ImageSourcePropType> = {
   'porsche|taycan': require('../assets/vehicles/taycan.jpg'),
   'rivian|r1t': require('../assets/vehicles/r1t.jpg'),
   'rivian|r1s': require('../assets/vehicles/r1s.jpg'),
+  'polestar|2': require('../assets/vehicles/polestar-2.jpg'),
+  'polestar|3': require('../assets/vehicles/polestar-3.jpg'),
+  'polestar|4': require('../assets/vehicles/polestar-4.jpg'),
 };
 
-const MAKE_PHOTOS: Record<string, ImageSourcePropType> = {
-  tesla: MODEL_PHOTOS['tesla|model 3'],
-  cadillac: MODEL_PHOTOS['cadillac|escalade'],
-  genesis: MODEL_PHOTOS['genesis|gv60'],
-  acura: MODEL_PHOTOS['acura|integra'],
-  toyota: MODEL_PHOTOS['toyota|prius'],
-  ford: MODEL_PHOTOS['ford|mustang mach-e'],
-  chevrolet: MODEL_PHOTOS['chevrolet|bolt ev'],
-  bmw: MODEL_PHOTOS['bmw|i4'],
-  hyundai: MODEL_PHOTOS['hyundai|ioniq 5'],
-  kia: MODEL_PHOTOS['kia|ev6'],
-  porsche: MODEL_PHOTOS['porsche|taycan'],
-  rivian: MODEL_PHOTOS['rivian|r1t'],
-};
-
-const TYPE_PHOTOS: Record<EvType, ImageSourcePropType> = {
-  ev: MODEL_PHOTOS['tesla|model 3'],
-  hybrid: MODEL_PHOTOS['toyota|prius'],
-  ice: MODEL_PHOTOS['cadillac|escalade'],
+const EMPTY_STUDIO: ImageSourcePropType = {
+  uri: `${SHOP_API_URL}/vehicles/studio-empty.jpg`,
 };
 
 function keyPart(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
-export function vehiclePhotoFor(make: string, model: string, evType: EvType = 'ice'): ImageSourcePropType {
-  const modelKey = `${keyPart(make)}|${keyPart(model)}`;
-  return (
-    MODEL_PHOTOS[modelKey] ??
-    MAKE_PHOTOS[keyPart(make)] ??
-    TYPE_PHOTOS[evType] ??
-    TYPE_PHOTOS.ice
-  );
+export function vehiclePhotoSlug(make: string, model: string): string {
+  const key = `${keyPart(make)}|${keyPart(model)}`;
+  const resolved = BODY_ALIASES[key] ?? key;
+  const [resolvedMake, resolvedModel] = resolved.split('|');
+  return `${resolvedMake}-${resolvedModel}`
+    .replace(/\//g, '-')
+    .replace(/\+/g, 'plus')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+function photoUri(slug: string): ImageSourcePropType {
+  return { uri: `${SHOP_API_URL}/vehicles/${slug}.jpg` };
+}
+
+export function vehiclePhotoFor(make: string, model: string, _evType: EvType = 'ice'): ImageSourcePropType {
+  const key = `${keyPart(make)}|${keyPart(model)}`;
+  const resolved = BODY_ALIASES[key] ?? key;
+
+  if (BUNDLED[resolved]) return BUNDLED[resolved];
+  if (BUNDLED[key]) return BUNDLED[key];
+
+  // Exact model URI from the studio library — never a different brand.
+  if (make.trim() && model.trim()) {
+    return photoUri(vehiclePhotoSlug(make, model));
+  }
+
+  return EMPTY_STUDIO;
 }
 
 /** Always resolve from make/model so the card matches the selected vehicle. */
