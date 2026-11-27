@@ -2,23 +2,23 @@
 
 /* Exact same codes as customer mobile `constants/theme.ts` */
 :root {
-  --gt-bg: #f7faf8;
-  --gt-bg-elevated: #eef5f0;
-  --gt-bg-soft: #e4f0e8;
+  --gt-bg: #f5f9f6;
+  --gt-bg-elevated: #ecf4ef;
+  --gt-bg-soft: #e1ede5;
   --gt-header: #07140f;
   --gt-header-soft: #0f241a;
   --gt-card: #ffffff;
-  --gt-card-alt: #f4f9f6;
-  --gt-border: #d7e5dc;
-  --gt-border-strong: #b7cfc0;
+  --gt-card-alt: #f3f8f5;
+  --gt-border: #d5e4db;
+  --gt-border-strong: #b4cdbf;
   --gt-primary: #16a34a;
   --gt-primary-dark: #0b1c14;
   --gt-primary-deep: #15803d;
-  --gt-primary-muted: rgba(22, 163, 74, 0.1);
-  --gt-primary-glow: rgba(22, 163, 74, 0.18);
-  --gt-text: #0c1f16;
-  --gt-muted: #4f6b5c;
-  --gt-dim: #7f9a8b;
+  --gt-primary-muted: rgba(22, 163, 74, 0.12);
+  --gt-primary-glow: rgba(22, 163, 74, 0.2);
+  --gt-text: #0a1a13;
+  --gt-muted: #4a6759;
+  --gt-dim: #7a9587;
   --gt-on-dark: #f3fbf6;
   --gt-warning: #c2410c;
   --gt-warning-muted: rgba(194, 65, 12, 0.1);

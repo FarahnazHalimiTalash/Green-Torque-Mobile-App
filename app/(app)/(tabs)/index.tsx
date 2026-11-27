@@ -40,35 +40,47 @@ export default function HomeScreen() {
         </View>
       </FadeIn>
 
-      <FadeIn delay={80}>
+      <FadeIn delay={70}>
         {selectedVehicle ? (
-          <Card onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)} tone="emphasis">
-            <Image
-              source={{ uri: resolveVehiclePhoto(selectedVehicle) }}
-              style={styles.vehicleHero}
-            />
-            <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
-            <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
+          <Card
+            tone="emphasis"
+            onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)}
+            media={
+              <Image
+                source={{ uri: resolveVehiclePhoto(selectedVehicle) }}
+                style={styles.vehicleHero}
+              />
+            }>
+            <View style={styles.vehicleRow}>
+              <View style={{ flex: 1, gap: 4 }}>
+                <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
+                <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
+              </View>
+              <Ionicons name="chevron-forward" size={20} color={colors.textDim} />
+            </View>
           </Card>
         ) : (
-          <Card tone="emphasis">
-            <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
-              <Ionicons name="car-sport-outline" size={56} color={colors.primary} />
-            </LinearGradient>
+          <Card
+            tone="emphasis"
+            media={
+              <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
+                <Ionicons name="car-sport-outline" size={56} color={colors.primary} />
+              </LinearGradient>
+            }>
             <Text style={styles.vehicleName}>Add a vehicle</Text>
             <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} />
           </Card>
         )}
       </FadeIn>
 
-      <FadeIn delay={140}>
+      <FadeIn delay={130}>
         <SectionHeader title="Current service" />
         {activeRepair ? (
           <Card>
             <StatusBadge status={activeRepair.status} />
             <Text style={styles.repairTitle}>{activeRepair.serviceSummary}</Text>
             <Text style={styles.muted}>
-              Repair Order #{activeRepair.number}
+              RO #{activeRepair.number}
               {activeRepair.bayName ? ` · ${activeRepair.bayName}` : ''}
             </Text>
             <StatusTimeline status={activeRepair.status} />
@@ -94,41 +106,26 @@ export default function HomeScreen() {
         )}
       </FadeIn>
 
-      <FadeIn delay={200}>
+      <FadeIn delay={190}>
         <SectionHeader title="Payment" />
         <Card onPress={() => router.push('/(app)/payments')}>
           <View style={styles.row}>
             <View style={styles.iconTile}>
               <Ionicons name="card-outline" size={22} color={colors.primaryDeep} />
             </View>
-            <View style={{ flex: 1 }}>
+            <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.vehicleName}>
                 {card ? paymentMethodLabel(card) : 'Add a payment method'}
               </Text>
               {due.length && activeRepair ? (
                 <Text style={styles.muted}>
-                  {formatMoney(dueTotal(due))} due on repair #{activeRepair.number}
+                  {formatMoney(dueTotal(due))} due on RO #{activeRepair.number}
                 </Text>
               ) : null}
             </View>
+            <Ionicons name="chevron-forward" size={18} color={colors.textDim} />
           </View>
-          <Button
-            label={card ? 'Manage payment' : 'Add payment method'}
-            onPress={() => router.push('/(app)/payments')}
-          />
         </Card>
-      </FadeIn>
-
-      <FadeIn delay={260}>
-        <SectionHeader title="Quick actions" />
-        <View style={styles.actions}>
-          <Button label="Book appointment" onPress={() => router.push('/(app)/(tabs)/book')} />
-          <Button
-            label="Service history"
-            variant="secondary"
-            onPress={() => router.push('/(app)/(tabs)/history')}
-          />
-        </View>
       </FadeIn>
 
       <Pressable onPress={signOut} style={styles.signOut}>
@@ -141,7 +138,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   greetingRow: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
+    alignItems: 'center',
     gap: 12,
     marginTop: spacing.sm,
     marginBottom: spacing.lg,
@@ -150,17 +147,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: type.hero,
     fontFamily: fonts.display,
-    letterSpacing: -0.7,
+    letterSpacing: -0.9,
   },
   livePill: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 6,
     backgroundColor: colors.primaryMuted,
-    borderRadius: radius.pill,
+    borderRadius: radius.sm,
     paddingHorizontal: 10,
     paddingVertical: 7,
-    marginTop: 4,
   },
   liveDot: {
     width: 7,
@@ -175,52 +171,49 @@ const styles = StyleSheet.create({
   },
   vehicleHero: {
     width: '100%',
-    height: 176,
-    borderRadius: radius.md,
-    marginBottom: 4,
-    backgroundColor: colors.bgElevated,
+    height: 200,
   },
   vehicleHeroFallback: {
     width: '100%',
-    height: 148,
-    borderRadius: radius.md,
+    height: 160,
     alignItems: 'center',
     justifyContent: 'center',
-    marginBottom: 4,
+  },
+  vehicleRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   vehicleName: {
     color: colors.text,
-    fontSize: 21,
+    fontSize: 20,
     fontFamily: fonts.displayMedium,
-    letterSpacing: -0.3,
+    letterSpacing: -0.35,
   },
   muted: {
     color: colors.textMuted,
     lineHeight: 21,
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: fonts.body,
   },
   repairTitle: {
     color: colors.text,
     fontSize: 22,
     fontFamily: fonts.display,
-    letterSpacing: -0.4,
+    letterSpacing: -0.45,
   },
   row: {
     flexDirection: 'row',
     gap: 12,
-    alignItems: 'flex-start',
+    alignItems: 'center',
   },
   iconTile: {
-    width: 44,
-    height: 44,
-    borderRadius: 14,
+    width: 46,
+    height: 46,
+    borderRadius: 15,
     backgroundColor: colors.primaryMuted,
     alignItems: 'center',
     justifyContent: 'center',
-  },
-  actions: {
-    gap: 10,
   },
   signOut: {
     alignItems: 'center',

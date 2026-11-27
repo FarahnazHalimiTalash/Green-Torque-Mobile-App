@@ -37,10 +37,11 @@ export function Screen({
       edges={includeTopInset ? ['top', 'left', 'right'] : ['left', 'right']}>
       <LinearGradient
         colors={variant === 'hero' ? [...gradients.hero] : [...gradients.screen]}
-        start={{ x: 0.1, y: 0 }}
-        end={{ x: 0.9, y: 1 }}
+        start={{ x: 0.05, y: 0 }}
+        end={{ x: 0.95, y: 1 }}
         style={styles.gradient}>
-        <View style={styles.atmosphere} pointerEvents="none" />
+        <View style={styles.orbTop} pointerEvents="none" />
+        <View style={styles.orbBottom} pointerEvents="none" />
         <View style={styles.shell}>{body}</View>
       </LinearGradient>
     </SafeAreaView>
@@ -55,14 +56,23 @@ const styles = StyleSheet.create({
   gradient: {
     flex: 1,
   },
-  atmosphere: {
+  orbTop: {
     position: 'absolute',
-    top: -80,
-    right: -60,
-    width: 220,
-    height: 220,
-    borderRadius: 110,
+    top: -100,
+    right: -70,
+    width: 260,
+    height: 260,
+    borderRadius: 130,
     backgroundColor: colors.primaryGlow,
+  },
+  orbBottom: {
+    position: 'absolute',
+    bottom: 80,
+    left: -90,
+    width: 210,
+    height: 210,
+    borderRadius: 105,
+    backgroundColor: 'rgba(22, 163, 74, 0.08)',
   },
   shell: {
     flex: 1,
@@ -72,7 +82,7 @@ const styles = StyleSheet.create({
   },
   content: {
     paddingHorizontal: spacing.lg,
-    paddingBottom: 48,
+    paddingBottom: 110,
   },
   fill: {
     flex: 1,

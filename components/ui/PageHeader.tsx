@@ -21,22 +21,22 @@ export function PageHeader({ title, subtitle, eyebrow }: Props) {
 const styles = StyleSheet.create({
   wrap: {
     marginTop: spacing.sm,
-    marginBottom: spacing.lg,
-    gap: 8,
+    marginBottom: spacing.md,
+    gap: 6,
   },
   eyebrow: {
     color: colors.primaryDeep,
     fontFamily: fonts.caption,
     fontSize: type.overline,
-    letterSpacing: 1.4,
+    letterSpacing: 1.5,
     textTransform: 'uppercase',
   },
   title: {
     color: colors.text,
     fontFamily: fonts.display,
     fontSize: type.hero,
-    letterSpacing: -0.6,
-    lineHeight: 38,
+    letterSpacing: -0.9,
+    lineHeight: 40,
   },
   subtitle: {
     color: colors.textMuted,

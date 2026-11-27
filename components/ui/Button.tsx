@@ -90,14 +90,14 @@ export function Button({
 
 const styles = StyleSheet.create({
   base: {
-    minHeight: 54,
+    minHeight: 52,
     borderRadius: radius.md,
     alignItems: 'center',
     justifyContent: 'center',
     overflow: 'hidden',
   },
   gradient: {
-    minHeight: 54,
+    minHeight: 52,
     width: '100%',
     alignItems: 'center',
     justifyContent: 'center',
@@ -108,12 +108,12 @@ const styles = StyleSheet.create({
   },
   secondary: {
     backgroundColor: colors.white,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.borderStrong,
     paddingHorizontal: 18,
   },
   ghost: {
-    backgroundColor: 'transparent',
+    backgroundColor: colors.primaryMuted,
     paddingHorizontal: 18,
   },
   danger: {
@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     fontFamily: fonts.bodyBold,
-    letterSpacing: 0.2,
+    letterSpacing: 0.15,
   },
   primaryLabel: {
     color: colors.white,

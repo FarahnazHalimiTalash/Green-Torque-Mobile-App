@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { PageHeader } from '@/components/ui/PageHeader';
 import { Screen } from '@/components/ui/Screen';
-import { colors, fonts, radius } from '@/constants/theme';
+import { colors, fonts } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatVehicleIdentity, vehicleLabel } from '@/lib/format';
 import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
@@ -27,18 +27,17 @@ export default function VehiclesScreen() {
           </Card>
         </FadeIn>
       ) : (
-        <View style={{ gap: 14 }}>
+        <View style={{ gap: 16 }}>
           {vehicles.map((vehicle, index) => {
             const selected = selectedVehicle?.id === vehicle.id;
             return (
-              <FadeIn key={vehicle.id} delay={80 + index * 60}>
+              <FadeIn key={vehicle.id} delay={70 + index * 55}>
                 <Card
                   onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}
-                  tone={selected ? 'emphasis' : 'default'}>
-                  <Image
-                    source={{ uri: resolveVehiclePhoto(vehicle) }}
-                    style={styles.hero}
-                  />
+                  tone={selected ? 'emphasis' : 'default'}
+                  media={
+                    <Image source={{ uri: resolveVehiclePhoto(vehicle) }} style={styles.hero} />
+                  }>
                   <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
                   <Text style={styles.meta}>{formatVehicleIdentity(vehicle)}</Text>
                   <Button
@@ -66,18 +65,16 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontSize: 21,
     fontFamily: fonts.displayMedium,
-    letterSpacing: -0.3,
+    letterSpacing: -0.35,
   },
   meta: {
     color: colors.textMuted,
-    fontSize: 15,
+    fontSize: 14,
     fontFamily: fonts.body,
-    lineHeight: 21,
+    lineHeight: 20,
   },
   hero: {
     width: '100%',
-    height: 156,
-    borderRadius: radius.md,
-    backgroundColor: colors.bgElevated,
+    height: 178,
   },
 });

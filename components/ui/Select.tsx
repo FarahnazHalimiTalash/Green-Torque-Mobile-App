@@ -158,10 +158,10 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyMedium,
   },
   box: {
-    minHeight: 54,
+    minHeight: 52,
     borderRadius: radius.md,
     backgroundColor: colors.white,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
     justifyContent: 'center',
   },

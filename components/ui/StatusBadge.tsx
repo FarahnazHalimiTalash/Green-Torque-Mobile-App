@@ -44,21 +44,21 @@ function humanize(value: string) {
 const styles = StyleSheet.create({
   badge: {
     alignSelf: 'flex-start',
-    borderRadius: radius.pill,
-    paddingHorizontal: 12,
-    paddingVertical: 7,
+    borderRadius: radius.sm,
+    paddingHorizontal: 11,
+    paddingVertical: 6,
     flexDirection: 'row',
     alignItems: 'center',
     gap: 7,
   },
   dot: {
-    width: 7,
-    height: 7,
-    borderRadius: 4,
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   label: {
     fontSize: 12,
     fontFamily: fonts.bodyBold,
-    letterSpacing: 0.2,
+    letterSpacing: 0.15,
   },
 });

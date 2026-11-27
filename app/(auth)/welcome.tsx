@@ -32,14 +32,14 @@ export default function WelcomeScreen() {
       <FadeIn>
         <View style={styles.hero}>
           <LinearGradient
-            colors={['rgba(22,163,74,0.16)', 'rgba(228,240,232,0.55)', 'transparent']}
+            colors={['rgba(22,163,74,0.18)', 'rgba(228,240,232,0.5)', 'transparent']}
             style={styles.glow}
           />
-          <Logo height={88} width={320} />
+          <Logo height={96} width={340} />
         </View>
       </FadeIn>
 
-      <FadeIn delay={120} style={styles.actions}>
+      <FadeIn delay={140} style={styles.actions}>
         {error ? <Text style={styles.error}>{error}</Text> : null}
         <Button label="Sign in" onPress={() => router.push('/(auth)/login')} />
         <Button
@@ -67,23 +67,22 @@ const styles = StyleSheet.create({
   },
   hero: {
     alignItems: 'center',
-    paddingTop: 36,
-    paddingBottom: 28,
-    gap: 14,
+    paddingTop: 48,
+    paddingBottom: 32,
   },
   glow: {
     position: 'absolute',
-    top: -20,
-    width: 280,
-    height: 280,
-    borderRadius: 140,
+    top: -10,
+    width: 300,
+    height: 300,
+    borderRadius: 150,
   },
   actions: {
     gap: 12,
     backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.lg,
-    borderWidth: 1,
+    borderWidth: StyleSheet.hairlineWidth,
     borderColor: colors.border,
     ...shadow.card,
   },

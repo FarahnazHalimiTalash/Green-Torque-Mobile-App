@@ -39,15 +39,7 @@ export default function HistoryScreen() {
                 </Text>
                 <Text style={styles.meta}>
                   {vehicle ? vehicleLabel(vehicle) : 'Vehicle'} · {formatDate(order.openedAt)}
-                  {order.diagnosisCharge?.status === 'sent'
-                    ? ` · Diagnosis ${formatMoney(order.diagnosisCharge.amount)}`
-                    : ''}
-                  {order.estimate
-                    ? ` · Estimate ${formatMoney(order.estimate.amount)} (${order.estimate.status})`
-                    : ''}
-                  {order.foundProblems?.length
-                    ? ` · ${order.foundProblems.length} extra estimate${order.foundProblems.length === 1 ? '' : 's'}`
-                    : ''}
+                  {order.estimate ? ` · ${formatMoney(order.estimate.amount)}` : ''}
                 </Text>
               </Card>
             </FadeIn>
