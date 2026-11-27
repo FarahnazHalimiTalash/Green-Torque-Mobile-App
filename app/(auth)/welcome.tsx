@@ -35,9 +35,7 @@ export default function WelcomeScreen() {
             colors={['rgba(22,163,74,0.16)', 'rgba(228,240,232,0.55)', 'transparent']}
             style={styles.glow}
           />
-          <View style={styles.logoBadge}>
-            <Logo height={88} width={320} clear />
-          </View>
+          <Logo height={88} width={320} />
           <Text style={styles.brand}>Green Torque</Text>
           <Text style={styles.tagline}>Hybrid & EV repair, tracked in one place.</Text>
         </View>
@@ -81,15 +79,6 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     borderRadius: 140,
-  },
-  logoBadge: {
-    borderRadius: radius.xl,
-    backgroundColor: '#14532D',
-    borderWidth: 1,
-    borderColor: '#166534',
-    paddingHorizontal: 18,
-    paddingVertical: 14,
-    ...shadow.soft,
   },
   brand: {
     color: colors.text,
