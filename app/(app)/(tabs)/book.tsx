@@ -69,10 +69,17 @@ export default function BookScreen() {
   const [serviceTypeId, setServiceTypeId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
   const [bookedAt, setBookedAt] = useState<string[]>([]);
+  const [vin, setVin] = useState('');
+  const [mileage, setMileage] = useState('');
   const [notes, setNotes] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  const existingVehicle = vehicles.find(
+    (item) => item.make === make && item.model === model && item.year === Number(year),
+  );
+  const needsNewVehicleIdentity = Boolean(make && model && year && !existingVehicle);
 
   useEffect(() => {
     if (!make && selectedVehicle) {
@@ -166,18 +173,29 @@ export default function BookScreen() {
       setError('Choose a drop-off time.');
       return;
     }
+    const parsedMileage = Number(mileage.replace(/,/g, ''));
+    let vehicle = vehicles.find(
+      (item) => item.make === make && item.model === model && item.year === parsedYear,
+    );
+    if (!vehicle) {
+      if (Number.isNaN(parsedMileage) || mileage.trim() === '') {
+        setError('Enter current mileage for this vehicle.');
+        return;
+      }
+      if (vin.trim() && vin.replace(/\s/g, '').length !== 17) {
+        setError('VIN should be 17 characters if provided.');
+        return;
+      }
+    }
     setLoading(true);
     try {
-      let vehicle = vehicles.find(
-        (item) => item.make === make && item.model === model && item.year === parsedYear,
-      );
       if (!vehicle) {
         vehicle = await addVehicle({
-          vin: '',
+          vin: vin.replace(/\s/g, ''),
           year: parsedYear,
           make,
           model,
-          mileage: 0,
+          mileage: parsedMileage,
           evType: evTypeForModel(make, model) ?? 'ice',
         });
       }
@@ -246,6 +264,24 @@ export default function BookScreen() {
               {make} {model}
             </Text>
           </Card>
+        ) : null}
+        {needsNewVehicleIdentity ? (
+          <>
+            <Input
+              label="VIN (optional)"
+              value={vin}
+              onChangeText={setVin}
+              autoCapitalize="characters"
+              placeholder="17-character VIN"
+            />
+            <Input
+              label="Mileage"
+              value={mileage}
+              onChangeText={setMileage}
+              keyboardType="number-pad"
+              placeholder="28410"
+            />
+          </>
         ) : null}
         <Select
           label="Service type"

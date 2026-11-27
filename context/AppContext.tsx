@@ -14,6 +14,7 @@ import { createId } from '@/lib/ids';
 import {
   shopAddVehicle,
   shopBookAppointment,
+  shopUpdateVehicle,
   shopCancelAppointment,
   shopCustomerLogin,
   shopDemoLogin,
@@ -84,6 +85,7 @@ type AppContextValue = {
   signInDemo: () => Promise<void>;
   signOut: () => Promise<void>;
   addVehicle: (input: VehicleInput) => Promise<Vehicle>;
+  updateVehicle: (vehicleId: string, input: { vin: string; mileage: number }) => Promise<Vehicle>;
   selectVehicle: (id: string) => Promise<void>;
   bookAppointment: (input: BookInput) => Promise<Appointment>;
   cancelAppointment: (id: string) => Promise<void>;
@@ -341,6 +343,40 @@ export function AppProvider({ children }: { children: ReactNode }) {
       return vehicle;
     },
     [account?.profile.id, apiCustomerId, liveWithShop, updateAccount],
+  );
+
+  const updateVehicle = useCallback(
+    async (vehicleId: string, input: { vin: string; mileage: number }) => {
+      const vin = input.vin.trim().toUpperCase();
+      if (vin && vin.length !== 17) {
+        throw new Error('VIN should be 17 characters if provided.');
+      }
+      if (!Number.isFinite(input.mileage) || input.mileage < 0) {
+        throw new Error('Enter a valid mileage.');
+      }
+      if (liveWithShop && apiCustomerId) {
+        const next = await shopUpdateVehicle(apiCustomerId, vehicleId, {
+          vin,
+          mileage: Math.round(input.mileage),
+        });
+        if (next) setApiAccount(next);
+        const updated = next?.vehicles.find((item) => item.id === vehicleId);
+        if (!updated) throw new Error('Vehicle was not updated.');
+        return updated;
+      }
+      let saved: Vehicle | undefined;
+      await updateAccount((current) => ({
+        ...current,
+        vehicles: current.vehicles.map((item) => {
+          if (item.id !== vehicleId) return item;
+          saved = { ...item, vin, mileage: Math.round(input.mileage) };
+          return saved;
+        }),
+      }));
+      if (!saved) throw new Error('Vehicle not found.');
+      return saved;
+    },
+    [apiCustomerId, liveWithShop, updateAccount],
   );
 
   const selectVehicle = useCallback(
@@ -737,6 +773,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       signInDemo,
       signOut,
       addVehicle,
+      updateVehicle,
       selectVehicle,
       bookAppointment,
       cancelAppointment,
@@ -757,6 +794,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       addVehicle,
       appointments,
       bookAppointment,
+      updateVehicle,
       cancelAppointment,
       liveWithShop,
       markAllNotificationsRead,

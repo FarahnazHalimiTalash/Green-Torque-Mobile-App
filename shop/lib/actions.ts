@@ -98,6 +98,7 @@ function resolveEstimate(order: ShopState["repairOrders"][number], estimateId?: 
 export type Action =
   | { type: "signup_customer"; payload: { fullName: string; email: string; phone: string; password: string } }
   | { type: "add_vehicle"; payload: { customerId: string; vin: string; year: number; make: string; model: string; mileage: number; nickname?: string; evType: "ev" | "hybrid" | "ice" } }
+  | { type: "update_vehicle"; payload: { customerId: string; vehicleId: string; vin: string; mileage: number } }
   | { type: "book_appointment"; payload: { customerId: string; vehicleId: string; serviceTypeId: string; scheduledAt: string; notes: string; photoUris: string[]; videoUris: string[] } }
   | { type: "update_appointment"; payload: { id: string; status: ShopState["appointments"][number]["status"] } }
   | { type: "check_in"; payload: { appointmentId: string; technicianId?: string; bayId?: string } }
@@ -180,6 +181,22 @@ export function applyAction(state: ShopState, action: Action, actor: HistoryActo
         evType: action.payload.evType,
         photoUrl: vehiclePhotoFor(make, model, action.payload.evType),
       });
+      break;
+    }
+    case "update_vehicle": {
+      const vehicle = next.vehicles.find(
+        (item) => item.id === action.payload.vehicleId && item.customerId === action.payload.customerId,
+      );
+      if (!vehicle) throw new Error("Vehicle not found.");
+      const vin = action.payload.vin.trim().toUpperCase();
+      if (vin && vin.length !== 17) {
+        throw new Error("VIN should be 17 characters if provided.");
+      }
+      if (!Number.isFinite(action.payload.mileage) || action.payload.mileage < 0) {
+        throw new Error("Enter a valid mileage.");
+      }
+      vehicle.vin = vin;
+      vehicle.mileage = Math.round(action.payload.mileage);
       break;
     }
     case "book_appointment": {

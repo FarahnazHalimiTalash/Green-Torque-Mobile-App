@@ -125,6 +125,17 @@ export async function shopAddVehicle(customerId: string, input: Omit<Vehicle, 'i
   });
 }
 
+export async function shopUpdateVehicle(
+  customerId: string,
+  vehicleId: string,
+  input: { vin: string; mileage: number },
+) {
+  return shopAction({
+    type: 'update_vehicle',
+    payload: { customerId, vehicleId, ...input },
+  });
+}
+
 export async function shopBookAppointment(
   customerId: string,
   payload: {
