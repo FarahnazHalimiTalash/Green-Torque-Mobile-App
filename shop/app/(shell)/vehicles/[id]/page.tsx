@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
-import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
+import { Button, Card, Field, PageHeader, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, formatMoney, repairStatusCopy, vehicleLabel } from "@/lib/format";
 import { auditForTarget, isClosedRepair } from "@/lib/history";
 import { useShop } from "@/lib/shop-context";
@@ -38,12 +38,14 @@ export default function VehicleHistoryPage() {
         <Link href="/vehicles" className="text-sm font-semibold text-gt-primary-deep">
           All vehicles
         </Link>
-        <h1 className="mt-2 text-3xl font-extrabold">{vehicleLabel(vehicle)}</h1>
-        <p className="text-gt-muted">
-          {customer?.fullName} · {vehicle.vin || "No VIN"} · {vehicle.mileage.toLocaleString()} mi ·{" "}
-          {vehicle.evType.toUpperCase()}
-        </p>
-        <p className="mt-2 text-sm text-gt-muted">
+        <div className="mt-3">
+          <PageHeader
+            eyebrow="Vehicle history"
+            title={vehicleLabel(vehicle)}
+            subtitle={`${customer?.fullName ?? "Customer"} · ${vehicle.vin || "No VIN"} · ${vehicle.mileage.toLocaleString()} mi · ${vehicle.evType.toUpperCase()}`}
+          />
+        </div>
+        <p className="text-sm text-gt-muted">
           Full service history for this vehicle, including parts, labor, estimates, and locked customer pickup
           acknowledgments. Admin can edit customer pickup notes with a required audit reason.
         </p>
@@ -64,7 +66,7 @@ export default function VehicleHistoryPage() {
           <Card key={order.id}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-xs font-extrabold tracking-[0.14em] text-gt-muted">REPAIR ORDER</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Repair order</p>
                 <Link href={`/repair-orders/${order.id}`} className="text-xl font-extrabold text-gt-primary-deep">
                   #{order.number} · {order.serviceSummary}
                 </Link>

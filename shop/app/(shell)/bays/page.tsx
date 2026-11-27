@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/ui";
+import { Card, PageHeader } from "@/components/ui";
 import { useShop } from "@/lib/shop-context";
 
 export default function BaysPage() {
@@ -9,10 +9,11 @@ export default function BaysPage() {
 
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">Bays</h1>
-      <p className="text-gt-muted">
-        Assign a bay when a vehicle is checked in. Customers see work videos uploaded by admin or sub-admin, not a live camera.
-      </p>
+      <PageHeader
+        eyebrow="Shop floor"
+        title="Bays"
+        subtitle="Assign a bay when a vehicle is checked in. Customers see work videos uploaded by admin or sub-admin, not a live camera."
+      />
       {state.bays.map((bay) => {
         const current = state.repairOrders.find(
           (item) => item.bayId === bay.id && item.status !== "picked_up" && item.status !== "cancelled",

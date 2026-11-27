@@ -1,6 +1,6 @@
 "use client";
 
-import { Card } from "@/components/ui";
+import { Card, PageHeader } from "@/components/ui";
 import { paymentMethodLabel } from "@/lib/card";
 import { useShop } from "@/lib/shop-context";
 
@@ -10,7 +10,11 @@ export default function CustomersPage() {
 
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">Customers</h1>
+      <PageHeader
+        eyebrow="Directory"
+        title="Customers"
+        subtitle="Contact details, vehicles on file, and open repair orders."
+      />
       {state.customers.map((customer) => {
         const vehicles = state.vehicles.filter((item) => item.customerId === customer.id);
         const open = state.repairOrders.filter(

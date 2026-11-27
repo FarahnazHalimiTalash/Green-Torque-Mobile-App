@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Card, StatusBadge } from "@/components/ui";
+import { Card, PageHeader, StatusBadge } from "@/components/ui";
 import { formatDate, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 
@@ -17,12 +17,15 @@ export default function RepairOrdersPage() {
 
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">{staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}</h1>
-      {staff?.role === "sub_admin" ? (
-        <p className="text-gt-muted">
-          Admin assigns jobs here. Open a job to upload work photos and videos for the customer. Messaging and other shop tools are admin-only.
-        </p>
-      ) : null}
+      <PageHeader
+        eyebrow={staff?.role === "sub_admin" ? "Your jobs" : "Operations"}
+        title={staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}
+        subtitle={
+          staff?.role === "sub_admin"
+            ? "Admin assigns jobs here. Open a job to upload work photos and videos for the customer."
+            : "Open a job to update status, estimates, media, and customer-facing notes."
+        }
+      />
       {staff?.role === "sub_admin" && orders.length === 0 ? (
         <p className="text-gt-muted">No jobs are assigned to you yet.</p>
       ) : null}

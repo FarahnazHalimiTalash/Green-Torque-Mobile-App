@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { Card } from "@/components/ui";
+import { Card, PageHeader } from "@/components/ui";
 import { vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 
@@ -12,10 +12,11 @@ export default function VehiclesPage() {
 
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">Vehicles</h1>
-      <p className="text-sm text-gt-muted">
-        Open a vehicle to review every service, repair order, and customer pickup acknowledgment.
-      </p>
+      <PageHeader
+        eyebrow="Garage"
+        title="Vehicles"
+        subtitle="Open a vehicle to review every service, repair order, and customer pickup acknowledgment."
+      />
       {state.vehicles.map((vehicle) => {
         const customer = state.customers.find((item) => item.id === vehicle.customerId);
         const services = state.repairOrders.filter((item) => item.vehicleId === vehicle.id).length;

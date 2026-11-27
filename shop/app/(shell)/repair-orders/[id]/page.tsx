@@ -282,8 +282,10 @@ export default function RepairOrderPage() {
     <div className="grid gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-xs font-extrabold tracking-[0.16em] text-gt-muted">REPAIR ORDER</p>
-          <h1 className="text-3xl font-extrabold">#{order.number} · {order.serviceSummary}</h1>
+          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Repair order</p>
+          <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">
+            #{order.number} · {order.serviceSummary}
+          </h1>
           <p className="text-gt-muted">
             {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · opened {formatDateTime(order.openedAt)}
           </p>

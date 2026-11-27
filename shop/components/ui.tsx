@@ -1,16 +1,18 @@
 import type { RepairStatus } from "@/lib/types";
 import { repairStatusCopy } from "@/lib/format";
 
+/** Same status tones as the customer app StatusBadge. */
 export function StatusBadge({ status }: { status: string }) {
   const tones: Record<string, string> = {
-    requested: "bg-[var(--gt-info-muted)] text-gt-info",
+    requested: "bg-[var(--gt-warning-muted)] text-gt-warning",
     confirmed: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
-    checked_in: "bg-[var(--gt-info-muted)] text-gt-info",
+    checked_in: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
     diagnosis: "bg-[var(--gt-warning-muted)] text-gt-warning",
     in_progress: "bg-[var(--gt-warning-muted)] text-gt-warning",
-    inspection: "bg-[var(--gt-info-muted)] text-gt-info",
+    inspection: "bg-[var(--gt-warning-muted)] text-gt-warning",
     ready: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
     picked_up: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
+    completed: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
     cancelled: "bg-[var(--gt-danger-muted)] text-gt-danger",
     sent: "bg-[var(--gt-warning-muted)] text-gt-warning",
     approved: "bg-[var(--gt-primary-muted)] text-gt-primary-deep",
@@ -20,11 +22,32 @@ export function StatusBadge({ status }: { status: string }) {
   const label = repairStatusCopy[status as RepairStatus] ?? status.replaceAll("_", " ");
   return (
     <span
-      className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-bold capitalize ${tones[status] ?? "bg-gt-elevated text-gt-muted"}`}
+      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold capitalize ${tones[status] ?? "bg-gt-elevated text-gt-muted"}`}
     >
       <span className="h-1.5 w-1.5 rounded-full bg-current" />
       {label}
     </span>
+  );
+}
+
+/** Same page-header pattern as the customer app (green eyebrow + bold title). */
+export function PageHeader({
+  eyebrow,
+  title,
+  subtitle,
+}: {
+  eyebrow?: string;
+  title: string;
+  subtitle?: string;
+}) {
+  return (
+    <header className="mb-1 grid gap-2">
+      {eyebrow ? (
+        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">{eyebrow}</p>
+      ) : null}
+      <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">{title}</h1>
+      {subtitle ? <p className="max-w-xl text-base text-gt-muted">{subtitle}</p> : null}
+    </header>
   );
 }
 

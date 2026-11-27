@@ -26,7 +26,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   if (!ready || !staff) {
     return (
-      <div className="grid min-h-screen place-items-center text-gt-primary-deep">Loading shop…</div>
+      <div className="grid min-h-screen place-items-center bg-gt-bg text-gt-primary-deep">Loading shop…</div>
     );
   }
 
@@ -35,8 +35,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen lg:grid lg:grid-cols-[248px_1fr]">
-      <aside className="border-b border-gt-border bg-gt-card text-gt-text lg:border-r lg:border-b-0">
-        <Link href={home} className="block border-b border-gt-border bg-gt-header px-4 py-3">
+      <aside className="border-b border-gt-border bg-gt-elevated/90 text-gt-text backdrop-blur-sm lg:border-r lg:border-b-0">
+        <Link href={home} className="block border-b border-gt-header bg-gt-header px-4 py-3">
           <img
             src="/logo.png"
             alt="Green Torque Hybrid/EV Repair"
@@ -60,7 +60,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
                   className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
                     active
                       ? "bg-[var(--gt-primary-muted)] text-gt-primary-deep"
-                      : "text-gt-text hover:bg-gt-elevated"
+                      : "text-gt-text hover:bg-gt-card"
                   }`}
                 >
                   {link.label}
@@ -68,7 +68,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
               );
             })}
           </nav>
-          <div className="mt-8 rounded-2xl border border-gt-border bg-gt-card-alt p-4 text-sm">
+          <div className="mt-8 rounded-[20px] border border-gt-border bg-gt-card p-4 text-sm shadow-[0_8px_24px_rgba(7,20,15,0.06)]">
             <p className="font-bold text-gt-text">{staff.fullName}</p>
             <p className="text-gt-muted">{staff.title}</p>
             <button onClick={signOut} className="mt-3 text-gt-dim hover:text-gt-primary-deep">
@@ -77,7 +77,13 @@ export function Shell({ children }: { children: React.ReactNode }) {
           </div>
         </div>
       </aside>
-      <div className="p-5 lg:p-8">{children}</div>
+      <div className="relative overflow-hidden">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-20 -right-16 h-[220px] w-[220px] rounded-full bg-[var(--gt-primary-glow)]"
+        />
+        <div className="relative p-5 lg:p-8">{children}</div>
+      </div>
     </div>
   );
 }

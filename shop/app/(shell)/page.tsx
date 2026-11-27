@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
-import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
+import { Button, Card, Field, PageHeader, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, vehicleLabel } from "@/lib/format";
 import { useShop } from "@/lib/shop-context";
 import { SERVICE_GROUPS, serviceTypes } from "@/lib/types";
@@ -45,10 +45,11 @@ export default function TodayPage() {
 
   return (
     <div className="grid gap-6">
-      <div>
-        <p className="text-xs font-extrabold tracking-[0.16em] text-gt-muted">SHOP FLOOR</p>
-        <h1 className="text-3xl font-extrabold">Today</h1>
-      </div>
+      <PageHeader
+        eyebrow="Shop floor"
+        title="Today"
+        subtitle="Check in appointments and keep active repair orders moving."
+      />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>

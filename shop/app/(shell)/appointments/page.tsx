@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { Button, Card, Field, StatusBadge, inputClass } from "@/components/ui";
+import { Button, Card, Field, PageHeader, StatusBadge, inputClass } from "@/components/ui";
 import { formatDateTime, vehicleLabel } from "@/lib/format";
 import { auditForTarget, isClosedAppointment } from "@/lib/history";
 import { useShop } from "@/lib/shop-context";
@@ -29,10 +29,11 @@ export default function AppointmentsPage() {
 
   return (
     <div className="grid gap-5">
-      <h1 className="text-3xl font-extrabold">Appointments</h1>
-      <p className="text-sm text-gt-muted">
-        Customers can cancel only open bookings. Closed appointment history is locked; admin corrections are audited.
-      </p>
+      <PageHeader
+        eyebrow="Schedule"
+        title="Appointments"
+        subtitle="Customers can cancel only open bookings. Closed appointment history is locked; admin corrections are audited."
+      />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       {state.appointments.map((appointment) => {
         const customer = state.customers.find((item) => item.id === appointment.customerId);

@@ -53,7 +53,7 @@ function LoginForm() {
           />
         </div>
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Shop access</p>
-        <h1 className="mt-2 text-3xl font-extrabold tracking-tight text-gt-text">Shop dashboard</h1>
+        <h1 className="mt-2 text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">Shop dashboard</h1>
         <p className="mt-2 mb-6 text-gt-muted">
           Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the
           mobile app.

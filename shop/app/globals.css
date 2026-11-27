@@ -26,6 +26,8 @@
   --gt-danger-muted: rgba(220, 38, 38, 0.1);
   --gt-info: #0369a1;
   --gt-info-muted: rgba(3, 105, 161, 0.1);
+  --gt-gradient-mid: #eef6f1;
+  --gt-gradient-end: #e7f2eb;
   --background: var(--gt-bg);
   --foreground: var(--gt-text);
 }
@@ -58,7 +60,8 @@
 body {
   background:
     radial-gradient(circle at top right, var(--gt-primary-glow), transparent 28%),
-    linear-gradient(180deg, #f7faf8 0%, #eef6f1 55%, #e7f2eb 100%);
+    linear-gradient(180deg, var(--gt-bg) 0%, var(--gt-gradient-mid) 55%, var(--gt-gradient-end) 100%);
+  background-attachment: fixed;
   color: var(--gt-text);
   font-family: var(--font-sans);
   min-height: 100%;
@@ -75,4 +78,5 @@ h2,
 h3 {
   letter-spacing: -0.03em;
   color: var(--gt-text);
+  font-family: var(--font-outfit), ui-sans-serif, system-ui, sans-serif;
 }
