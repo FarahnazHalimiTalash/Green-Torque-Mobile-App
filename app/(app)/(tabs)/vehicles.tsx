@@ -16,11 +16,7 @@ export default function VehiclesScreen() {
   return (
     <Screen includeTopInset={false}>
       <FadeIn>
-        <PageHeader
-          eyebrow="Garage"
-          title="Vehicles"
-          subtitle="Add every EV or hybrid you service with Green Torque."
-        />
+        <PageHeader title="Vehicles" />
         <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} style={{ marginBottom: 8 }} />
       </FadeIn>
 
@@ -28,7 +24,6 @@ export default function VehiclesScreen() {
         <FadeIn delay={80}>
           <Card>
             <Text style={styles.empty}>No vehicles yet</Text>
-            <Text style={styles.meta}>Start with VIN, year, make, model, and mileage.</Text>
           </Card>
         </FadeIn>
       ) : (

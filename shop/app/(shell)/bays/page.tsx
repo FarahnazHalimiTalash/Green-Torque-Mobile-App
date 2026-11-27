@@ -9,11 +9,7 @@ export default function BaysPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader
-        eyebrow="Shop floor"
-        title="Bays"
-        subtitle="Assign a bay when a vehicle is checked in. Customers see work videos uploaded by admin or sub-admin, not a live camera."
-      />
+      <PageHeader title="Bays" />
       {state.bays.map((bay) => {
         const current = state.repairOrders.find(
           (item) => item.bayId === bay.id && item.status !== "picked_up" && item.status !== "cancelled",

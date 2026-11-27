@@ -52,12 +52,7 @@ function LoginForm() {
             className="h-12 w-auto"
           />
         </div>
-        <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Shop access</p>
-        <h1 className="mt-2 text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">Shop dashboard</h1>
-        <p className="mt-2 mb-6 text-gt-muted">
-          Admin has full shop access. Sub-admin can only upload work photos and videos. Customers use the
-          mobile app.
-        </p>
+        <h1 className="mb-6 mt-2 text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">Sign in</h1>
         <div className="grid gap-4">
           <Field label="Email">
             <input className={inputClass} value={email} onChange={(event) => setEmail(event.target.value)} />
@@ -75,10 +70,6 @@ function LoginForm() {
             {loading ? "Signing in…" : "Sign in"}
           </Button>
         </div>
-        <p className="mt-6 text-sm text-gt-dim">
-          Demo: advisor@greentorque.demo (admin), subadmin@greentorque.demo, or tech@greentorque.demo /
-          shop123
-        </p>
       </form>
     </main>
   );

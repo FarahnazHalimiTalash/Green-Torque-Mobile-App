@@ -3,7 +3,7 @@ import { Card } from '@/components/ui/Card';
 import { Screen } from '@/components/ui/Screen';
 import { colors, radius } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
-import { formatMileage, vehicleLabel } from '@/lib/format';
+import { formatVehicleIdentity, vehicleLabel } from '@/lib/format';
 import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Image, StyleSheet, Text } from 'react-native';
@@ -27,19 +27,14 @@ export default function VehicleDetailScreen() {
     <Screen>
       <Image source={{ uri: resolveVehiclePhoto(vehicle) }} style={styles.hero} />
       <Text style={styles.title}>{vehicleLabel(vehicle)}</Text>
-      <Text style={styles.meta}>{vehicle.nickname ?? vehicle.evType.toUpperCase()}</Text>
-      <Card>
-        <Text style={styles.row}>VIN: {vehicle.vin || 'Not provided'}</Text>
-        <Text style={styles.row}>Mileage: {formatMileage(vehicle.mileage)}</Text>
-        <Text style={styles.row}>Powertrain: {vehicle.evType.toUpperCase()}</Text>
-      </Card>
-      <Button label="Book service for this vehicle" onPress={() => {
+      <Text style={styles.meta}>{formatVehicleIdentity(vehicle)}</Text>
+      <Button label="Book service" onPress={() => {
         selectVehicle(vehicle.id);
         router.push('/(app)/(tabs)/book');
       }} />
-      <Text style={styles.section}>Repair history</Text>
+      <Text style={styles.section}>History</Text>
       {related.length === 0 ? (
-        <Text style={styles.meta}>No repair orders yet.</Text>
+        <Text style={styles.meta}>No repairs yet</Text>
       ) : (
         related.map((order) => (
           <Card key={order.id} onPress={() => router.push(`/(app)/repair/${order.id}`)}>

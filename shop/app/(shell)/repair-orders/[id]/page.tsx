@@ -126,14 +126,7 @@ export default function RepairOrderPage() {
 
   const mediaCard = (
     <Card>
-      <h2 className="mb-4 font-bold">Work photos & videos</h2>
-      <p className="mb-4 text-sm text-gt-muted">
-        {closed
-          ? "Closed history is view-only for media. Admin can correct status and summary below with a reason."
-          : subAdmin
-            ? "Upload photos and videos of the work. The customer sees them on this repair in their account. Messaging and other shop tools are admin-only."
-            : "Admin and sub-admin can upload photos and videos of the work. The customer sees them on this repair in their account."}
-      </p>
+      <h2 className="mb-4 font-bold">Work media</h2>
       {canUpload && !closed ? (
         <form className="grid gap-3" onSubmit={uploadWorkMedia}>
           <input
@@ -147,14 +140,12 @@ export default function RepairOrderPage() {
             className={`${inputClass} min-h-20 py-3`}
             value={clip}
             onChange={(event) => setClip(event.target.value)}
-            placeholder="What should the customer know about this photo or video?"
+            placeholder="Caption"
           />
           <Button type="submit" disabled={uploading}>
-            {uploading ? "Uploading…" : "Upload photo or video"}
+            {uploading ? "Uploading…" : "Upload"}
           </Button>
         </form>
-      ) : !closed ? (
-        <p className="text-sm text-gt-muted">Ask an admin or sub-admin to upload work photos and videos.</p>
       ) : null}
       <div className="mt-4 grid gap-4">
         {order.media.map((item) => (
@@ -176,10 +167,7 @@ export default function RepairOrderPage() {
   const historyCorrectionCard =
     closed && admin ? (
       <Card>
-        <h2 className="mb-2 font-bold">History correction</h2>
-        <p className="mb-4 text-sm text-gt-muted">
-          Closed repairs are locked. Admin can correct them only with a reason so every change stays in the audit trail.
-        </p>
+        <h2 className="mb-4 font-bold">History correction</h2>
         <form
           className="grid gap-3"
           onSubmit={async (event) => {
@@ -282,23 +270,18 @@ export default function RepairOrderPage() {
     <div className="grid gap-6">
       <div className="flex flex-wrap items-start justify-between gap-4">
         <div>
-          <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Repair order</p>
           <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">
             #{order.number} · {order.serviceSummary}
           </h1>
           <p className="text-gt-muted">
-            {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · opened {formatDateTime(order.openedAt)}
+            {customer?.fullName} · {vehicle ? vehicleLabel(vehicle) : "Vehicle"} · {formatDateTime(order.openedAt)}
           </p>
           {vehicle ? (
             <Link href={`/vehicles/${vehicle.id}`} className="mt-2 inline-block text-sm font-semibold text-gt-primary-deep">
-              Open full vehicle service history
+              Vehicle history
             </Link>
           ) : null}
-          {closed ? (
-            <p className="mt-2 text-sm font-semibold text-gt-warning">
-              Closed history — customers cannot edit. Admin corrections are audited.
-            </p>
-          ) : null}
+          {closed ? <p className="mt-2 text-sm font-semibold text-gt-warning">Closed</p> : null}
         </div>
         <StatusBadge status={order.status} />
       </div>
@@ -308,7 +291,7 @@ export default function RepairOrderPage() {
         <h2 className="mb-2 font-bold">Customer pickup acknowledgment</h2>
         {order.pickupAcknowledgment ? (
           <div className="rounded-xl bg-gt-card-alt p-4">
-            <p className="text-sm text-gt-muted">Customer note (locked for customer; admin edits are audited)</p>
+            <p className="text-sm text-gt-muted">Customer note</p>
             <p className="mt-2">{order.pickupAcknowledgment.note}</p>
             <p className="mt-4 text-sm text-gt-muted">Signature</p>
             <p className="text-xl font-bold italic">{order.pickupAcknowledgment.signatureFullName}</p>
@@ -335,11 +318,7 @@ export default function RepairOrderPage() {
             {closed ? auditCard : null}
             <Card>
               <h2 className="mb-4 font-bold">Status and assignment</h2>
-              {closed ? (
-                <p className="mb-4 text-sm text-gt-muted">
-                  Status is locked. Use History correction above to change closed records.
-                </p>
-              ) : (
+              {!closed ? (
                 <div className="mb-4 flex flex-wrap gap-2">
                   {repairTimeline.map((step, index) => (
                     <button
@@ -354,7 +333,7 @@ export default function RepairOrderPage() {
                     Mark picked up
                   </Button>
                 </div>
-              )}
+              ) : null}
               <div className="grid gap-3 md:grid-cols-3">
                 <Field label="Technician">
                   <select
@@ -400,17 +379,14 @@ export default function RepairOrderPage() {
 
             <Card>
               <h2 className="mb-4 font-bold">Diagnosis charge</h2>
-              <p className="mb-4 text-sm text-gt-muted">
-                After check-in, diagnosis has a fee. Send it to the customer. If more work is needed, send a separate further-service estimate they can accept or decline.
-              </p>
               {order.diagnosisCharge?.status === "sent" ? (
                 <div className="mb-4 rounded-xl border border-gt-primary/40 bg-[var(--gt-primary-muted)] p-4">
-                  <p className="font-bold text-gt-primary-deep">Diagnosis sent to customer</p>
+                  <p className="font-bold text-gt-primary-deep">Sent</p>
                   <p className="mt-1 text-2xl font-extrabold">{formatMoney(order.diagnosisCharge.amount)}</p>
                   <p className="mt-1 text-sm text-gt-muted">{order.diagnosisCharge.description}</p>
                 </div>
               ) : (
-                <p className="mb-4 text-sm text-gt-warning">No diagnosis charge has been sent yet.</p>
+                <p className="mb-4 text-sm text-gt-warning">Not sent</p>
               )}
               {admin && !closed ? (
                 <form
@@ -544,20 +520,17 @@ export default function RepairOrderPage() {
                   <p className="text-2xl font-extrabold">{formatMoney(order.estimate.amount)}</p>
                   {order.estimate.status === "sent" ? (
                     <div className="rounded-xl border border-gt-warning bg-[var(--gt-warning-muted)] p-4">
-                      <p className="font-bold text-gt-warning">Waiting for customer decision</p>
-                      <p className="mt-1 text-sm">The customer can approve or decline this further-service estimate in the app.</p>
+                      <p className="font-bold text-gt-warning">Waiting on customer</p>
                     </div>
                   ) : null}
                   {order.estimate.status === "approved" ? (
                     <div className="rounded-xl border border-gt-primary bg-[var(--gt-primary-muted)] p-4">
-                      <p className="font-bold text-gt-primary-deep">Customer approved</p>
-                      <p className="mt-1 text-sm">The customer accepted this further-service estimate. Continue the additional repair.</p>
+                      <p className="font-bold text-gt-primary-deep">Approved</p>
                     </div>
                   ) : null}
                   {order.estimate.status === "declined" ? (
                     <div className="rounded-xl border border-gt-danger bg-[var(--gt-danger-muted)] p-4">
-                      <p className="font-bold text-gt-danger">Customer declined</p>
-                      <p className="mt-1 text-sm">The customer declined this further-service estimate. The diagnosis charge still applies. Do not continue this extra work unless you send a new estimate.</p>
+                      <p className="font-bold text-gt-danger">Declined</p>
                     </div>
                   ) : null}
                 </div>
@@ -565,19 +538,14 @@ export default function RepairOrderPage() {
               {admin && !closed ? (
                 <div className="mt-4">
                   <Button onClick={() => run({ type: "send_estimate", payload: { repairOrderId: order.id } })}>
-                    Send further-service estimate to customer
+                    Send estimate
                   </Button>
                 </div>
               ) : null}
             </Card>
 
             <Card>
-              <h2 className="mb-4 font-bold">New problem found during work</h2>
-              <p className="mb-4 text-sm text-gt-muted">
-                {closed
-                  ? "Closed history is view-only for found problems."
-                  : "If another issue appears while the vehicle is in the shop, only admin can review it, send a new cost estimate, and notify the customer. They can approve or decline that extra work."}
-              </p>
+              <h2 className="mb-4 font-bold">Found problems</h2>
               {(order.foundProblems ?? []).map((problem) => (
                 <div key={problem.id} className="mb-4 rounded-xl bg-gt-card-alt p-4">
                   <p className="font-bold">{problem.summary}</p>
@@ -588,12 +556,6 @@ export default function RepairOrderPage() {
                   <div className="mt-3">
                     <StatusBadge status={problem.estimate.status} />
                   </div>
-                  {problem.estimate.status === "sent" ? (
-                    <p className="mt-2 text-sm text-gt-warning">Customer notified. Waiting for approve or decline.</p>
-                  ) : null}
-                  {problem.estimate.status === "approved" ? (
-                    <p className="mt-2 text-sm text-gt-primary-deep">Customer approved this extra repair.</p>
-                  ) : null}
                   {problem.estimate.status === "declined" ? (
                     <p className="mt-2 text-sm text-gt-danger">Customer declined this extra repair. Do not continue it unless you send a new estimate.</p>
                   ) : null}
@@ -644,15 +606,13 @@ export default function RepairOrderPage() {
                   </Field>
                   <Button type="submit">Notify customer and send estimate</Button>
                 </form>
-              ) : !closed ? (
-                <p className="text-sm text-gt-muted">Ask an admin to review a newly found problem and send the customer an estimate.</p>
               ) : null}
             </Card>
 
             <Card>
-              <h2 className="mb-4 font-bold">Customer payment</h2>
+              <h2 className="mb-4 font-bold">Payment</h2>
               <p className="mb-3 text-sm text-gt-muted">
-                {customerCard ? paymentMethodLabel(customerCard) : "No payment method on file. The customer adds a card in the app."}
+                {customerCard ? paymentMethodLabel(customerCard) : "No card on file"}
               </p>
               {due.map((item) => (
                 <p key={item.sourceId} className="text-sm">Due · {item.description} · {formatMoney(item.amount)}</p>
@@ -663,7 +623,7 @@ export default function RepairOrderPage() {
                 </p>
               ))}
               {!due.length && !orderPayments.length ? (
-                <p className="text-sm text-gt-muted">No charges due yet. Diagnosis and approved extra work appear here after the customer can pay.</p>
+                <p className="text-sm text-gt-muted">No charges due</p>
               ) : null}
             </Card>
 

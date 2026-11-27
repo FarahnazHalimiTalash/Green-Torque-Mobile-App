@@ -12,11 +12,7 @@ export default function VehiclesPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader
-        eyebrow="Garage"
-        title="Vehicles"
-        subtitle="Open a vehicle to review every service, repair order, and customer pickup acknowledgment."
-      />
+      <PageHeader title="Vehicles" />
       {state.vehicles.map((vehicle) => {
         const customer = state.customers.find((item) => item.id === vehicle.customerId);
         const services = state.repairOrders.filter((item) => item.vehicleId === vehicle.id).length;

@@ -73,7 +73,7 @@ export default function RepairDetailScreen() {
         {order.bayName ? ` · ${order.bayName}` : ''}
       </Text>
       {closed ? (
-        <Text style={styles.meta}>Closed history — view only. Contact the shop if something looks wrong.</Text>
+        <Text style={styles.meta}>View only</Text>
       ) : null}
 
       <Card>

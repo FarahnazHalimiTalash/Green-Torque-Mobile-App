@@ -16,18 +16,13 @@ export default function HistoryScreen() {
   return (
     <Screen includeTopInset={false}>
       <FadeIn>
-        <PageHeader
-          eyebrow="Records"
-          title="Service history"
-          subtitle="View-only record of previous work, estimates, and completed visits."
-        />
+        <PageHeader title="History" />
       </FadeIn>
 
       {history.length === 0 && appointments.length === 0 ? (
         <FadeIn delay={80}>
           <Card tone="quiet">
             <Text style={styles.empty}>No history yet</Text>
-            <Text style={styles.meta}>Completed repair orders will show up here.</Text>
           </Card>
         </FadeIn>
       ) : null}

@@ -83,7 +83,7 @@ export default function AppointmentDetailScreen() {
       {appointment.status === 'requested' || appointment.status === 'confirmed' ? (
         <Button label="Cancel appointment" variant="danger" onPress={() => cancelAppointment(appointment.id)} />
       ) : (
-        <Text style={styles.meta}>This appointment is closed history and cannot be edited.</Text>
+        <Text style={styles.meta}>Closed</Text>
       )}
     </Screen>
   );

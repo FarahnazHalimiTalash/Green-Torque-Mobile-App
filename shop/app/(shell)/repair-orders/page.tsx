@@ -17,17 +17,9 @@ export default function RepairOrdersPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader
-        eyebrow={staff?.role === "sub_admin" ? "Your jobs" : "Operations"}
-        title={staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}
-        subtitle={
-          staff?.role === "sub_admin"
-            ? "Admin assigns jobs here. Open a job to upload work photos and videos for the customer."
-            : "Open a job to update status, estimates, media, and customer-facing notes."
-        }
-      />
+      <PageHeader title={staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"} />
       {staff?.role === "sub_admin" && orders.length === 0 ? (
-        <p className="text-gt-muted">No jobs are assigned to you yet.</p>
+        <p className="text-gt-muted">No jobs assigned</p>
       ) : null}
       {orders.map((order) => {
         const customer = state.customers.find((item) => item.id === order.customerId);

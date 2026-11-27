@@ -199,11 +199,7 @@ export default function BookScreen() {
   return (
     <Screen includeTopInset={false}>
       <FadeIn>
-        <PageHeader
-          eyebrow="Schedule"
-          title="Book appointment"
-          subtitle="Choose a vehicle, service, and drop-off window."
-        />
+        <PageHeader title="Book" />
       </FadeIn>
 
       <FadeIn delay={80} style={styles.form}>

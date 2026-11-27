@@ -35,11 +35,7 @@ export default function LoginScreen() {
         <Pressable onPress={() => router.back()}>
           <Text style={styles.back}>Back</Text>
         </Pressable>
-        <PageHeader
-          eyebrow="Account"
-          title="Sign in"
-          subtitle="Use your Green Torque customer account."
-        />
+        <PageHeader title="Sign in" />
       </FadeIn>
       <FadeIn delay={90}>
         <View style={styles.form}>

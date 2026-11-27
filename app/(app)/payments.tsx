@@ -66,14 +66,11 @@ export default function PaymentsScreen() {
   return (
     <Screen>
       <Text style={styles.title}>Payment</Text>
-      <Text style={styles.subtitle}>
-        Save a card to pay diagnosis fees and approved extra work. Green Torque stores only the last four digits, never the full card number.
-      </Text>
 
       <Card>
         <Text style={styles.label}>Saved methods</Text>
         {paymentMethods.length === 0 ? (
-          <Text style={styles.body}>No card on file yet.</Text>
+          <Text style={styles.body}>No card on file</Text>
         ) : (
           paymentMethods.map((method) => {
             const active = (selected?.id ?? '') === method.id;
@@ -98,7 +95,6 @@ export default function PaymentsScreen() {
 
       <Card>
         <Text style={styles.label}>Add a card</Text>
-        <Text style={styles.meta}>Demo card: 4242 4242 4242 4242 · any future date · any 3-digit CVC</Text>
         <Input label="Name on card" value={name} onChangeText={setName} autoCapitalize="words" placeholder="Farahnaz" />
         <Input
           label="Card number"
@@ -159,12 +155,7 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: '800',
     marginTop: 8,
-  },
-  subtitle: {
-    color: colors.textMuted,
-    lineHeight: 22,
     marginBottom: 12,
-    marginTop: 6,
   },
   label: {
     color: colors.textMuted,

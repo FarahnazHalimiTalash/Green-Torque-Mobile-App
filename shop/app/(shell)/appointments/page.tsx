@@ -29,11 +29,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader
-        eyebrow="Schedule"
-        title="Appointments"
-        subtitle="Customers can cancel only open bookings. Closed appointment history is locked; admin corrections are audited."
-      />
+      <PageHeader title="Appointments" />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       {state.appointments.map((appointment) => {
         const customer = state.customers.find((item) => item.id === appointment.customerId);

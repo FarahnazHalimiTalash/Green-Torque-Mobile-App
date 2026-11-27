@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { Logo } from '@/components/ui/Logo';
 import { Screen } from '@/components/ui/Screen';
-import { colors, fonts, radius, shadow, spacing, type } from '@/constants/theme';
+import { colors, fonts, radius, shadow, spacing } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -36,8 +36,6 @@ export default function WelcomeScreen() {
             style={styles.glow}
           />
           <Logo height={88} width={320} />
-          <Text style={styles.brand}>Green Torque</Text>
-          <Text style={styles.tagline}>Hybrid & EV repair, tracked in one place.</Text>
         </View>
       </FadeIn>
 
@@ -79,20 +77,6 @@ const styles = StyleSheet.create({
     width: 280,
     height: 280,
     borderRadius: 140,
-  },
-  brand: {
-    color: colors.text,
-    fontFamily: fonts.display,
-    fontSize: type.hero,
-    letterSpacing: -0.8,
-  },
-  tagline: {
-    color: colors.textMuted,
-    fontFamily: fonts.body,
-    fontSize: 17,
-    lineHeight: 24,
-    textAlign: 'center',
-    maxWidth: 280,
   },
   actions: {
     gap: 12,

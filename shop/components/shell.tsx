@@ -46,9 +46,6 @@ export function Shell({ children }: { children: React.ReactNode }) {
           />
         </Link>
         <div className="p-5">
-          <p className="mb-3 text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">
-            Shop console
-          </p>
           <nav className="grid gap-1">
             {links.map((link) => {
               const active =

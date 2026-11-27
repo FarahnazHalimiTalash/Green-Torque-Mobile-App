@@ -41,11 +41,7 @@ export default function SignupScreen() {
         <Pressable onPress={() => router.back()}>
           <Text style={styles.back}>Back</Text>
         </Pressable>
-        <PageHeader
-          eyebrow="Account"
-          title="Create account"
-          subtitle="Your vehicles, appointments, and repair updates will live here."
-        />
+        <PageHeader title="Create account" />
       </FadeIn>
       <FadeIn delay={90}>
         <View style={styles.form}>

@@ -45,11 +45,7 @@ export default function TodayPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader
-        eyebrow="Shop floor"
-        title="Today"
-        subtitle="Check in appointments and keep active repair orders moving."
-      />
+      <PageHeader title="Today" />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>
@@ -69,7 +65,7 @@ export default function TodayPage() {
             </div>
           </div>
           <div className="grid gap-3">
-            {todayAppointments.length === 0 ? <p className="text-gt-muted">No appointments on the board.</p> : null}
+            {todayAppointments.length === 0 ? <p className="text-gt-muted">No appointments</p> : null}
             {todayAppointments.map((appointment) => {
               const customer = state.customers.find((item) => item.id === appointment.customerId);
               const vehicle = state.vehicles.find((item) => item.id === appointment.vehicleId);

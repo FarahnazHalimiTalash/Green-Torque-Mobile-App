@@ -29,9 +29,7 @@ export default function HomeScreen() {
       <FadeIn>
         <View style={styles.greetingRow}>
           <View style={{ flex: 1 }}>
-            <Text style={styles.eyebrow}>Your shop dashboard</Text>
             <Text style={styles.hello}>Hello, {firstName}</Text>
-            <Text style={styles.subhello}>Track repairs, estimates, and pickup in real time.</Text>
           </View>
           {liveWithShop ? (
             <View style={styles.livePill}>
@@ -49,7 +47,6 @@ export default function HomeScreen() {
               source={{ uri: resolveVehiclePhoto(selectedVehicle) }}
               style={styles.vehicleHero}
             />
-            <Text style={styles.vehicleKicker}>Your vehicle</Text>
             <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
             <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
           </Card>
@@ -58,8 +55,7 @@ export default function HomeScreen() {
             <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
               <Ionicons name="car-sport-outline" size={56} color={colors.primary} />
             </LinearGradient>
-            <Text style={styles.vehicleName}>Add your first vehicle</Text>
-            <Text style={styles.muted}>VIN, year, make, model, and mileage.</Text>
+            <Text style={styles.vehicleName}>Add a vehicle</Text>
             <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} />
           </Card>
         )}
@@ -93,7 +89,6 @@ export default function HomeScreen() {
         ) : (
           <Card tone="quiet">
             <Text style={styles.vehicleName}>No active service</Text>
-            <Text style={styles.muted}>Book a drop-off and we’ll keep this card updated.</Text>
             <Button label="Book appointment" onPress={() => router.push('/(app)/(tabs)/book')} />
           </Card>
         )}
@@ -107,15 +102,14 @@ export default function HomeScreen() {
               <Ionicons name="card-outline" size={22} color={colors.primaryDeep} />
             </View>
             <View style={{ flex: 1 }}>
-              <Text style={styles.vehicleKicker}>Payment method</Text>
               <Text style={styles.vehicleName}>
                 {card ? paymentMethodLabel(card) : 'Add a payment method'}
               </Text>
-              <Text style={styles.muted}>
-                {due.length && activeRepair
-                  ? `${formatMoney(dueTotal(due))} due on repair #${activeRepair.number}`
-                  : 'Pay diagnosis and approved extra work from here.'}
-              </Text>
+              {due.length && activeRepair ? (
+                <Text style={styles.muted}>
+                  {formatMoney(dueTotal(due))} due on repair #{activeRepair.number}
+                </Text>
+              ) : null}
             </View>
           </View>
           <Button
@@ -152,27 +146,11 @@ const styles = StyleSheet.create({
     marginTop: spacing.sm,
     marginBottom: spacing.lg,
   },
-  eyebrow: {
-    color: colors.primaryDeep,
-    fontFamily: fonts.caption,
-    fontSize: type.overline,
-    letterSpacing: 1.3,
-    textTransform: 'uppercase',
-    marginBottom: 6,
-  },
   hello: {
     color: colors.text,
     fontSize: type.hero,
     fontFamily: fonts.display,
     letterSpacing: -0.7,
-  },
-  subhello: {
-    color: colors.textMuted,
-    fontFamily: fonts.body,
-    fontSize: 15,
-    lineHeight: 21,
-    marginTop: 6,
-    maxWidth: 260,
   },
   livePill: {
     flexDirection: 'row',
@@ -209,13 +187,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 4,
-  },
-  vehicleKicker: {
-    color: colors.textDim,
-    fontSize: 11,
-    fontFamily: fonts.caption,
-    letterSpacing: 1.1,
-    textTransform: 'uppercase',
   },
   vehicleName: {
     color: colors.text,

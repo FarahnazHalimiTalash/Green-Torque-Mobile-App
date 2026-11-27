@@ -5,7 +5,7 @@ import { useParams } from "next/navigation";
 import { useMemo, useState } from "react";
 
 import { Button, Card, Field, PageHeader, StatusBadge, inputClass } from "@/components/ui";
-import { formatDateTime, formatMoney, repairStatusCopy, vehicleLabel } from "@/lib/format";
+import { formatDateTime, formatMoney, vehicleLabel } from "@/lib/format";
 import { auditForTarget, isClosedRepair } from "@/lib/history";
 import { useShop } from "@/lib/shop-context";
 import { isAdmin } from "@/lib/staff";
@@ -39,22 +39,17 @@ export default function VehicleHistoryPage() {
           All vehicles
         </Link>
         <div className="mt-3">
-          <PageHeader
-            eyebrow="Vehicle history"
-            title={vehicleLabel(vehicle)}
-            subtitle={`${customer?.fullName ?? "Customer"} · ${vehicle.vin || "No VIN"} · ${vehicle.mileage.toLocaleString()} mi · ${vehicle.evType.toUpperCase()}`}
-          />
+          <PageHeader title={vehicleLabel(vehicle)} />
         </div>
         <p className="text-sm text-gt-muted">
-          Full service history for this vehicle, including parts, labor, estimates, and locked customer pickup
-          acknowledgments. Admin can edit customer pickup notes with a required audit reason.
+          {customer?.fullName ?? "Customer"} · {vehicle.vin || "No VIN"} · {vehicle.mileage.toLocaleString()} mi
         </p>
       </div>
       {error ? <p className="text-gt-danger">{error}</p> : null}
 
       {history.length === 0 ? (
         <Card>
-          <p className="text-sm text-gt-muted">No repair history for this vehicle yet.</p>
+          <p className="text-sm text-gt-muted">No repair history</p>
         </Card>
       ) : null}
 
@@ -66,7 +61,6 @@ export default function VehicleHistoryPage() {
           <Card key={order.id}>
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">Repair order</p>
                 <Link href={`/repair-orders/${order.id}`} className="text-xl font-extrabold text-gt-primary-deep">
                   #{order.number} · {order.serviceSummary}
                 </Link>
@@ -204,7 +198,6 @@ export default function VehicleHistoryPage() {
               </div>
             ) : null}
 
-            <p className="mt-3 text-xs text-gt-muted">Status label: {repairStatusCopy[order.status]}</p>
           </Card>
         );
       })}

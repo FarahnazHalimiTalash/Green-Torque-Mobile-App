@@ -15,7 +15,7 @@ export default function NotificationsScreen() {
       {notifications.length ? (
         <Button label="Mark all read" variant="ghost" onPress={markAllNotificationsRead} />
       ) : (
-        <Text style={styles.empty}>No notifications yet.</Text>
+        <Text style={styles.empty}>No notifications</Text>
       )}
       <View style={{ gap: 12, marginTop: 12 }}>
         {notifications.map((item) => (
