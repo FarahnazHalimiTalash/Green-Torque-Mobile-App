@@ -1,12 +1,15 @@
 import type { EvType, Vehicle } from "./types";
 
+/**
+ * Prefer dealer/studio Commons files with clean showroom backgrounds.
+ * Verified Special:FilePath names only.
+ */
 function commons(fileName: string) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1200`;
+  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1400`;
 }
 
 const MODEL_PHOTOS: Record<string, string> = {
-  "tesla|model 3":
-    "https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80",
+  "tesla|model 3": commons("24 Tesla Model 3 Base.jpg"),
   "tesla|model y": commons("23 Tesla Model Y Long Range.jpg"),
   "tesla|model s": commons("Tesla Model S 2024 Blue.jpg"),
   "tesla|model x": commons("23 Tesla Model X Plaid.jpg"),

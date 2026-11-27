@@ -6,9 +6,9 @@ import { Screen } from '@/components/ui/Screen';
 import { colors, fonts } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { formatVehicleIdentity, vehicleLabel } from '@/lib/format';
-import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
+import { VehiclePhoto } from '@/components/ui/VehiclePhoto';
 import { router } from 'expo-router';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 export default function VehiclesScreen() {
   const { vehicles, selectedVehicle, selectVehicle } = useApp();
@@ -35,9 +35,7 @@ export default function VehiclesScreen() {
                 <Card
                   onPress={() => router.push(`/(app)/vehicle/${vehicle.id}`)}
                   tone={selected ? 'emphasis' : 'default'}
-                  media={
-                    <Image source={{ uri: resolveVehiclePhoto(vehicle) }} style={styles.hero} />
-                  }>
+                  media={<VehiclePhoto vehicle={vehicle} height={178} />}>
                   <Text style={styles.name}>{vehicleLabel(vehicle)}</Text>
                   <Text style={styles.meta}>{formatVehicleIdentity(vehicle)}</Text>
                   <Button
@@ -72,9 +70,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: fonts.body,
     lineHeight: 20,
-  },
-  hero: {
-    width: '100%',
-    height: 178,
   },
 });

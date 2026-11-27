@@ -1,44 +1,36 @@
 import type { EvType, Vehicle } from '@/types';
-
-/** Wikimedia Commons photos named for the exact vehicle (verified). */
-function commons(fileName: string) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${encodeURIComponent(fileName)}?width=1200`;
-}
+import type { ImageSourcePropType } from 'react-native';
 
 /**
- * Stock photos keyed by "make|model" (lowercase).
- * Every URL points at a Commons/Unsplash file of that specific model — not a random car.
+ * Bundled premium vehicle photos (light-polished, brochure framing).
+ * Prefer local studio assets so cards stay sharp offline and consistent.
  */
-const MODEL_PHOTOS: Record<string, string> = {
-  // Confirmed Tesla Model 3 (same image used on the accurate demo card)
-  'tesla|model 3':
-    'https://images.unsplash.com/photo-1560958089-b8a1929cea89?auto=format&fit=crop&w=1200&q=80',
-  'tesla|model y': commons('23 Tesla Model Y Long Range.jpg'),
-  'tesla|model s': commons('Tesla Model S 2024 Blue.jpg'),
-  'tesla|model x': commons('23 Tesla Model X Plaid.jpg'),
-  'cadillac|escalade': commons('25 Cadillac Escalade Sport Platinum.jpg'),
-  'cadillac|escalade iq': commons('25 Cadillac Escalade IQ Luxury 1.jpg'),
-  'cadillac|lyriq': commons('2023 Cadillac Lyriq in Satin Steel Metallic, front left.jpg'),
-  'cadillac|optiq': commons('25 Cadillac Optiq Luxury 2.jpg'),
-  'cadillac|xt5': commons('23 Cadillac XT5 Premium Luxury.jpg'),
-  'genesis|gv60': commons('24 Genesis GV60 Standard.jpg'),
-  // Street photo of Integra only — no show crowds / people in frame
-  'acura|integra': commons('2023 Acura Integra A-Spec, front 12.29.22.jpg'),
-  'toyota|prius': commons('2023 Toyota Prius HEV front view.jpg'),
-  'toyota|prius prime': commons('Toyota Prius Plug-in Hybrid (MSP17).jpg'),
-  'ford|mustang mach-e': commons('21 Ford Mustang Mach-E Premium.jpg'),
-  'chevrolet|bolt ev': commons('21 Chevrolet Bolt EV LT.jpg'),
-  'chevrolet|bolt euv': commons('23 Chevrolet Bolt EUV Premier.jpg'),
-  'bmw|i4': commons('23 BMW i4 eDrive40.jpg'),
-  'hyundai|ioniq 5': commons('26 Hyundai Ioniq 5 Limited.jpg'),
-  'kia|ev6': commons('22 Kia EV6 Wind.jpg'),
-  'porsche|taycan': commons('22 Porsche Taycan Base.jpg'),
-  'rivian|r1t': commons('22 Rivian R1T Adventure.jpg'),
-  'rivian|r1s': commons('23 Rivian R1S Launch Edition.jpg'),
+const MODEL_PHOTOS: Record<string, ImageSourcePropType> = {
+  'tesla|model 3': require('../assets/vehicles/model3.jpg'),
+  'tesla|model y': require('../assets/vehicles/model-y.jpg'),
+  'tesla|model s': require('../assets/vehicles/model-s.jpg'),
+  'tesla|model x': require('../assets/vehicles/model-x.jpg'),
+  'cadillac|escalade': require('../assets/vehicles/escalade.jpg'),
+  'cadillac|escalade iq': require('../assets/vehicles/escalade-iq.jpg'),
+  'cadillac|lyriq': require('../assets/vehicles/lyriq.jpg'),
+  'cadillac|optiq': require('../assets/vehicles/optiq.jpg'),
+  'cadillac|xt5': require('../assets/vehicles/xt5.jpg'),
+  'genesis|gv60': require('../assets/vehicles/gv60.jpg'),
+  'acura|integra': require('../assets/vehicles/integra.jpg'),
+  'toyota|prius': require('../assets/vehicles/prius.jpg'),
+  'toyota|prius prime': require('../assets/vehicles/prius-prime.jpg'),
+  'ford|mustang mach-e': require('../assets/vehicles/mach-e.jpg'),
+  'chevrolet|bolt ev': require('../assets/vehicles/bolt-ev.jpg'),
+  'chevrolet|bolt euv': require('../assets/vehicles/bolt-euv.jpg'),
+  'bmw|i4': require('../assets/vehicles/i4.jpg'),
+  'hyundai|ioniq 5': require('../assets/vehicles/ioniq5.jpg'),
+  'kia|ev6': require('../assets/vehicles/ev6.jpg'),
+  'porsche|taycan': require('../assets/vehicles/taycan.jpg'),
+  'rivian|r1t': require('../assets/vehicles/r1t.jpg'),
+  'rivian|r1s': require('../assets/vehicles/r1s.jpg'),
 };
 
-/** Same-brand fallback only (never cross-brand). */
-const MAKE_PHOTOS: Record<string, string> = {
+const MAKE_PHOTOS: Record<string, ImageSourcePropType> = {
   tesla: MODEL_PHOTOS['tesla|model 3'],
   cadillac: MODEL_PHOTOS['cadillac|escalade'],
   genesis: MODEL_PHOTOS['genesis|gv60'],
@@ -53,7 +45,7 @@ const MAKE_PHOTOS: Record<string, string> = {
   rivian: MODEL_PHOTOS['rivian|r1t'],
 };
 
-const TYPE_PHOTOS: Record<EvType, string> = {
+const TYPE_PHOTOS: Record<EvType, ImageSourcePropType> = {
   ev: MODEL_PHOTOS['tesla|model 3'],
   hybrid: MODEL_PHOTOS['toyota|prius'],
   ice: MODEL_PHOTOS['cadillac|escalade'],
@@ -63,7 +55,7 @@ function keyPart(value: string) {
   return value.trim().toLowerCase().replace(/\s+/g, ' ');
 }
 
-export function vehiclePhotoFor(make: string, model: string, evType: EvType = 'ice') {
+export function vehiclePhotoFor(make: string, model: string, evType: EvType = 'ice'): ImageSourcePropType {
   const modelKey = `${keyPart(make)}|${keyPart(model)}`;
   return (
     MODEL_PHOTOS[modelKey] ??
@@ -73,10 +65,9 @@ export function vehiclePhotoFor(make: string, model: string, evType: EvType = 'i
   );
 }
 
-/**
- * Always resolve from make/model so the card matches the selected vehicle.
- * Ignores stale/wrong saved photoUrl values from earlier mappings.
- */
-export function resolveVehiclePhoto(vehicle: Pick<Vehicle, 'make' | 'model' | 'evType' | 'photoUrl'>) {
+/** Always resolve from make/model so the card matches the selected vehicle. */
+export function resolveVehiclePhoto(
+  vehicle: Pick<Vehicle, 'make' | 'model' | 'evType' | 'photoUrl'>,
+): ImageSourcePropType {
   return vehiclePhotoFor(vehicle.make, vehicle.model, vehicle.evType);
 }

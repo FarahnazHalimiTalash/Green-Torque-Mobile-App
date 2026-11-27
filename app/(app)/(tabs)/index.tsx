@@ -11,11 +11,11 @@ import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { paymentMethodLabel } from '@/lib/card';
 import { formatMoney, formatVehicleIdentity, vehicleLabel } from '@/lib/format';
-import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
 import { Icon } from '@/components/ui/Icon';
+import { VehiclePhoto } from '@/components/ui/VehiclePhoto';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 export default function HomeScreen() {
   const { profile, selectedVehicle, activeRepair, signOut, liveWithShop, paymentMethods, payments } =
@@ -45,12 +45,7 @@ export default function HomeScreen() {
           <Card
             tone="emphasis"
             onPress={() => router.push(`/(app)/vehicle/${selectedVehicle.id}`)}
-            media={
-              <Image
-                source={{ uri: resolveVehiclePhoto(selectedVehicle) }}
-                style={styles.vehicleHero}
-              />
-            }>
+            media={<VehiclePhoto vehicle={selectedVehicle} height={200} />}>
             <View style={styles.vehicleRow}>
               <View style={{ flex: 1, gap: 4 }}>
                 <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
@@ -166,10 +161,6 @@ const styles = StyleSheet.create({
     color: colors.primaryDeep,
     fontFamily: fonts.bodyBold,
     fontSize: 12,
-  },
-  vehicleHero: {
-    width: '100%',
-    height: 200,
   },
   vehicleHeroFallback: {
     width: '100%',

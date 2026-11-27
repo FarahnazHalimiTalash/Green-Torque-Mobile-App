@@ -30,7 +30,6 @@ import {
 } from '@/lib/shop-api';
 import { dueChargesForOrder } from '@/lib/billing';
 import { tokenizeCard } from '@/lib/card';
-import { vehiclePhotoFor } from '@/lib/vehicle-photo';
 import type {
   AccountState,
   Appointment,
@@ -321,7 +320,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
         make,
         model,
         nickname: input.nickname?.trim() || undefined,
-        photoUrl: vehiclePhotoFor(make, model, input.evType),
+        photoUrl: undefined,
       };
       await updateAccount((current) => ({
         ...current,
