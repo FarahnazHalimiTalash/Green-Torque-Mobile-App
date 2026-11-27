@@ -9,7 +9,7 @@ export default function BaysPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader title="Bays" icon="bays" />
+      <PageHeader title="Bays" />
       {state.bays.map((bay) => {
         const current = state.repairOrders.find(
           (item) => item.bayId === bay.id && item.status !== "picked_up" && item.status !== "cancelled",

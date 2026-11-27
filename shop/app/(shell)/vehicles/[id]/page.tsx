@@ -39,7 +39,7 @@ export default function VehicleHistoryPage() {
           All vehicles
         </Link>
         <div className="mt-3">
-          <PageHeader title={vehicleLabel(vehicle)} icon="vehicles" />
+          <PageHeader title={vehicleLabel(vehicle)} />
         </div>
         <p className="text-sm text-gt-muted">
           {customer?.fullName ?? "Customer"} · {vehicle.vin || "No VIN"} · {vehicle.mileage.toLocaleString()} mi

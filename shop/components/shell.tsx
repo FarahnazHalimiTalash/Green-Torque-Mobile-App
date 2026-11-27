@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-import { navIconForHref, ShopIcon } from "@/components/icons";
 import { useShop } from "@/lib/shop-context";
 import { shopNavLinks, subAdminHome } from "@/lib/staff";
 
@@ -51,24 +50,16 @@ export function Shell({ children }: { children: React.ReactNode }) {
             {links.map((link) => {
               const active =
                 pathname === link.href || (link.href !== "/" && pathname.startsWith(`${link.href}/`));
-              const icon = navIconForHref(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
+                  className={`rounded-xl px-3 py-2.5 text-sm font-semibold transition ${
                     active
                       ? "bg-[var(--gt-primary-muted)] text-gt-primary-deep"
                       : "text-gt-text hover:bg-gt-card"
                   }`}
                 >
-                  <span
-                    className={`grid h-8 w-8 place-items-center rounded-lg ${
-                      active ? "bg-gt-card text-gt-primary-deep" : "bg-gt-card/80 text-gt-muted"
-                    }`}
-                  >
-                    <ShopIcon name={icon} className="h-[18px] w-[18px]" />
-                  </span>
                   {link.label}
                 </Link>
               );
@@ -79,9 +70,8 @@ export function Shell({ children }: { children: React.ReactNode }) {
             <p className="text-gt-muted">{staff.title}</p>
             <button
               onClick={signOut}
-              className="mt-3 inline-flex items-center gap-2 text-gt-dim hover:text-gt-primary-deep"
+              className="mt-3 text-gt-dim hover:text-gt-primary-deep"
             >
-              <ShopIcon name="logout" className="h-4 w-4" />
               Sign out
             </button>
           </div>

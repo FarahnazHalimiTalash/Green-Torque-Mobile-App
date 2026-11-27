@@ -29,7 +29,7 @@ export default function AppointmentsPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader title="Appointments" icon="appointments" />
+      <PageHeader title="Appointments" />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       {state.appointments.map((appointment) => {
         const customer = state.customers.find((item) => item.id === appointment.customerId);

@@ -1,4 +1,3 @@
-import { ShopIcon, type ShopIconKey } from "@/components/icons";
 import { repairStatusCopy } from "@/lib/format";
 import type { RepairStatus } from "@/lib/types";
 
@@ -36,26 +35,17 @@ export function PageHeader({
   eyebrow,
   title,
   subtitle,
-  icon,
 }: {
   eyebrow?: string;
   title: string;
   subtitle?: string;
-  icon?: ShopIconKey;
 }) {
   return (
     <header className="mb-1 grid gap-2">
       {eyebrow ? (
         <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-gt-primary-deep">{eyebrow}</p>
       ) : null}
-      <div className="flex items-center gap-3">
-        {icon ? (
-          <span className="grid h-11 w-11 place-items-center rounded-2xl bg-[var(--gt-primary-muted)] text-gt-primary-deep">
-            <ShopIcon name={icon} className="h-5 w-5" />
-          </span>
-        ) : null}
-        <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">{title}</h1>
-      </div>
+      <h1 className="text-[34px] font-extrabold leading-tight tracking-tight text-gt-text">{title}</h1>
       {subtitle ? <p className="max-w-xl text-base text-gt-muted">{subtitle}</p> : null}
     </header>
   );
