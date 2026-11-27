@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/Button';
 import { FadeIn } from '@/components/ui/FadeIn';
 import { Logo } from '@/components/ui/Logo';
 import { Screen } from '@/components/ui/Screen';
-import { colors, fonts, radius, spacing, type } from '@/constants/theme';
+import { colors, fonts, radius, shadow, spacing, type } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
@@ -28,14 +28,16 @@ export default function WelcomeScreen() {
   }
 
   return (
-    <Screen variant="hero" style={styles.screen}>
+    <Screen style={styles.screen}>
       <FadeIn>
         <View style={styles.hero}>
           <LinearGradient
-            colors={['rgba(34,197,94,0.18)', 'rgba(255,255,255,0.04)', 'transparent']}
+            colors={['rgba(22,163,74,0.16)', 'rgba(228,240,232,0.55)', 'transparent']}
             style={styles.glow}
           />
-          <Logo height={88} width={320} clear />
+          <View style={styles.logoBadge}>
+            <Logo height={88} width={320} />
+          </View>
           <Text style={styles.brand}>Green Torque</Text>
           <Text style={styles.tagline}>Hybrid & EV repair, tracked in one place.</Text>
         </View>
@@ -48,14 +50,12 @@ export default function WelcomeScreen() {
           label="Create account"
           variant="secondary"
           onPress={() => router.push('/(auth)/signup')}
-          style={styles.secondaryOnDark}
         />
         <Button
           label="Continue as Farahnaz (demo)"
           variant="ghost"
           loading={loading}
           onPress={onDemo}
-          style={styles.ghostOnDark}
         />
       </FadeIn>
     </Screen>
@@ -82,14 +82,21 @@ const styles = StyleSheet.create({
     height: 280,
     borderRadius: 140,
   },
+  logoBadge: {
+    borderRadius: radius.xl,
+    backgroundColor: colors.header,
+    paddingHorizontal: 18,
+    paddingVertical: 14,
+    ...shadow.soft,
+  },
   brand: {
-    color: colors.textOnDark,
+    color: colors.text,
     fontFamily: fonts.display,
     fontSize: type.hero,
     letterSpacing: -0.8,
   },
   tagline: {
-    color: 'rgba(242,251,246,0.78)',
+    color: colors.textMuted,
     fontFamily: fonts.body,
     fontSize: 17,
     lineHeight: 24,
@@ -98,20 +105,15 @@ const styles = StyleSheet.create({
   },
   actions: {
     gap: 12,
-    backgroundColor: 'rgba(255,255,255,0.06)',
+    backgroundColor: colors.card,
     borderRadius: radius.xl,
     padding: spacing.lg,
     borderWidth: 1,
-    borderColor: 'rgba(255,255,255,0.1)',
-  },
-  secondaryOnDark: {
-    backgroundColor: 'rgba(255,255,255,0.92)',
-  },
-  ghostOnDark: {
-    // ghost label still uses primaryDeep; fine on dark with light panel
+    borderColor: colors.border,
+    ...shadow.card,
   },
   error: {
-    color: '#FCA5A5',
+    color: colors.danger,
     textAlign: 'center',
     fontFamily: fonts.bodyMedium,
   },
