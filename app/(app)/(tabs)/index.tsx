@@ -6,14 +6,12 @@ import { Screen } from '@/components/ui/Screen';
 import { SectionHeader } from '@/components/ui/SectionHeader';
 import { StatusBadge } from '@/components/ui/StatusBadge';
 import { StatusTimeline } from '@/components/ui/StatusTimeline';
+import { VehiclePhoto } from '@/components/ui/VehiclePhoto';
 import { colors, fonts, radius, spacing, type } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { paymentMethodLabel } from '@/lib/card';
 import { formatMoney, formatVehicleIdentity, vehicleLabel } from '@/lib/format';
-import { Icon } from '@/components/ui/Icon';
-import { VehiclePhoto } from '@/components/ui/VehiclePhoto';
-import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -51,17 +49,10 @@ export default function HomeScreen() {
                 <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
                 <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
               </View>
-              <Icon name="chevronRight" size={20} color={colors.textDim} />
             </View>
           </Card>
         ) : (
-          <Card
-            tone="emphasis"
-            media={
-              <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
-                <Icon name="car" size={56} color={colors.primary} />
-              </LinearGradient>
-            }>
+          <Card tone="emphasis">
             <Text style={styles.vehicleName}>Add a vehicle</Text>
             <Button label="Add vehicle" onPress={() => router.push('/(app)/vehicle/add')} />
           </Card>
@@ -104,19 +95,15 @@ export default function HomeScreen() {
       <FadeIn delay={190}>
         <SectionHeader title="Payment" />
         <Card onPress={() => router.push('/(app)/payments')}>
-          <View style={styles.row}>
-            <Icon name="card" size={22} color={colors.primaryDeep} tiled />
-            <View style={{ flex: 1, gap: 2 }}>
-              <Text style={styles.vehicleName}>
-                {card ? paymentMethodLabel(card) : 'Add a payment method'}
+          <View style={{ gap: 2 }}>
+            <Text style={styles.vehicleName}>
+              {card ? paymentMethodLabel(card) : 'Add a payment method'}
+            </Text>
+            {due.length && activeRepair ? (
+              <Text style={styles.muted}>
+                {formatMoney(dueTotal(due))} due on RO #{activeRepair.number}
               </Text>
-              {due.length && activeRepair ? (
-                <Text style={styles.muted}>
-                  {formatMoney(dueTotal(due))} due on RO #{activeRepair.number}
-                </Text>
-              ) : null}
-            </View>
-            <Icon name="chevronRight" size={18} color={colors.textDim} />
+            ) : null}
           </View>
         </Card>
       </FadeIn>
@@ -162,12 +149,6 @@ const styles = StyleSheet.create({
     fontFamily: fonts.bodyBold,
     fontSize: 12,
   },
-  vehicleHeroFallback: {
-    width: '100%',
-    height: 160,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   vehicleRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -190,11 +171,6 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontFamily: fonts.display,
     letterSpacing: -0.45,
-  },
-  row: {
-    flexDirection: 'row',
-    gap: 12,
-    alignItems: 'center',
   },
   signOut: {
     alignItems: 'center',
