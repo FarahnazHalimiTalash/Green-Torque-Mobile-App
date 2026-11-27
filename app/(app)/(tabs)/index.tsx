@@ -12,7 +12,7 @@ import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { paymentMethodLabel } from '@/lib/card';
 import { formatMoney, formatVehicleIdentity, vehicleLabel } from '@/lib/format';
 import { resolveVehiclePhoto } from '@/lib/vehicle-photo';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
@@ -56,7 +56,7 @@ export default function HomeScreen() {
                 <Text style={styles.vehicleName}>{vehicleLabel(selectedVehicle)}</Text>
                 <Text style={styles.muted}>{formatVehicleIdentity(selectedVehicle)}</Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={colors.textDim} />
+              <Icon name="chevronRight" size={20} color={colors.textDim} />
             </View>
           </Card>
         ) : (
@@ -64,7 +64,7 @@ export default function HomeScreen() {
             tone="emphasis"
             media={
               <LinearGradient colors={['#DCFCE7', '#F0FDF4']} style={styles.vehicleHeroFallback}>
-                <Ionicons name="car-sport-outline" size={56} color={colors.primary} />
+                <Icon name="car" size={56} color={colors.primary} />
               </LinearGradient>
             }>
             <Text style={styles.vehicleName}>Add a vehicle</Text>
@@ -110,9 +110,7 @@ export default function HomeScreen() {
         <SectionHeader title="Payment" />
         <Card onPress={() => router.push('/(app)/payments')}>
           <View style={styles.row}>
-            <View style={styles.iconTile}>
-              <Ionicons name="card-outline" size={22} color={colors.primaryDeep} />
-            </View>
+            <Icon name="card" size={22} color={colors.primaryDeep} tiled />
             <View style={{ flex: 1, gap: 2 }}>
               <Text style={styles.vehicleName}>
                 {card ? paymentMethodLabel(card) : 'Add a payment method'}
@@ -123,7 +121,7 @@ export default function HomeScreen() {
                 </Text>
               ) : null}
             </View>
-            <Ionicons name="chevron-forward" size={18} color={colors.textDim} />
+            <Icon name="chevronRight" size={18} color={colors.textDim} />
           </View>
         </Card>
       </FadeIn>
@@ -206,14 +204,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     alignItems: 'center',
-  },
-  iconTile: {
-    width: 46,
-    height: 46,
-    borderRadius: 15,
-    backgroundColor: colors.primaryMuted,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   signOut: {
     alignItems: 'center',

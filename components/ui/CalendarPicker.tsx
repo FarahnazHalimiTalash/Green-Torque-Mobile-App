@@ -1,7 +1,7 @@
 import { Select } from '@/components/ui/Select';
 import { colors, radius } from '@/constants/theme';
 import { DROP_OFF_HOURS, isDropOffTaken } from '@/lib/drop-off';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
@@ -108,7 +108,7 @@ export function CalendarPicker({ value, onChange, bookedAt = [] }: Props) {
         <Text style={[styles.fieldValue, !highlight && styles.placeholder]} numberOfLines={1}>
           {highlight ? formatDate(highlight) : 'Select drop-off date'}
         </Text>
-        <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
+        <Icon name="chevronDown" size={18} color={colors.textMuted} />
       </Pressable>
 
       {calendarOpen ? (
@@ -120,7 +120,7 @@ export function CalendarPicker({ value, onChange, bookedAt = [] }: Props) {
                 setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() - 1, 1))
               }
               style={styles.nav}>
-              <Ionicons name="chevron-back" size={18} color={colors.primary} />
+              <Icon name="chevronBack" size={18} color={colors.primary} />
             </Pressable>
             <Text style={styles.month}>{monthLabel}</Text>
             <Pressable
@@ -129,7 +129,7 @@ export function CalendarPicker({ value, onChange, bookedAt = [] }: Props) {
                 setVisibleMonth(new Date(visibleMonth.getFullYear(), visibleMonth.getMonth() + 1, 1))
               }
               style={styles.nav}>
-              <Ionicons name="chevron-forward" size={18} color={colors.primary} />
+              <Icon name="chevronForward" size={18} color={colors.primary} />
             </Pressable>
           </View>
 

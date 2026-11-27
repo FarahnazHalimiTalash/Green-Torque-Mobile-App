@@ -12,7 +12,7 @@ export default function VehiclesPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader title="Vehicles" />
+      <PageHeader title="Vehicles" icon="vehicles" />
       {state.vehicles.map((vehicle) => {
         const customer = state.customers.find((item) => item.id === vehicle.customerId);
         const services = state.repairOrders.filter((item) => item.vehicleId === vehicle.id).length;

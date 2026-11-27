@@ -6,7 +6,7 @@ import { colors } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
 import { getServiceType } from '@/data/services';
 import { formatDateTime, vehicleLabel } from '@/lib/format';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import { useLocalSearchParams } from 'expo-router';
 import { createElement } from 'react';
 import { Image, Platform, StyleSheet, Text, View } from 'react-native';
@@ -73,7 +73,7 @@ export default function AppointmentDetailScreen() {
               })
             ) : (
               <View key={uri} style={[styles.photo, styles.videoTile]}>
-                <Ionicons name="videocam" size={22} color={colors.primary} />
+                <Icon name="video" size={22} color={colors.primary} filled />
                 <Text style={styles.videoLabel}>Video</Text>
               </View>
             ),

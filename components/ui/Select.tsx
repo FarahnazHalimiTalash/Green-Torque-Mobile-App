@@ -1,5 +1,5 @@
 import { colors, fonts, radius } from '@/constants/theme';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import { createElement, useState, type CSSProperties } from 'react';
 import { Modal, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
@@ -106,7 +106,7 @@ export function Select({
               ),
             ),
           )}
-          <Ionicons name="chevron-down" size={18} color={colors.textMuted} style={styles.webChevron} />
+          <Icon name="chevronDown" size={18} color={colors.textMuted} style={styles.webChevron} />
         </View>
       </View>
     );
@@ -124,7 +124,7 @@ export function Select({
         <Text style={[styles.value, !selected && styles.placeholder]} numberOfLines={1}>
           {selected?.label ?? placeholder}
         </Text>
-        <Ionicons name="chevron-down" size={18} color={colors.textMuted} />
+        <Icon name="chevronDown" size={18} color={colors.textMuted} />
       </Pressable>
 
       {Platform.OS === 'web' ? (

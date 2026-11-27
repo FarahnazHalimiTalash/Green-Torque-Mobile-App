@@ -1,13 +1,23 @@
+import { Icon } from '@/components/ui/Icon';
 import { Logo } from '@/components/ui/Logo';
 import { colors, fonts, radius, shadow } from '@/constants/theme';
 import { useApp } from '@/context/AppContext';
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { router, Tabs } from 'expo-router';
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-function tabColor(focused: boolean) {
-  return focused ? colors.primary : colors.textDim;
+function TabGlyph({
+  name,
+  focused,
+}: {
+  name: 'home' | 'vehicles' | 'book' | 'history';
+  focused: boolean;
+}) {
+  return (
+    <View style={[styles.tabIconWrap, focused && styles.tabIconWrapOn]}>
+      <Icon name={name} size={20} filled={focused} color={focused ? colors.primaryDeep : colors.textDim} />
+    </View>
+  );
 }
 
 function HeaderBell() {
@@ -15,7 +25,7 @@ function HeaderBell() {
 
   return (
     <Pressable style={styles.bell} onPress={() => router.push('/(app)/notifications')}>
-      <Ionicons name="notifications-outline" size={20} color={colors.textOnDark} />
+      <Icon name="notifications" size={20} color={colors.textOnDark} />
       {unreadCount > 0 ? (
         <View style={styles.dot}>
           <Text style={styles.dotText}>{unreadCount > 9 ? '9+' : unreadCount}</Text>
@@ -39,19 +49,19 @@ export default function TabLayout() {
         headerTitleAlign: 'left',
         headerTitle: () => <Logo height={44} width={168} clear />,
         headerRight: () => <HeaderBell />,
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.primaryDeep,
         tabBarInactiveTintColor: colors.textDim,
         tabBarStyle: {
           position: 'absolute',
           left: 16,
           right: 16,
           bottom: Math.max(insets.bottom, 10),
-          height: 64,
+          height: 68,
           borderRadius: radius.xl,
           backgroundColor: colors.white,
           borderTopWidth: 0,
-          paddingTop: 8,
-          paddingBottom: 8,
+          paddingTop: 6,
+          paddingBottom: 6,
           ...shadow.card,
           ...(Platform.OS === 'web' ? { marginHorizontal: 16, marginBottom: 12 } : null),
         },
@@ -62,50 +72,35 @@ export default function TabLayout() {
           fontSize: 11,
           fontFamily: fonts.bodyBold,
           letterSpacing: 0.15,
+          marginTop: 2,
         },
       }}>
       <Tabs.Screen
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'home' : 'home-outline'} color={tabColor(focused)} size={size} />
-          ),
+          tabBarIcon: ({ focused }) => <TabGlyph name="home" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="vehicles"
         options={{
           title: 'Vehicles',
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons
-              name={focused ? 'car-sport' : 'car-sport-outline'}
-              color={tabColor(focused)}
-              size={size}
-            />
-          ),
+          tabBarIcon: ({ focused }) => <TabGlyph name="vehicles" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="book"
         options={{
           title: 'Book',
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons
-              name={focused ? 'calendar' : 'calendar-outline'}
-              color={tabColor(focused)}
-              size={size}
-            />
-          ),
+          tabBarIcon: ({ focused }) => <TabGlyph name="book" focused={focused} />,
         }}
       />
       <Tabs.Screen
         name="history"
         options={{
           title: 'History',
-          tabBarIcon: ({ focused, size }) => (
-            <Ionicons name={focused ? 'time' : 'time-outline'} color={tabColor(focused)} size={size} />
-          ),
+          tabBarIcon: ({ focused }) => <TabGlyph name="history" focused={focused} />,
         }}
       />
     </Tabs>
@@ -113,6 +108,16 @@ export default function TabLayout() {
 }
 
 const styles = StyleSheet.create({
+  tabIconWrap: {
+    width: 36,
+    height: 28,
+    borderRadius: 12,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabIconWrapOn: {
+    backgroundColor: colors.primaryMuted,
+  },
   bell: {
     width: 40,
     height: 40,

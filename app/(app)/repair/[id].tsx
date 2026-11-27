@@ -11,7 +11,7 @@ import { useApp } from '@/context/AppContext';
 import { dueChargesForOrder, dueTotal } from '@/lib/billing';
 import { formatDateTime, formatMoney } from '@/lib/format';
 import { shopMediaUrl } from '@/lib/shop-api';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Image, StyleSheet, Text, View } from 'react-native';
@@ -84,7 +84,7 @@ export default function RepairDetailScreen() {
       {due.length || paid.length ? (
         <Card>
           <View style={styles.row}>
-            <Ionicons name="card-outline" size={20} color={colors.primary} />
+            <Icon name="card" size={20} color={colors.primary} />
             <Text style={styles.label}>Payment</Text>
           </View>
           {due.map((item) => (
@@ -143,7 +143,7 @@ export default function RepairDetailScreen() {
       {(order.foundProblems ?? []).map((problem) => (
         <Card key={problem.id}>
           <View style={styles.row}>
-            <Ionicons name="alert-circle-outline" size={20} color={colors.warning} />
+            <Icon name="alert" size={20} color={colors.warning} />
             <Text style={styles.label}>New problem found</Text>
           </View>
           <Text style={styles.body}>{problem.summary}</Text>
@@ -185,7 +185,7 @@ export default function RepairDetailScreen() {
       {needsPickupSign ? (
         <Card>
           <View style={styles.row}>
-            <Ionicons name="create-outline" size={20} color={colors.primary} />
+            <Icon name="edit" size={20} color={colors.primary} />
             <Text style={styles.label}>Pickup acknowledgment</Text>
           </View>
           <Text style={styles.body}>
@@ -222,7 +222,7 @@ export default function RepairDetailScreen() {
       {acknowledgment ? (
         <Card>
           <View style={styles.row}>
-            <Ionicons name="shield-checkmark-outline" size={20} color={colors.primary} />
+            <Icon name="shield" size={20} color={colors.primary} />
             <Text style={styles.label}>Signed pickup record</Text>
           </View>
           <Text style={styles.body}>{acknowledgment.note}</Text>

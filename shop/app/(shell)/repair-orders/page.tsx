@@ -17,7 +17,10 @@ export default function RepairOrdersPage() {
 
   return (
     <div className="grid gap-5">
-      <PageHeader title={staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"} />
+      <PageHeader
+        title={staff?.role === "sub_admin" ? "Assigned to you" : "Repair orders"}
+        icon={staff?.role === "sub_admin" ? "jobs" : "repair-orders"}
+      />
       {staff?.role === "sub_admin" && orders.length === 0 ? (
         <p className="text-gt-muted">No jobs assigned</p>
       ) : null}

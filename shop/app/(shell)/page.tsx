@@ -45,7 +45,7 @@ export default function TodayPage() {
 
   return (
     <div className="grid gap-6">
-      <PageHeader title="Today" />
+      <PageHeader title="Today" icon="today" />
       {error ? <p className="text-gt-danger">{error}</p> : null}
       <div className="grid gap-6 xl:grid-cols-2">
         <Card>

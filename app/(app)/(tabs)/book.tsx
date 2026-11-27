@@ -20,7 +20,7 @@ import {
   modelsForMake,
   yearsForModel,
 } from '@/lib/vehicle-catalog';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Icon } from '@/components/ui/Icon';
 import * as ImagePicker from 'expo-image-picker';
 import { router } from 'expo-router';
 import { createElement, useEffect, useState } from 'react';
@@ -47,11 +47,11 @@ function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void 
         })
       ) : (
         <View style={[styles.photo, styles.videoTile]}>
-          <Ionicons name="videocam" size={22} color={colors.primary} />
+          <Icon name="video" size={22} color={colors.primary} filled />
         </View>
       )}
       <Pressable accessibilityLabel="Remove attachment" onPress={onRemove} style={styles.remove}>
-        <Ionicons name="close" size={12} color={colors.white} />
+        <Icon name="close" size={12} color={colors.white} />
       </Pressable>
     </View>
   );
@@ -270,7 +270,7 @@ export default function BookScreen() {
             accessibilityLabel="Add photo"
             style={styles.addPhoto}
             onPress={() => addMedia('photo')}>
-            <Ionicons name="image" size={18} color={colors.primary} />
+            <Icon name="image" size={18} color={colors.primary} />
             <Text style={styles.addPhotoText}>Photo</Text>
           </Pressable>
           <Pressable
@@ -278,7 +278,7 @@ export default function BookScreen() {
             accessibilityLabel="Add video"
             style={styles.addPhoto}
             onPress={() => addMedia('video')}>
-            <Ionicons name="videocam" size={18} color={colors.primary} />
+            <Icon name="video" size={18} color={colors.primary} />
             <Text style={styles.addPhotoText}>Video</Text>
           </Pressable>
         </View>
