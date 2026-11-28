@@ -301,26 +301,20 @@ export default function BookScreen() {
           placeholder={serviceGroup ? 'Select service' : 'Select service type first'}
           disabled={!serviceGroup}
         />
-        <Card tone="quiet" style={styles.identityCard}>
-          <Text style={styles.identityTitle}>Vehicle details</Text>
-          <Text style={styles.identityHint}>Needed when you request this appointment.</Text>
-          <View style={styles.identityFields}>
-            <Input
-              label="VIN"
-              value={vin}
-              onChangeText={setVin}
-              autoCapitalize="characters"
-              placeholder="17-character VIN"
-            />
-            <Input
-              label="Mileage"
-              value={mileage}
-              onChangeText={setMileage}
-              keyboardType="number-pad"
-              placeholder="28410"
-            />
-          </View>
-        </Card>
+        <Input
+          label="VIN"
+          value={vin}
+          onChangeText={setVin}
+          autoCapitalize="characters"
+          placeholder="17-character VIN"
+        />
+        <Input
+          label="Mileage"
+          value={mileage}
+          onChangeText={setMileage}
+          keyboardType="number-pad"
+          placeholder="28410"
+        />
         <CalendarPicker value={scheduledAt} onChange={setScheduledAt} bookedAt={bookedAt} />
 
         <Input
@@ -385,25 +379,6 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontFamily: fonts.bodyBold,
     fontSize: 15,
-  },
-  identityCard: {
-    gap: 8,
-  },
-  identityTitle: {
-    color: colors.text,
-    fontFamily: fonts.bodyBold,
-    fontSize: 15,
-  },
-  identityHint: {
-    color: colors.textDim,
-    fontFamily: fonts.body,
-    fontSize: 13,
-    lineHeight: 18,
-    marginTop: -2,
-  },
-  identityFields: {
-    gap: 12,
-    marginTop: 4,
   },
   label: {
     color: colors.textMuted,
