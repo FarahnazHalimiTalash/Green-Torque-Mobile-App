@@ -59,7 +59,8 @@ function MediaThumb({ item, onRemove }: { item: MediaItem; onRemove: () => void 
 }
 
 export default function BookScreen() {
-  const { vehicles, selectedVehicle, appointments, liveWithShop, bookAppointment, addVehicle } = useApp();
+  const { vehicles, selectedVehicle, appointments, liveWithShop, bookAppointment, addVehicle, updateVehicle } =
+    useApp();
   const [make, setMake] = useState(selectedVehicle?.make ?? '');
   const [model, setModel] = useState(selectedVehicle?.model ?? '');
   const [year, setYear] = useState(selectedVehicle ? String(selectedVehicle.year) : '');
@@ -69,17 +70,14 @@ export default function BookScreen() {
   const [serviceTypeId, setServiceTypeId] = useState('');
   const [scheduledAt, setScheduledAt] = useState('');
   const [bookedAt, setBookedAt] = useState<string[]>([]);
-  const [vin, setVin] = useState('');
-  const [mileage, setMileage] = useState('');
+  const [vin, setVin] = useState(selectedVehicle?.vin ?? '');
+  const [mileage, setMileage] = useState(
+    selectedVehicle?.mileage ? String(selectedVehicle.mileage) : '',
+  );
   const [notes, setNotes] = useState('');
   const [media, setMedia] = useState<MediaItem[]>([]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-
-  const existingVehicle = vehicles.find(
-    (item) => item.make === make && item.model === model && item.year === Number(year),
-  );
-  const needsNewVehicleIdentity = Boolean(make && model && year && !existingVehicle);
 
   useEffect(() => {
     if (!make && selectedVehicle) {
@@ -87,8 +85,24 @@ export default function BookScreen() {
       setModel(selectedVehicle.model);
       setYear(String(selectedVehicle.year));
       setServiceGroup(serviceGroupForPowertrain(selectedVehicle.evType));
+      setVin(selectedVehicle.vin ?? '');
+      setMileage(selectedVehicle.mileage ? String(selectedVehicle.mileage) : '');
     }
   }, [make, selectedVehicle]);
+
+  useEffect(() => {
+    if (!make || !model || !year) return;
+    const match = vehicles.find(
+      (item) => item.make === make && item.model === model && item.year === Number(year),
+    );
+    if (match) {
+      setVin(match.vin ?? '');
+      setMileage(match.mileage ? String(match.mileage) : '');
+    } else {
+      setVin('');
+      setMileage('');
+    }
+  }, [make, model, year, vehicles]);
 
   useEffect(() => {
     let cancelled = false;
@@ -174,29 +188,33 @@ export default function BookScreen() {
       return;
     }
     const parsedMileage = Number(mileage.replace(/,/g, ''));
-    let vehicle = vehicles.find(
-      (item) => item.make === make && item.model === model && item.year === parsedYear,
-    );
-    if (!vehicle) {
-      if (Number.isNaN(parsedMileage) || mileage.trim() === '') {
-        setError('Enter current mileage for this vehicle.');
-        return;
-      }
-      if (vin.trim() && vin.replace(/\s/g, '').length !== 17) {
-        setError('VIN should be 17 characters if provided.');
-        return;
-      }
+    if (Number.isNaN(parsedMileage) || mileage.trim() === '') {
+      setError('Enter current mileage.');
+      return;
+    }
+    if (vin.trim() && vin.replace(/\s/g, '').length !== 17) {
+      setError('VIN should be 17 characters if provided.');
+      return;
     }
     setLoading(true);
     try {
+      const cleanVin = vin.replace(/\s/g, '');
+      let vehicle = vehicles.find(
+        (item) => item.make === make && item.model === model && item.year === parsedYear,
+      );
       if (!vehicle) {
         vehicle = await addVehicle({
-          vin: vin.replace(/\s/g, ''),
+          vin: cleanVin,
           year: parsedYear,
           make,
           model,
           mileage: parsedMileage,
           evType: evTypeForModel(make, model) ?? 'ice',
+        });
+      } else {
+        vehicle = await updateVehicle(vehicle.id, {
+          vin: cleanVin,
+          mileage: parsedMileage,
         });
       }
       const appointment = await bookAppointment({
@@ -265,24 +283,6 @@ export default function BookScreen() {
             </Text>
           </Card>
         ) : null}
-        {needsNewVehicleIdentity ? (
-          <>
-            <Input
-              label="VIN (optional)"
-              value={vin}
-              onChangeText={setVin}
-              autoCapitalize="characters"
-              placeholder="17-character VIN"
-            />
-            <Input
-              label="Mileage"
-              value={mileage}
-              onChangeText={setMileage}
-              keyboardType="number-pad"
-              placeholder="28410"
-            />
-          </>
-        ) : null}
         <Select
           label="Service type"
           value={serviceGroup}
@@ -301,6 +301,26 @@ export default function BookScreen() {
           placeholder={serviceGroup ? 'Select service' : 'Select service type first'}
           disabled={!serviceGroup}
         />
+        <Card tone="quiet" style={styles.identityCard}>
+          <Text style={styles.identityTitle}>Vehicle details</Text>
+          <Text style={styles.identityHint}>Needed when you request this appointment.</Text>
+          <View style={styles.identityFields}>
+            <Input
+              label="VIN"
+              value={vin}
+              onChangeText={setVin}
+              autoCapitalize="characters"
+              placeholder="17-character VIN"
+            />
+            <Input
+              label="Mileage"
+              value={mileage}
+              onChangeText={setMileage}
+              keyboardType="number-pad"
+              placeholder="28410"
+            />
+          </View>
+        </Card>
         <CalendarPicker value={scheduledAt} onChange={setScheduledAt} bookedAt={bookedAt} />
 
         <Input
@@ -365,6 +385,25 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontFamily: fonts.bodyBold,
     fontSize: 15,
+  },
+  identityCard: {
+    gap: 8,
+  },
+  identityTitle: {
+    color: colors.text,
+    fontFamily: fonts.bodyBold,
+    fontSize: 15,
+  },
+  identityHint: {
+    color: colors.textDim,
+    fontFamily: fonts.body,
+    fontSize: 13,
+    lineHeight: 18,
+    marginTop: -2,
+  },
+  identityFields: {
+    gap: 12,
+    marginTop: 4,
   },
   label: {
     color: colors.textMuted,
